@@ -222,4 +222,4 @@ For more information, see our [Contributing Guide]("todo")
 You may still have unanswered questions or may be facing issues. If so please see our [FAQ]("todo") or our [User Guide]("todo") for further guidence.
 
 ## License 🔒
-[MIT License](License)
+[MIT License](LICENSE)
