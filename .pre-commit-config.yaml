@@ -1,0 +1,11 @@
+repos:
+  - repo: local
+    hooks:
+    # Hook to run make format on demand.
+    # This isn't stricly necessary now that we don't run format on push but nice to keep around as an example.
+    - id: make-format
+      name: make-format
+      entry: make format
+      language: system
+      pass_filenames: false
+      stages: [manual]
