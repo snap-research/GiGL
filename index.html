@@ -1,0 +1,714 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>This REPO is a bit dusty while we prepare for the OSS launch. We will have it in working order coming soon. &#8212; GiGL  documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.5.1/css/all.min.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.1/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.1/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.1/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=87e54e7c" />
+    <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=1248dbba" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Inter:100,200,300,regular,500,600,700,800,900" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae" />
+  <script src="_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=8d27b9dea8ad943066ae"></script>
+
+    <script src="_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'index';</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="User Guide" href="user_guide/index.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a id="pst-skip-link" class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar">
+<div class="bd-header__inner bd-page-width">
+  <label class="sidebar-toggle primary-toggle" for="__primary">
+    <span class="fa-solid fa-bars"></span>
+  </label>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+
+<a class="navbar-brand logo" href="#">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="_static/gigl.png" class="logo__image only-light" alt=""/>
+    <script>document.write(`<img src="_static/gigl.png" class="logo__image only-dark" alt=""/>`);</script>
+  
+  
+    <p class="title logo__title">GiGL</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav class="navbar-nav">
+  <ul class="bd-navbar-elements navbar-nav">
+    
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="user_guide/index.html">
+                        User Guide
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="reference/index.html">
+                        API Reference
+                      </a>
+                    </li>
+                
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links navbar-nav"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/snap-research/GiGL" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i></span>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/gigl/" title="PyPI" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-custom fa-pypi fa-lg" aria-hidden="true"></i></span>
+            <span class="sr-only">PyPI</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+    </div>
+  
+
+  
+    <label class="sidebar-toggle secondary-toggle" for="__secondary" tabindex="0">
+      <span class="fa-solid fa-outdent"></span>
+    </label>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <div class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          <div class="navbar-item">
+<nav class="navbar-nav">
+  <ul class="bd-navbar-elements navbar-nav">
+    
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="user_guide/index.html">
+                        User Guide
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="reference/index.html">
+                        API Reference
+                      </a>
+                    </li>
+                
+  </ul>
+</nav></div>
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links navbar-nav"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/snap-research/GiGL" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i></span>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/gigl/" title="PyPI" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-custom fa-pypi fa-lg" aria-hidden="true"></i></span>
+            <span class="sr-only">PyPI</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article"></div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <!-- To align the logo with the text on the sphinx page -->
+<div align="center">
+  <img src="docs/assets/images/gigl.png" alt="GiGL Logo" style="vertical-align: middle; width: px; height: 80px;"/>
+  <h1 style="display: inline-block; vertical-align: middle; margin-left: 20px; font-size: 48px; line-height: 80px;">
+    GiGL: Gigantic Graph Learning
+  </h1>
+</div>
+<section id="this-repo-is-a-bit-dusty-while-we-prepare-for-the-oss-launch-we-will-have-it-in-working-order-coming-soon">
+<h1>This REPO is a bit dusty while we prepare for the OSS launch. We will have it in working order coming soon.<a class="headerlink" href="#this-repo-is-a-bit-dusty-while-we-prepare-for-the-oss-launch-we-will-have-it-in-working-order-coming-soon" title="Link to this heading">#</a></h1>
+<p>GiGL is an open-source library for training and inference of Graph Neural Networks at very large (billion) scale.</p>
+<p>See 📖 <a class="reference internal" href="#docs/"><span class="xref myst">Documentation</span></a> for more details</p>
+<section id="key-features">
+<h2>Key Features 🌟<a class="headerlink" href="#key-features" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>🧠 <strong>Versatile GNN Applications</strong>: Supports easy customization in using GNNs in supervised and unsupervised ML applications like node classification and link prediction.</p></li>
+<li><p>🚀 <strong>Designed for Scalability</strong>: The architecture is built with horizontal scaling in mind, ensuring cost-effective performance throughout the process of data preprocessing and transformation, model training, and inference.</p></li>
+<li><p>🎛️ <strong>Easy Orchestration</strong>: Simplified end-to-end orchestration, making it easy for developers to implement, scale, and manage their GNN projects.</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="gigl-components">
+<h2>GiGL Components ⚡️<a class="headerlink" href="#gigl-components" title="Link to this heading">#</a></h2>
+<p>GiGL contains six components, each designed to facilitate the platforms end-to-end graph machine learning (ML) tasks. The components are as follows:</p>
+<table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Component</p></th>
+<th class="head"><p>Source Code</p></th>
+<th class="head"><p>Documentation</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Config Populator</p></td>
+<td><p><a class="reference internal" href="#python/gigl/src/config_populator/config_populator.py"><span class="xref myst">here</span></a></p></td>
+<td><p><a class="reference internal" href="#docs/sphinx/source/components/config_populator.md"><span class="xref myst">here</span></a></p></td>
+</tr>
+<tr class="row-odd"><td><p>Data Preprocessor</p></td>
+<td><p><a class="reference internal" href="#python/gigl/src/data_preprocessor/data_preprocessor.py"><span class="xref myst">here</span></a></p></td>
+<td><p><a class="reference internal" href="#docs/sphinx/source/components/data_preprocessor.md"><span class="xref myst">here</span></a></p></td>
+</tr>
+<tr class="row-even"><td><p>Subgraph Sampler</p></td>
+<td><p><a class="reference internal" href="#scala/subgraph_sampler/src/main/scala/Main.scala"><span class="xref myst">here</span></a></p></td>
+<td><p><a class="reference internal" href="#docs/sphinx/source/components/subgraph_sampler.md"><span class="xref myst">here</span></a></p></td>
+</tr>
+<tr class="row-odd"><td><p>Split Generator</p></td>
+<td><p><a class="reference internal" href="#scala/split_generator/src/main/scala/Main.scala"><span class="xref myst">here</span></a></p></td>
+<td><p><a class="reference internal" href="#docs/sphinx/source/components/split_generator.md"><span class="xref myst">here</span></a></p></td>
+</tr>
+<tr class="row-even"><td><p>Trainer</p></td>
+<td><p><a class="reference internal" href="#python/gigl/src/training/trainer.py"><span class="xref myst">here</span></a></p></td>
+<td><p><a class="reference internal" href="#docs/sphinx/source/components/trainer.md"><span class="xref myst">here</span></a></p></td>
+</tr>
+<tr class="row-odd"><td><p>Inferencer</p></td>
+<td><p><a class="reference internal" href="#python/gigl/src/inference/gnn_inferencer.py"><span class="xref myst">here</span></a></p></td>
+<td><p><a class="reference internal" href="#docs/sphinx/source/components/inferencer.md"><span class="xref myst">here</span></a></p></td>
+</tr>
+</tbody>
+</table>
+<p>The figure below illustrates at a high level how all the components work together for and end-to-end GiGL pipeline.</p>
+<p><img alt="gigl-framework" src="docs/assets/images/gigl-framework.png" /></p>
+</section>
+<section id="installation">
+<h2>Installation ⚙️<a class="headerlink" href="#installation" title="Link to this heading">#</a></h2>
+<p>There are various ways to use GiGL.  The recommended solution is to set up a conda environment and use some handy commands:</p>
+<p>From the root directory:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>make<span class="w"> </span>initialize_environment
+conda<span class="w"> </span>activate<span class="w"> </span>gnn
+</pre></div>
+</div>
+<p>This creates a Python 3.9 environment with some basic utilities.  Next, to install all user dependencies:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>make<span class="w"> </span>install_deps
+</pre></div>
+</div>
+<p>If you <em>instead</em> want a developer-install which includes some extra tooling useful for contributions:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>make<span class="w"> </span>install_dev_deps
+</pre></div>
+</div>
+<details>
+<summary>Local Repo Setup</summary>
+<p>For developing on GiGL see our <a class="reference internal" href="#Development.md"><span class="xref myst">development guide</span></a> and <a class="reference internal" href="#Contributing.md"><span class="xref myst">contribution guidelines</span></a></p>
+</details>
+<details>
+<summary>Using Docker</summary>
+todo
+</details>
+<br />
+</section>
+<section id="configuration">
+<h2>Configuration 📄<a class="headerlink" href="#configuration" title="Link to this heading">#</a></h2>
+<p>Before getting started with running components in GiGL, it’s important to set up your config files. These are necessary files required for each component to operate. The two required files are:</p>
+<ul class="simple">
+<li><p><strong>Resource Config</strong>: Details the resource allocation and environmental settings across all GiGL components. This encompasses shared resources for all components, as well as component-specific settings.</p></li>
+<li><p><strong>Task Config</strong>: Specifies task-related configurations, guiding the behavior of components according to the needs of your machine learning task.</p></li>
+</ul>
+<p>To configure these files and customize your GiGL setup, follow our step-by-step guides:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#%22todo/%22"><span class="xref myst">Resource Config Guide</span></a></p></li>
+<li><p><a class="reference internal" href="#%22todo/%22"><span class="xref myst">Task Config Guide</span></a></p></li>
+</ul>
+</section>
+<section id="usage">
+<h2>Usage 🚀<a class="headerlink" href="#usage" title="Link to this heading">#</a></h2>
+<p>GiGL offers 3 primiary methods of usage to run the components for your graph machine learning tasks.</p>
+<section id="importable-gigl">
+<h3>1. Importable <code class="docutils literal notranslate"><span class="pre">gigl</span></code><a class="headerlink" href="#importable-gigl" title="Link to this heading">#</a></h3>
+<p>To easily get started or incorporate gigl into your existing workflows, you can simply import <code class="docutils literal notranslate"><span class="pre">gigl</span></code> and call the <code class="docutils literal notranslate"><span class="pre">.run()</span></code> method on its components.</p>
+<details>
+<summary>Example</summary>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">gigl.src.training.trainer</span> <span class="kn">import</span> <span class="n">Trainer</span>
+
+<span class="n">trainer</span> <span class="o">=</span> <span class="n">Trainer</span><span class="p">()</span>
+<span class="n">trainer</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">task_config_uri</span><span class="p">,</span> <span class="n">resource_config_uri</span><span class="p">,</span> <span class="n">job_name</span><span class="p">)</span>
+</pre></div>
+</div>
+</details>
+</section>
+<section id="command-line-execution">
+<h3>2. Command-Line Execution<a class="headerlink" href="#command-line-execution" title="Link to this heading">#</a></h3>
+<p>Each GiGL component can be executed as a standalone module from the command line. This method is useful for batch processing or when integrating into shell scripts.</p>
+<details>
+<summary>Example</summary>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> \
+    <span class="n">gigl</span><span class="o">.</span><span class="n">src</span><span class="o">.</span><span class="n">training</span><span class="o">.</span><span class="n">trainer</span> \
+    <span class="o">--</span><span class="n">job_name</span> <span class="n">your_job_name</span> \
+    <span class="o">--</span><span class="n">task_config_uri</span> <span class="n">gs</span><span class="p">:</span><span class="o">//</span><span class="n">your_project_bucket</span><span class="o">/</span><span class="n">task_config</span><span class="o">.</span><span class="n">yaml</span> \
+    <span class="o">--</span><span class="n">resource_config_uri</span> <span class="s2">&quot;gs://your_project_bucket/resource_conifg.yaml&quot;</span>
+</pre></div>
+</div>
+</details>
+</section>
+<section id="kubeflow-pipeline-orchestration">
+<h3>3. Kubeflow Pipeline Orchestration<a class="headerlink" href="#kubeflow-pipeline-orchestration" title="Link to this heading">#</a></h3>
+<p>GiGL also supports pipeline orchestration using Kubeflow. This allows you to easily kick off an end-to-end run with little to no code. See <a class="reference internal" href="#%22todo%22"><span class="xref myst">Kubeflow Orchestration</span></a> for more information</p>
+<p><br />
+The best way to get more familiar with GiGL is to go through the various <a class="reference internal" href="#%22todo%22"><span class="xref myst">examples</span></a> or for specific details see our <a class="reference internal" href="#%22todo%22"><span class="xref myst">user guide</span></a>.</p>
+</section>
+</section>
+<section id="tests">
+<h2>Tests 🔧<a class="headerlink" href="#tests" title="Link to this heading">#</a></h2>
+<p>Testing in GiGL is designed to ensure reliability and robustness across different components of the library. We support three types of tests: unit tests, local integration tests, and cloud integration end-to-end tests.</p>
+<section id="unit-tests">
+<h3>Unit Tests<a class="headerlink" href="#unit-tests" title="Link to this heading">#</a></h3>
+<p>GiGL’s unit tests focus on validating the functionality of individual components and high-level utilities. They also check for proper formatting, typing, and linting standards.</p>
+<details>
+<summary>More Details</summary>
+<ul class="simple">
+<li><p>No external assets or a GCP project are required.</p></li>
+<li><p>Unit tests run on every commit on a pull request via Github Actions</p></li>
+</ul>
+<p>To run unit tests locally, execute the following command:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Runs both Scala and Python unit tests.</span>
+make<span class="w"> </span>unit_test
+
+<span class="c1"># Runs just Python unit tests</span>
+make<span class="w"> </span>unit_test_py
+
+<span class="c1"># Runs just Scala unit tests</span>
+make<span class="w"> </span>unit_test_scala
+</pre></div>
+</div>
+</details>
+</section>
+<section id="local-integration-test">
+<h3>Local Integration Test<a class="headerlink" href="#local-integration-test" title="Link to this heading">#</a></h3>
+<p>GiGL’s local integration tests simulate the pipeline behavior of GiGL components. These tests are crucial for verifying that components function correctly in sequence and that outputs from one component are correctly handled by the next.</p>
+<details>
+<summary>More Details</summary>
+<ul class="simple">
+<li><p>Utilizes mocked/synthetic data publicly hosted in GCS (see: <a class="reference internal" href="#%22todo%22"><span class="xref myst">Public Assets</span></a>)</p></li>
+<li><p>Require access and run on cloud services such as BigQuery, Dataflow etc.</p></li>
+<li><p>Required to pass before merging PR (Pre-merge check)</p></li>
+</ul>
+<p>To run integration tests locally, you need to provide yur own resource config and run the following command:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>make<span class="w"> </span>integration_test<span class="w"> </span><span class="nv">resource_config_uri</span><span class="o">=</span><span class="s2">&quot;gs://your-project-bucket/resource_config.yaml&quot;</span>
+</pre></div>
+</div>
+</details>
+</section>
+<section id="cloud-integration-test-end-to-end">
+<h3>Cloud Integration Test (End-to-End)<a class="headerlink" href="#cloud-integration-test-end-to-end" title="Link to this heading">#</a></h3>
+<p>Cloud integration tests run a full end-to-end GiGL pipeline within GCP, also leveraging cloud services such as Dataflow, Dataproc, and Vertex AI.</p>
+<details>
+<summary>More Details</summary>
+<ul class="simple">
+<li><p>Utilizes mocked/synthetic data publicly hosted in GCS (see: <a class="reference internal" href="#%22todo%22"><span class="xref myst">Public Assets</span></a>)</p></li>
+<li><p>Require access and run on cloud services such as BigQuery, Dataflow etc.</p></li>
+<li><p>Required to pass before merging PR (Pre-merge check). Access to the orchestration, logs, etc., is restricted to authorized internal engineers to maintain security. Failures will be reported back to contributor as needed.</p></li>
+</ul>
+<p>To test cloud integration test functionality, you can replicate by running and end-to-end pipeline by following along one of our Cora examples (See: <a class="reference internal" href="#%22todo%22"><span class="xref myst">Examples</span></a>)</p>
+</details>
+<br>
+</section>
+</section>
+<section id="contribution">
+<h2>Contribution 🔥<a class="headerlink" href="#contribution" title="Link to this heading">#</a></h2>
+<p>Your contributions are always welcome and appreciated. The following are the things you can do to contribute to this project.</p>
+<ol class="arabic simple">
+<li><p><strong>Report a bug</strong> <br>
+If you think you have encountered a bug please feel free to report it <a class="reference internal" href="#%22todo_point_to_issues%22"><span class="xref myst">here</span></a> and someone from the team will take a look.</p></li>
+<li><p><strong>Request a feature</strong> <br>
+Feature requests are always welcome! You can request a feature by adding it <a class="reference internal" href="#%22todo_point_to_feature_req%22"><span class="xref myst">here</span></a></p></li>
+<li><p><strong>Create a pull request</strong> <br>
+Pull request are always greatly appreciated. You can get started by picking up any open issues from <a class="reference internal" href="#%22todo_point_to_issues%22"><span class="xref myst">here</span></a> and making a pull request.</p></li>
+</ol>
+<blockquote>
+<div><p>If you are new to open-source, make sure to check read more about it <a class="reference external" href="https://www.digitalocean.com/community/tutorial_series/an-introduction-to-open-source">here</a> and learn more about creating a pull request <a class="reference external" href="https://www.digitalocean.com/community/tutorials/how-to-create-a-pull-request-on-github">here</a>.</p>
+</div></blockquote>
+<p>For more information, see our <a class="reference internal" href="#%22todo%22"><span class="xref myst">Contributing Guide</span></a></p>
+</section>
+<section id="additional-resources">
+<h2>Additional Resources ❗<a class="headerlink" href="#additional-resources" title="Link to this heading">#</a></h2>
+<p>You may still have unanswered questions or may be facing issues. If so please see our <a class="reference internal" href="#%22todo%22"><span class="xref myst">FAQ</span></a> or our <a class="reference internal" href="#%22todo%22"><span class="xref myst">User Guide</span></a> for further guidence.</p>
+</section>
+<section id="license">
+<h2>License 🔒<a class="headerlink" href="#license" title="Link to this heading">#</a></h2>
+<p><a class="reference internal" href="#LICENSE"><span class="xref myst">MIT License</span></a></p>
+</section>
+</section>
+<section id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Link to this heading">#</a></h1>
+<ul class="simple">
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+</ul>
+<div class="toctree-wrapper compound">
+</div>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer">
+                  
+<div class="prev-next-area">
+    <a class="right-next"
+       href="user_guide/index.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">User Guide</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">This REPO is a bit dusty while we prepare for the OSS launch. We will have it in working order coming soon.</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#key-features">Key Features 🌟</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#gigl-components">GiGL Components ⚡️</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#installation">Installation ⚙️</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#configuration">Configuration 📄</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#usage">Usage 🚀</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#importable-gigl">1. Importable <code class="docutils literal notranslate"><span class="pre">gigl</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#command-line-execution">2. Command-Line Execution</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#kubeflow-pipeline-orchestration">3. Kubeflow Pipeline Orchestration</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#tests">Tests 🔧</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#unit-tests">Unit Tests</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#local-integration-test">Local Integration Test</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cloud-integration-test-end-to-end">Cloud Integration Test (End-to-End)</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#contribution">Contribution 🔥</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#additional-resources">Additional Resources ❗</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#license">License 🔒</a></li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#indices-and-tables">Indices and tables</a></li>
+</ul>
+
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  <div class="tocsection sourcelink">
+    <a href="_sources/index.rst.txt">
+      <i class="fa-solid fa-file-lines"></i> Show Source
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2025, Snap Inc.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.15.2.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

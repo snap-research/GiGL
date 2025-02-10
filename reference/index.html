@@ -1,0 +1,856 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>API Reference &#8212; GiGL  documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.1/css/all.min.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=87e54e7c" />
+    <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=1248dbba" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Inter:100,200,300,regular,500,600,700,800,900" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae" />
+  <script src="../_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=8d27b9dea8ad943066ae"></script>
+
+    <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'reference/index';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="common" href="_autosummary/common.html" />
+    <link rel="prev" title="Frequently Asked Questions (FAQ)" href="../user_guide/trouble_shooting/faq.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a id="pst-skip-link" class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar">
+<div class="bd-header__inner bd-page-width">
+  <label class="sidebar-toggle primary-toggle" for="__primary">
+    <span class="fa-solid fa-bars"></span>
+  </label>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/gigl.png" class="logo__image only-light" alt=""/>
+    <script>document.write(`<img src="../_static/gigl.png" class="logo__image only-dark" alt=""/>`);</script>
+  
+  
+    <p class="title logo__title">GiGL</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav class="navbar-nav">
+  <ul class="bd-navbar-elements navbar-nav">
+    
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../user_guide/index.html">
+                        User Guide
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item current active">
+                      <a class="nav-link nav-internal" href="#">
+                        API Reference
+                      </a>
+                    </li>
+                
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links navbar-nav"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/snap-research/GiGL" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i></span>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/gigl/" title="PyPI" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-custom fa-pypi fa-lg" aria-hidden="true"></i></span>
+            <span class="sr-only">PyPI</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+    </div>
+  
+
+  
+    <label class="sidebar-toggle secondary-toggle" for="__secondary" tabindex="0">
+      <span class="fa-solid fa-outdent"></span>
+    </label>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          <div class="navbar-item">
+<nav class="navbar-nav">
+  <ul class="bd-navbar-elements navbar-nav">
+    
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../user_guide/index.html">
+                        User Guide
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item current active">
+                      <a class="nav-link nav-internal" href="#">
+                        API Reference
+                      </a>
+                    </li>
+                
+  </ul>
+</nav></div>
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links navbar-nav"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/snap-research/GiGL" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i></span>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/gigl/" title="PyPI" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-custom fa-pypi fa-lg" aria-hidden="true"></i></span>
+            <span class="sr-only">PyPI</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="_autosummary/common.html">common</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/common.beam.html">common.beam</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="_autosummary/common.collections.html">common.collections</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="_autosummary/common.collections.frozen_dict.html">common.collections.frozen_dict</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/common.collections.frozen_dict.FrozenDict.html">common.collections.FrozenDict</a></li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="_autosummary/common.collections.itertools.html">common.collections.itertools</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-4"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/common.collections.itertools.batch.html">common.collections.batch</a></li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="_autosummary/common.collections.sorted_dict.html">common.collections.sorted_dict</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-5"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/common.collections.sorted_dict.SortedDict.html">common.collections.SortedDict</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="_autosummary/common.data.html">common.data</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-6"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="_autosummary/common.data.export.html">common.data.export</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-7"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/common.data.export.load_embeddings_to_bigquery.html">common.data.load_embeddings_to_bigquery</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/common.data.export.EmbeddingExporter.html">common.data.EmbeddingExporter</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="_autosummary/common.env_config.html">common.env_config</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-8"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/common.env_config.get_available_cpus.html">common.get_available_cpus</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="_autosummary/common.logger.html">common.logger</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-9"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/common.logger.Logger.html">common.Logger</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="_autosummary/common.metrics.html">common.metrics</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-10"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="_autosummary/common.metrics.base_metrics.html">common.metrics.base_metrics</a><input class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-11"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/common.metrics.base_metrics.NopMetricsPublisher.html">common.metrics.NopMetricsPublisher</a></li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="_autosummary/common.metrics.decorators.html">common.metrics.decorators</a><input class="toctree-checkbox" id="toctree-checkbox-12" name="toctree-checkbox-12" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-12"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/common.metrics.decorators.flushes_metrics.html">common.metrics.flushes_metrics</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/common.metrics.decorators.profileit.html">common.metrics.profileit</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/common.metrics.decorators.TimerRecordGranularity.html">common.metrics.TimerRecordGranularity</a></li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="_autosummary/common.metrics.metrics_interface.html">common.metrics.metrics_interface</a><input class="toctree-checkbox" id="toctree-checkbox-13" name="toctree-checkbox-13" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-13"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/common.metrics.metrics_interface.OpsMetricPublisher.html">common.metrics.OpsMetricPublisher</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="_autosummary/common.services.html">common.services</a><input class="toctree-checkbox" id="toctree-checkbox-14" name="toctree-checkbox-14" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-14"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="_autosummary/common.services.dataproc.html">common.services.dataproc</a><input class="toctree-checkbox" id="toctree-checkbox-15" name="toctree-checkbox-15" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-15"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/common.services.dataproc.DataprocService.html">common.services.DataprocService</a></li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="_autosummary/common.services.gcp_cloud_logging.html">common.services.gcp_cloud_logging</a><input class="toctree-checkbox" id="toctree-checkbox-16" name="toctree-checkbox-16" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-16"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/common.services.gcp_cloud_logging.GCPCloudLoggingService.html">common.services.GCPCloudLoggingService</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/common.services.gcp_cloud_logging.LogEntries.html">common.services.LogEntries</a></li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="_autosummary/common.services.kfp.html">common.services.kfp</a><input class="toctree-checkbox" id="toctree-checkbox-17" name="toctree-checkbox-17" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-17"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/common.services.kfp.KFPService.html">common.services.KFPService</a></li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="_autosummary/common.services.vertex_ai.html">common.services.vertex_ai</a><input class="toctree-checkbox" id="toctree-checkbox-18" name="toctree-checkbox-18" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-18"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/common.services.vertex_ai.VertexAIService.html">common.services.VertexAIService</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/common.services.vertex_ai.VertexAiJobConfig.html">common.services.VertexAiJobConfig</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="_autosummary/common.types.html">common.types</a><input class="toctree-checkbox" id="toctree-checkbox-19" name="toctree-checkbox-19" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-19"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="_autosummary/common.types.resource_config.html">common.types.resource_config</a><input class="toctree-checkbox" id="toctree-checkbox-20" name="toctree-checkbox-20" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-20"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/common.types.resource_config.CommonPipelineComponentConfigs.html">common.types.CommonPipelineComponentConfigs</a></li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="_autosummary/common.types.uri.html">common.types.uri</a><input class="toctree-checkbox" id="toctree-checkbox-21" name="toctree-checkbox-21" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-21"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/common.types.uri.gcs_uri.html">common.types.uri.gcs_uri</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/common.types.uri.http_uri.html">common.types.uri.http_uri</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/common.types.uri.local_uri.html">common.types.uri.local_uri</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/common.types.uri.uri.html">common.types.uri.uri</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/common.types.uri.uri_factory.html">common.types.uri.uri_factory</a></li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="_autosummary/common.types.wrappers.html">common.types.wrappers</a><input class="toctree-checkbox" id="toctree-checkbox-22" name="toctree-checkbox-22" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-22"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/common.types.wrappers.argo_workflow_manifest.html">common.types.wrappers.argo_workflow_manifest</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/common.types.wrappers.kfp_api.html">common.types.wrappers.kfp_api</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="_autosummary/common.utils.html">common.utils</a><input class="toctree-checkbox" id="toctree-checkbox-23" name="toctree-checkbox-23" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-23"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="_autosummary/common.utils.compute.html">common.utils.compute</a><input class="toctree-checkbox" id="toctree-checkbox-24" name="toctree-checkbox-24" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-24"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/common.utils.compute.random.html">common.utils.compute.random</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/common.utils.compute.serialization.html">common.utils.compute.serialization</a></li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="_autosummary/common.utils.dataflow.html">common.utils.dataflow</a><input class="toctree-checkbox" id="toctree-checkbox-25" name="toctree-checkbox-25" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-25"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/common.utils.dataflow.get_console_uri_from_pipeline_result.html">common.utils.get_console_uri_from_pipeline_result</a></li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="_autosummary/common.utils.func_tools.html">common.utils.func_tools</a><input class="toctree-checkbox" id="toctree-checkbox-26" name="toctree-checkbox-26" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-26"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/common.utils.func_tools.lru_cache.html">common.utils.lru_cache</a></li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="_autosummary/common.utils.gcs.html">common.utils.gcs</a><input class="toctree-checkbox" id="toctree-checkbox-27" name="toctree-checkbox-27" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-27"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/common.utils.gcs.GcsUtils.html">common.utils.GcsUtils</a></li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="_autosummary/common.utils.kfp.html">common.utils.kfp</a><input class="toctree-checkbox" id="toctree-checkbox-28" name="toctree-checkbox-28" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-28"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/common.utils.kfp.KfpOutputViewers.html">common.utils.KfpOutputViewers</a></li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="_autosummary/common.utils.local_fs.html">common.utils.local_fs</a><input class="toctree-checkbox" id="toctree-checkbox-29" name="toctree-checkbox-29" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-29"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/common.utils.local_fs.append_line_to_file.html">common.utils.append_line_to_file</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/common.utils.local_fs.copy_files.html">common.utils.copy_files</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/common.utils.local_fs.count_files_with_uri_prefix.html">common.utils.count_files_with_uri_prefix</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/common.utils.local_fs.create_empty_file_if_none_exists.html">common.utils.create_empty_file_if_none_exists</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/common.utils.local_fs.create_file_symlinks.html">common.utils.create_file_symlinks</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/common.utils.local_fs.delete_and_create_local_path.html">common.utils.delete_and_create_local_path</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/common.utils.local_fs.delete_local_directory.html">common.utils.delete_local_directory</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/common.utils.local_fs.does_path_exist.html">common.utils.does_path_exist</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/common.utils.local_fs.list_at_path.html">common.utils.list_at_path</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/common.utils.local_fs.remove_file_if_exist.html">common.utils.remove_file_if_exist</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/common.utils.local_fs.remove_file_or_folder_if_exist.html">common.utils.remove_file_or_folder_if_exist</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/common.utils.local_fs.remove_folder_if_exist.html">common.utils.remove_folder_if_exist</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/common.utils.local_fs.remove_line_from_file.html">common.utils.remove_line_from_file</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/common.utils.local_fs.FileSystemEntity.html">common.utils.FileSystemEntity</a></li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="_autosummary/common.utils.os_utils.html">common.utils.os_utils</a><input class="toctree-checkbox" id="toctree-checkbox-30" name="toctree-checkbox-30" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-30"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/common.utils.os_utils.import_obj.html">common.utils.import_obj</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/common.utils.os_utils.num_lines_in_file.html">common.utils.num_lines_in_file</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/common.utils.os_utils.run_command_and_stream_stdout.html">common.utils.run_command_and_stream_stdout</a></li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="_autosummary/common.utils.proto_utils.html">common.utils.proto_utils</a><input class="toctree-checkbox" id="toctree-checkbox-31" name="toctree-checkbox-31" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-31"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/common.utils.proto_utils.ProtoUtils.html">common.utils.ProtoUtils</a></li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="_autosummary/common.utils.retry.html">common.utils.retry</a><input class="toctree-checkbox" id="toctree-checkbox-32" name="toctree-checkbox-32" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-32"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/common.utils.retry.retry.html">common.utils.retry</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/common.utils.retry.RetriesFailedException.html">common.utils.RetriesFailedException</a></li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="_autosummary/common.utils.test_utils.html">common.utils.test_utils</a><input class="toctree-checkbox" id="toctree-checkbox-33" name="toctree-checkbox-33" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-33"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/common.utils.test_utils.parse_args.html">common.utils.parse_args</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/common.utils.test_utils.run_tests.html">common.utils.run_tests</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/common.utils.test_utils.TestArgs.html">common.utils.TestArgs</a></li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="_autosummary/common.utils.torch_training.html">common.utils.torch_training</a><input class="toctree-checkbox" id="toctree-checkbox-34" name="toctree-checkbox-34" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-34"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/common.utils.torch_training.get_distributed_backend.html">common.utils.get_distributed_backend</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/common.utils.torch_training.get_rank.html">common.utils.get_rank</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/common.utils.torch_training.get_world_size.html">common.utils.get_world_size</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/common.utils.torch_training.is_distributed_available_and_initialized.html">common.utils.is_distributed_available_and_initialized</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/common.utils.torch_training.is_distributed_local_debug.html">common.utils.is_distributed_local_debug</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/common.utils.torch_training.should_distribute.html">common.utils.should_distribute</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="_autosummary/env.html">env</a><input class="toctree-checkbox" id="toctree-checkbox-35" name="toctree-checkbox-35" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-35"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="_autosummary/env.dep_constants.html">env.dep_constants</a><input class="toctree-checkbox" id="toctree-checkbox-36" name="toctree-checkbox-36" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-36"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/env.dep_constants.get_compiled_jar_path.html">env.get_compiled_jar_path</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/env.dep_constants.get_current_jar_file.html">env.get_current_jar_file</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/env.dep_constants.get_jar_file_uri.html">env.get_jar_file_uri</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/env.dep_constants.get_local_jar_directory.html">env.get_local_jar_directory</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="_autosummary/env.pipelines_config.html">env.pipelines_config</a><input class="toctree-checkbox" id="toctree-checkbox-37" name="toctree-checkbox-37" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-37"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/env.pipelines_config.get_resource_config.html">env.get_resource_config</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/env.pipelines_config.is_resource_config_loaded.html">env.is_resource_config_loaded</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="_autosummary/src.html">src</a><input class="toctree-checkbox" id="toctree-checkbox-38" name="toctree-checkbox-38" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-38"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="_autosummary/src.applied_tasks.html">src.applied_tasks</a><input class="toctree-checkbox" id="toctree-checkbox-39" name="toctree-checkbox-39" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-39"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="_autosummary/src.applied_tasks.test_tasks.html">src.applied_tasks.test_tasks</a><input class="toctree-checkbox" id="toctree-checkbox-40" name="toctree-checkbox-40" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-40"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/src.applied_tasks.test_tasks.academic.html">src.applied_tasks.test_tasks.academic</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="_autosummary/src.common.html">src.common</a><input class="toctree-checkbox" id="toctree-checkbox-41" name="toctree-checkbox-41" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-41"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="_autosummary/src.common.constants.html">src.common.constants</a><input class="toctree-checkbox" id="toctree-checkbox-42" name="toctree-checkbox-42" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-42"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/src.common.constants.bq.html">src.common.constants.bq</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/src.common.constants.components.html">src.common.constants.components</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/src.common.constants.gcs.html">src.common.constants.gcs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/src.common.constants.graph_metadata.html">src.common.constants.graph_metadata</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/src.common.constants.local_fs.html">src.common.constants.local_fs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/src.common.constants.metrics.html">src.common.constants.metrics</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/src.common.constants.resource_config.html">src.common.constants.resource_config</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/src.common.constants.test_assets.html">src.common.constants.test_assets</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/src.common.constants.time.html">src.common.constants.time</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/src.common.constants.training.html">src.common.constants.training</a></li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="_autosummary/src.common.graph_builder.html">src.common.graph_builder</a><input class="toctree-checkbox" id="toctree-checkbox-43" name="toctree-checkbox-43" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-43"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/src.common.graph_builder.abstract_graph_builder.html">src.common.graph_builder.abstract_graph_builder</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/src.common.graph_builder.gbml_graph_protocol.html">src.common.graph_builder.gbml_graph_protocol</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/src.common.graph_builder.pyg_graph_builder.html">src.common.graph_builder.pyg_graph_builder</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/src.common.graph_builder.pyg_graph_data.html">src.common.graph_builder.pyg_graph_data</a></li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="_autosummary/src.common.modeling_task_specs.html">src.common.modeling_task_specs</a><input class="toctree-checkbox" id="toctree-checkbox-44" name="toctree-checkbox-44" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-44"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/src.common.modeling_task_specs.utils.html">src.common.modeling_task_specs.utils</a></li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="_autosummary/src.common.models.html">src.common.models</a><input class="toctree-checkbox" id="toctree-checkbox-45" name="toctree-checkbox-45" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-45"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/src.common.models.dgl.html">src.common.models.dgl</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/src.common.models.layers.html">src.common.models.layers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/src.common.models.pyg.html">src.common.models.pyg</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/src.common.models.utils.html">src.common.models.utils</a></li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="_autosummary/src.common.translators.html">src.common.translators</a><input class="toctree-checkbox" id="toctree-checkbox-46" name="toctree-checkbox-46" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-46"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/src.common.translators.gbml_protos_translator.html">src.common.translators.gbml_protos_translator</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/src.common.translators.model_eval_metrics_translator.html">src.common.translators.model_eval_metrics_translator</a></li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="_autosummary/src.common.types.html">src.common.types</a><input class="toctree-checkbox" id="toctree-checkbox-47" name="toctree-checkbox-47" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-47"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/src.common.types.dataflow_job_options.html">src.common.types.dataflow_job_options</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/src.common.types.dataset_split.html">src.common.types.dataset_split</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/src.common.types.exception.html">src.common.types.exception</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/src.common.types.features.html">src.common.types.features</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/src.common.types.graph_data.html">src.common.types.graph_data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/src.common.types.model_eval_metrics.html">src.common.types.model_eval_metrics</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/src.common.types.pb_wrappers.html">src.common.types.pb_wrappers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/src.common.types.task_metadata.html">src.common.types.task_metadata</a></li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="_autosummary/src.common.utils.html">src.common.utils</a><input class="toctree-checkbox" id="toctree-checkbox-48" name="toctree-checkbox-48" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-48"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/src.common.utils.bq.html">src.common.utils.bq</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/src.common.utils.data.html">src.common.utils.data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/src.common.utils.dataflow.html">src.common.utils.dataflow</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/src.common.utils.eval_metrics.html">src.common.utils.eval_metrics</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/src.common.utils.file_loader.html">src.common.utils.file_loader</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/src.common.utils.gbml_protos.html">src.common.utils.gbml_protos</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/src.common.utils.metrics_service_provider.html">src.common.utils.metrics_service_provider</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/src.common.utils.model.html">src.common.utils.model</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/src.common.utils.scheduler.html">src.common.utils.scheduler</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/src.common.utils.spark_job_manager.html">src.common.utils.spark_job_manager</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/src.common.utils.time.html">src.common.utils.time</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/src.common.utils.timeout.html">src.common.utils.timeout</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="_autosummary/src.config_populator.html">src.config_populator</a><input class="toctree-checkbox" id="toctree-checkbox-49" name="toctree-checkbox-49" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-49"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="_autosummary/src.config_populator.config_populator.html">src.config_populator.config_populator</a><input class="toctree-checkbox" id="toctree-checkbox-50" name="toctree-checkbox-50" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-50"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/src.config_populator.config_populator.ConfigPopulator.html">src.ConfigPopulator</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="_autosummary/src.data_preprocessor.html">src.data_preprocessor</a><input class="toctree-checkbox" id="toctree-checkbox-51" name="toctree-checkbox-51" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-51"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="_autosummary/src.data_preprocessor.lib.html">src.data_preprocessor.lib</a><input class="toctree-checkbox" id="toctree-checkbox-52" name="toctree-checkbox-52" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-52"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/src.data_preprocessor.lib.enumerate.html">src.data_preprocessor.lib.enumerate</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/src.data_preprocessor.lib.ingest.html">src.data_preprocessor.lib.ingest</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/src.data_preprocessor.lib.transform.html">src.data_preprocessor.lib.transform</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="_autosummary/src.inference.html">src.inference</a><input class="toctree-checkbox" id="toctree-checkbox-53" name="toctree-checkbox-53" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-53"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="_autosummary/src.inference.v1.html">src.inference.v1</a><input class="toctree-checkbox" id="toctree-checkbox-54" name="toctree-checkbox-54" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-54"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/src.inference.v1.lib.html">src.inference.v1.lib</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/src.inference.v2.html">src.inference.v2</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="_autosummary/src.post_process.html">src.post_process</a><input class="toctree-checkbox" id="toctree-checkbox-55" name="toctree-checkbox-55" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-55"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="_autosummary/src.post_process.lib.html">src.post_process.lib</a><input class="toctree-checkbox" id="toctree-checkbox-56" name="toctree-checkbox-56" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-56"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/src.post_process.lib.base_post_processor.html">src.post_process.lib.base_post_processor</a></li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="_autosummary/src.post_process.utils.html">src.post_process.utils</a><input class="toctree-checkbox" id="toctree-checkbox-57" name="toctree-checkbox-57" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-57"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/src.post_process.utils.component_runtime.html">src.post_process.utils.component_runtime</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/src.post_process.utils.cosine_similarity.html">src.post_process.utils.cosine_similarity</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/src.split_generator.html">src.split_generator</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="_autosummary/src.subgraph_sampler.html">src.subgraph_sampler</a><input class="toctree-checkbox" id="toctree-checkbox-58" name="toctree-checkbox-58" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-58"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/src.subgraph_sampler.lib.html">src.subgraph_sampler.lib</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="_autosummary/src.training.html">src.training</a><input class="toctree-checkbox" id="toctree-checkbox-59" name="toctree-checkbox-59" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-59"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="_autosummary/src.training.v1.html">src.training.v1</a><input class="toctree-checkbox" id="toctree-checkbox-60" name="toctree-checkbox-60" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-60"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/src.training.v1.lib.html">src.training.v1.lib</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/src.training.v2.html">src.training.v2</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="_autosummary/src.validation_check.html">src.validation_check</a><input class="toctree-checkbox" id="toctree-checkbox-61" name="toctree-checkbox-61" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-61"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="_autosummary/src.validation_check.libs.html">src.validation_check.libs</a><input class="toctree-checkbox" id="toctree-checkbox-62" name="toctree-checkbox-62" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-62"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/src.validation_check.libs.resource_config_checks.html">src.validation_check.libs.resource_config_checks</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/src.validation_check.libs.utils.html">src.validation_check.libs.utils</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="_autosummary/orchestration.html">orchestration</a><input class="toctree-checkbox" id="toctree-checkbox-63" name="toctree-checkbox-63" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-63"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="_autosummary/orchestration.kubeflow.html">orchestration.kubeflow</a><input class="toctree-checkbox" id="toctree-checkbox-64" name="toctree-checkbox-64" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-64"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="_autosummary/orchestration.kubeflow.kfp_orchestrator.html">orchestration.kubeflow.kfp_orchestrator</a><input class="toctree-checkbox" id="toctree-checkbox-65" name="toctree-checkbox-65" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-65"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/orchestration.kubeflow.kfp_orchestrator.KfpEnvMetadata.html">orchestration.kubeflow.KfpEnvMetadata</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/orchestration.kubeflow.kfp_orchestrator.KfpOrchestrator.html">orchestration.kubeflow.KfpOrchestrator</a></li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="_autosummary/orchestration.kubeflow.kfp_pipeline.html">orchestration.kubeflow.kfp_pipeline</a><input class="toctree-checkbox" id="toctree-checkbox-66" name="toctree-checkbox-66" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-66"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/orchestration.kubeflow.kfp_pipeline.create_config_populator_task_op.html">orchestration.kubeflow.create_config_populator_task_op</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/orchestration.kubeflow.kfp_pipeline.create_data_preprocessor_task_op.html">orchestration.kubeflow.create_data_preprocessor_task_op</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/orchestration.kubeflow.kfp_pipeline.create_inferencer_task_op.html">orchestration.kubeflow.create_inferencer_task_op</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/orchestration.kubeflow.kfp_pipeline.create_post_processor_task_op.html">orchestration.kubeflow.create_post_processor_task_op</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/orchestration.kubeflow.kfp_pipeline.create_split_generator_task_op.html">orchestration.kubeflow.create_split_generator_task_op</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/orchestration.kubeflow.kfp_pipeline.create_subgraph_sampler_task_op.html">orchestration.kubeflow.create_subgraph_sampler_task_op</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/orchestration.kubeflow.kfp_pipeline.create_trainer_task_op.html">orchestration.kubeflow.create_trainer_task_op</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/orchestration.kubeflow.kfp_pipeline.generate_component_task.html">orchestration.kubeflow.generate_component_task</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/orchestration.kubeflow.kfp_pipeline.generate_pipeline.html">orchestration.kubeflow.generate_pipeline</a></li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="_autosummary/orchestration.kubeflow.utils.html">orchestration.kubeflow.utils</a><input class="toctree-checkbox" id="toctree-checkbox-67" name="toctree-checkbox-67" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-67"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/orchestration.kubeflow.utils.glt_backend.html">orchestration.kubeflow.utils.glt_backend</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/orchestration.kubeflow.utils.log_metrics.html">orchestration.kubeflow.utils.log_metrics</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/orchestration.kubeflow.utils.resource.html">orchestration.kubeflow.utils.resource</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+
+
+<nav aria-label="Breadcrumb">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">API Reference</li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="api-reference">
+<h1>API Reference<a class="headerlink" href="#api-reference" title="Link to this heading">#</a></h1>
+<table class="autosummary longtable table autosummary">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="_autosummary/common.html#module-common" title="common"><code class="xref py py-obj docutils literal notranslate"><span class="pre">common</span></code></a></p></td>
+<td><p>Common utilities, services, and tools used throughout GiGL.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="_autosummary/env.html#module-env" title="env"><code class="xref py py-obj docutils literal notranslate"><span class="pre">env</span></code></a></p></td>
+<td><p>Environment configurations such as jar file management or GiGL Resource Configurations.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="_autosummary/src.html#module-src" title="src"><code class="xref py py-obj docutils literal notranslate"><span class="pre">src</span></code></a></p></td>
+<td><p>Main source code for GiGL Components.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="_autosummary/orchestration.html#module-orchestration" title="orchestration"><code class="xref py py-obj docutils literal notranslate"><span class="pre">orchestration</span></code></a></p></td>
+<td><p>Orchestration support for End-to-End GiGL Pipelines.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="../user_guide/trouble_shooting/faq.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Frequently Asked Questions (FAQ)</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="_autosummary/common.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">common</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+
+  <div class="tocsection sourcelink">
+    <a href="../_sources/reference/index.rst.txt">
+      <i class="fa-solid fa-file-lines"></i> Show Source
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2025, Snap Inc.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.15.2.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

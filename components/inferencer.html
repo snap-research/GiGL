@@ -1,0 +1,550 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Model Inference &#8212; GiGL  documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.1/css/all.min.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=87e54e7c" />
+    <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=1248dbba" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Inter:100,200,300,regular,500,600,700,800,900" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae" />
+  <script src="../_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=8d27b9dea8ad943066ae"></script>
+
+    <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'components/inferencer';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a id="pst-skip-link" class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar">
+<div class="bd-header__inner bd-page-width">
+  <label class="sidebar-toggle primary-toggle" for="__primary">
+    <span class="fa-solid fa-bars"></span>
+  </label>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/gigl.png" class="logo__image only-light" alt=""/>
+    <script>document.write(`<img src="../_static/gigl.png" class="logo__image only-dark" alt=""/>`);</script>
+  
+  
+    <p class="title logo__title">GiGL</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav class="navbar-nav">
+  <ul class="bd-navbar-elements navbar-nav">
+    
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../user_guide/index.html">
+                        User Guide
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../reference/index.html">
+                        API Reference
+                      </a>
+                    </li>
+                
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links navbar-nav"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/snap-research/GiGL" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i></span>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/gigl/" title="PyPI" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-custom fa-pypi fa-lg" aria-hidden="true"></i></span>
+            <span class="sr-only">PyPI</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+    </div>
+  
+
+  
+    <label class="sidebar-toggle secondary-toggle" for="__secondary" tabindex="0">
+      <span class="fa-solid fa-outdent"></span>
+    </label>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <div class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          <div class="navbar-item">
+<nav class="navbar-nav">
+  <ul class="bd-navbar-elements navbar-nav">
+    
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../user_guide/index.html">
+                        User Guide
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../reference/index.html">
+                        API Reference
+                      </a>
+                    </li>
+                
+  </ul>
+</nav></div>
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links navbar-nav"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/snap-research/GiGL" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i></span>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/gigl/" title="PyPI" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-custom fa-pypi fa-lg" aria-hidden="true"></i></span>
+            <span class="sr-only">PyPI</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+
+
+<nav aria-label="Breadcrumb">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">Model Inference</li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="model-inference">
+<h1>Model Inference<a class="headerlink" href="#model-inference" title="Link to this heading">#</a></h1>
+<p>The Inferencer component is responsible for running inference of a trained model on samples generated by the Subgraph Sampler component.  At a high level, it works by applying a trained model in an embarrassingly parallel and distributed fashion across these samples, and persisting the output embeddings and/or predictions.</p>
+<section id="input">
+<h2>Input<a class="headerlink" href="#input" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><strong>job_name</strong> (AppliedTaskIdentifier):  which uniquely identifies an end-to-end task.</p></li>
+<li><p><strong>task_config_uri</strong> (Uri):  Path which points to a “template” <code class="docutils literal notranslate"><span class="pre">GbmlConfig</span></code> proto yaml file.</p></li>
+<li><p><strong>resource_config_uri</strong> (Uri): Path which points to a <code class="docutils literal notranslate"><span class="pre">GiGLResourceConfig</span></code> yaml</p></li>
+<li><p><strong>Optional: custom_worker_image_uri</strong>: Path to docker file to be used for dataflow worker harness image</p></li>
+</ul>
+</section>
+<section id="what-does-it-do">
+<h2>What does it do?<a class="headerlink" href="#what-does-it-do" title="Link to this heading">#</a></h2>
+<p>The Inferencer undertakes the following actions:</p>
+<ul>
+<li><p>Reads frozen <code class="docutils literal notranslate"><span class="pre">GbmlConfig</span></code> proto yaml.  This proto contains a pointer to a class instance which implements the <code class="docutils literal notranslate"><span class="pre">BaseInferencer</span></code> protocol (see <code class="docutils literal notranslate"><span class="pre">inferencerClsPath</span></code> field of <code class="docutils literal notranslate"><span class="pre">inferencerConfig</span></code> in <code class="docutils literal notranslate"><span class="pre">GbmlConfig</span></code>).  This class houses logic which dictates how to run inference for a batch of samples (see <code class="docutils literal notranslate"><span class="pre">infer_batch</span></code> in <a class="reference internal" href="#../../python/gigl/src/common/modeling_task_specs/node_anchor_based_link_prediction_modeling_task_spec.py"><span class="xref myst">modeling task spec</span></a>) – the types of these samples are determined by the <code class="docutils literal notranslate"><span class="pre">taskMetadata</span></code> in the frozen <code class="docutils literal notranslate"><span class="pre">GbmlConfig</span></code>.</p>
+<p>Custom arguments can also be passed into the class instance by including them in the <code class="docutils literal notranslate"><span class="pre">inferencerArgs</span></code> field inside <code class="docutils literal notranslate"><span class="pre">inferencerConfig</span></code> section of <code class="docutils literal notranslate"><span class="pre">GbmlConfig</span></code>.  Several standard configurations of this instance are implemented already at a GiGL platform-level; for example, the <code class="docutils literal notranslate"><span class="pre">NodeAnchorBasedLinkPredictionModelingTaskSpec</span></code> instance referenced in the sample frozen <code class="docutils literal notranslate"><span class="pre">GbmlConfig</span></code> can be used with no/minimal changes for other node-anchor based link prediction tasks.</p>
+</li>
+<li><p>Reads the trained model asset from the <code class="docutils literal notranslate"><span class="pre">trainedModelUri</span></code> field in the <code class="docutils literal notranslate"><span class="pre">sharedConfig.trainedModelMetadata</span></code> section of the frozen <code class="docutils literal notranslate"><span class="pre">GbmlConfig</span></code>, and uses it to initialize the <code class="docutils literal notranslate"><span class="pre">BaseInferencer</span></code> class instance above.</p></li>
+<li><p>Instantiates a Dataflow job to read samples produced by the Subgraph Sampler component, which are stored at URIs referenced inside the <code class="docutils literal notranslate"><span class="pre">sharedConfig.flattenedGraphMetadata</span></code> section of the frozen <code class="docutils literal notranslate"><span class="pre">GbmlConfig</span></code>.  Note that depending on the <code class="docutils literal notranslate"><span class="pre">taskMetadata</span></code> in the <code class="docutils literal notranslate"><span class="pre">GbmlConfig</span></code>, the URIs will be housed under different keys in this section. Upon reading the outputs from Subgraph Sampler,  the pipeline follows logic housed in a <code class="docutils literal notranslate"><span class="pre">BaseInferenceBlueprint</span></code> class (platform-level), which decodes and collates individual samples into batches, and then runs the inference logic specified in infer_batch of the <code class="docutils literal notranslate"><span class="pre">BaseInferencer</span></code> class instance referenced above.  Subsequently, the pipeline writes out embeddings and/or predictions (in classification scenarios) to BigQuery.</p></li>
+<li><p>Finally, the component “un-enumerates” all the assets in BigQuery (to revert the “enumeration” conducted by the Data Preprocessor component).</p></li>
+</ul>
+</section>
+<section id="how-do-i-run-it">
+<h2>How do I run it?<a class="headerlink" href="#how-do-i-run-it" title="Link to this heading">#</a></h2>
+<p><strong>Import GiGL</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">gigl.src.inference.v1.gnn_inferencer</span> <span class="kn">import</span> <span class="n">InferencerV1</span>
+<span class="kn">from</span> <span class="nn">gigl.common</span> <span class="kn">import</span> <span class="n">UriFactory</span>
+<span class="kn">from</span> <span class="nn">gigl.src.common.types</span> <span class="kn">import</span> <span class="n">AppliedTaskIdentifier</span>
+
+<span class="n">inferencer</span> <span class="o">=</span> <span class="n">InferencerV1</span><span class="p">()</span>
+
+<span class="n">inferencer</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+    <span class="n">applied_task_identifier</span><span class="o">=</span><span class="n">AppliedTaskIdentifier</span><span class="p">(</span><span class="s2">&quot;my_gigl_job_name&quot;</span><span class="p">),</span>
+    <span class="n">task_config_uri</span><span class="o">=</span><span class="n">UriFactory</span><span class="o">.</span><span class="n">create_uri</span><span class="p">(</span><span class="s2">&quot;gs://my-temp-assets-bucket/task_config.yaml&quot;</span><span class="p">),</span>
+    <span class="n">resource_config_uri</span><span class="o">=</span><span class="n">UriFactory</span><span class="o">.</span><span class="n">create_uri</span><span class="p">(</span><span class="s2">&quot;gs://my-temp-assets-bucket/resource_config.yaml&quot;</span><span class="p">)</span>
+    <span class="n">custom_worker_image_uri</span><span class="o">=</span><span class="s2">&quot;gcr.io/project/directory/dataflow_image:x.x.x&quot;</span><span class="p">,</span>  <span class="c1"># Optional</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Command Line</strong></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">gigl</span><span class="o">.</span><span class="n">src</span><span class="o">.</span><span class="n">inference</span><span class="o">.</span><span class="n">v1</span><span class="o">.</span><span class="n">gnn_inferencer</span> \
+    <span class="o">--</span><span class="n">job_name</span> <span class="n">my_gigl_job_name</span> \
+    <span class="o">--</span><span class="n">task_config_uri</span> <span class="s2">&quot;gs://my-temp-assets-bucket/task_config.yaml&quot;</span>
+    <span class="o">--</span><span class="n">resource_config_uri</span><span class="o">=</span><span class="s2">&quot;gs://my-temp-assets-bucket/resource_config.yaml&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="output">
+<h2>Output<a class="headerlink" href="#output" title="Link to this heading">#</a></h2>
+<p>The Inferencer outputs embedding and / or prediction assets, based on the <code class="docutils literal notranslate"><span class="pre">taskMetadata</span></code> in the frozen <code class="docutils literal notranslate"><span class="pre">GbmlConfig</span></code>.  Specifically, for Node-anchor Based Link Prediction tasks as we have in the sample MAU config, the embeddings are written to the BQ table specified at the <code class="docutils literal notranslate"><span class="pre">embeddingsBqPath</span></code> field in the <code class="docutils literal notranslate"><span class="pre">sharedConfig.inferenceMetadata</span></code> section.</p>
+</section>
+<section id="custom-usage">
+<h2>Custom Usage<a class="headerlink" href="#custom-usage" title="Link to this heading">#</a></h2>
+<p>None of the logic in this component should require changing for currently supported tasks, such as the inference logic specified in the provided <code class="docutils literal notranslate"><span class="pre">NodeAnchorBasedLinkPredictionModelingTaskSpec</span></code> which is fairly standard. However, you may override <code class="docutils literal notranslate"><span class="pre">infer_batch</span></code> in a custom class <code class="docutils literal notranslate"><span class="pre">BaseInferencer</span></code> class instance for custom tasks that are not supported.</p>
+</section>
+<section id="other">
+<h2>Other<a class="headerlink" href="#other" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><strong>Design:</strong> Currently, all inference happens on CPU.  This is because we can easily scale this component by adding more worker machines in Dataflow, and compute is cheap.  Dataflow does support GPU instances, but seems it requires more care/attention to monitor utilization due to cost implications for limited benefits.</p></li>
+<li><p><strong>Debugging:</strong> The core logic of this component executes in Dataflow.  A link to the Dataflow job will be printed in the logs of the component, which can be used to navigate to the Dataflow console and see fine-grained logging of the Dataflow pipeline.</p></li>
+</ul>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#input">Input</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-does-it-do">What does it do?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-do-i-run-it">How do I run it?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#output">Output</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#custom-usage">Custom Usage</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#other">Other</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  <div class="tocsection sourcelink">
+    <a href="../_sources/components/inferencer.md.txt">
+      <i class="fa-solid fa-file-lines"></i> Show Source
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2025, Snap Inc.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.15.2.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

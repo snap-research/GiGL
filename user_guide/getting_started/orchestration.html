@@ -1,0 +1,670 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Orchestration &#8212; GiGL  documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.5.1/css/all.min.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.1/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.1/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.1/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=87e54e7c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=1248dbba" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Inter:100,200,300,regular,500,600,700,800,900" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae" />
+  <script src="../../_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=8d27b9dea8ad943066ae"></script>
+
+    <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'user_guide/getting_started/orchestration';</script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Data Preprocessor Spec Guide" href="../custom_specs/data_preprocessor_spec_guide.html" />
+    <link rel="prev" title="Cloud Setup Guide" href="cloud_setup_guide.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a id="pst-skip-link" class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar">
+<div class="bd-header__inner bd-page-width">
+  <label class="sidebar-toggle primary-toggle" for="__primary">
+    <span class="fa-solid fa-bars"></span>
+  </label>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/gigl.png" class="logo__image only-light" alt=""/>
+    <script>document.write(`<img src="../../_static/gigl.png" class="logo__image only-dark" alt=""/>`);</script>
+  
+  
+    <p class="title logo__title">GiGL</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav class="navbar-nav">
+  <ul class="bd-navbar-elements navbar-nav">
+    
+                    <li class="nav-item current active">
+                      <a class="nav-link nav-internal" href="../index.html">
+                        User Guide
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../reference/index.html">
+                        API Reference
+                      </a>
+                    </li>
+                
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links navbar-nav"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/snap-research/GiGL" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i></span>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/gigl/" title="PyPI" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-custom fa-pypi fa-lg" aria-hidden="true"></i></span>
+            <span class="sr-only">PyPI</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+    </div>
+  
+
+  
+    <label class="sidebar-toggle secondary-toggle" for="__secondary" tabindex="0">
+      <span class="fa-solid fa-outdent"></span>
+    </label>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          <div class="navbar-item">
+<nav class="navbar-nav">
+  <ul class="bd-navbar-elements navbar-nav">
+    
+                    <li class="nav-item current active">
+                      <a class="nav-link nav-internal" href="../index.html">
+                        User Guide
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../reference/index.html">
+                        API Reference
+                      </a>
+                    </li>
+                
+  </ul>
+</nav></div>
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links navbar-nav"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/snap-research/GiGL" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i></span>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/gigl/" title="PyPI" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-custom fa-pypi fa-lg" aria-hidden="true"></i></span>
+            <span class="sr-only">PyPI</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">Overview</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../overview/what_is_gigl.html">What is GiGL?</a></li>
+
+
+
+<li class="toctree-l1"><a class="reference internal" href="../overview/components.html">GiGL Components</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quick_start.html">Quick Start Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cloud_setup_guide.html">Cloud Setup Guide</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Orchestration</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Custom Specs</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../custom_specs/data_preprocessor_spec_guide.html">Data Preprocessor Spec Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../custom_specs/modelling_task_spec_guide.html">Modeling Task Spec Guide</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Config Guides</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../config_guides/resource_config_guide.html">Resource Config Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../config_guides/task_config_guide.html">Task Config Guide</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../examples/example1.html">Example Walkthrough #1</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/example2.html">Example Walkthrough #2</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Public Assets</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../assets/docker_images.html">Docker Images</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../assets/public_data.html">Public Assets</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Contributing</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../contributing/contributing_guide.html">Contributing Guide</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Trouble Shooting</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../trouble_shooting/faq.html">Frequently Asked Questions (FAQ)</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+
+
+<nav aria-label="Breadcrumb">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">User Guide</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page">Orchestration</li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="orchestration">
+<h1>Orchestration<a class="headerlink" href="#orchestration" title="Link to this heading">#</a></h1>
+<p>GiGL is designed to support easy end to end orchestration of your GNN tasks/workflows with minimal setup required. This page outlines three ways to orchestrate GiGL for after you have set up your configs (See: <a class="reference internal" href="../config_guides/task_config_guide.html"><span class="std std-doc">quick start</span></a> if you have not done so).</p>
+<section id="local-runner">
+<h2>Local Runner<a class="headerlink" href="#local-runner" title="Link to this heading">#</a></h2>
+<p>The local runner provides a simple interface to kick off an end to end GiGL pipeline.</p>
+<ol class="arabic simple">
+<li><p>Create a pipeline config. The pipeline config takes in:</p></li>
+</ol>
+<ul class="simple">
+<li><p>applied_task_identifier: your job name (string)</p></li>
+<li><p>template_task_config_uri: the URI to your template task config (Uri)</p></li>
+<li><p>resource_config_uri: The URI to your resource config (URI)</p></li>
+<li><p>custom_cuda_docker_uri: For custom training spec and GPU training on VertexAI (optional, string)</p></li>
+<li><p>custom_cpu_docker_uri: For custom training spec and CPU training on VertexAI (optional, string)</p></li>
+<li><p>dataflow_docker_uri: For custom datapreprocessor spec that will run in dataflow (optional, string)</p></li>
+</ul>
+<p>Example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">gigl.orchestration.local.runner</span> <span class="kn">import</span> <span class="n">PipelineConfig</span>
+<span class="kn">from</span> <span class="nn">gigl.src.common.types</span> <span class="kn">import</span> <span class="n">AppliedTaskIdentifier</span>
+<span class="kn">from</span> <span class="nn">gigl.common</span> <span class="kn">import</span> <span class="n">UriFactory</span><span class="p">,</span> <span class="n">Uri</span>
+
+<span class="n">PipelineConfig</span><span class="p">(</span>
+    <span class="n">applied_task_identifier</span><span class="o">=</span><span class="n">AppliedTaskIdentifier</span><span class="p">(</span><span class="s2">&quot;demo-gigl-job&quot;</span><span class="p">),</span>
+    <span class="n">template_task_config_uri</span><span class="o">=</span><span class="n">UriFactory</span><span class="o">.</span><span class="n">create_uri</span><span class="p">(</span><span class="s2">&quot;gs://project/my_task_config.yaml&quot;</span><span class="p">),</span>
+    <span class="n">resource_config_uri</span><span class="o">=</span><span class="n">UriFactory</span><span class="o">.</span><span class="n">create_uri</span><span class="p">(</span><span class="s2">&quot;gs://project/my_resource_config.yaml&quot;</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li><p>Initialize and Run</p></li>
+</ol>
+<p>Now you can create the GiGL runner object and kick off a pipeline.</p>
+<p>Example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
+<span class="n">runner</span> <span class="o">=</span> <span class="n">Runner</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">pipeline_config</span><span class="o">=</span><span class="n">pipeline_config</span><span class="p">)</span>
+
+</pre></div>
+</div>
+<ol class="arabic simple" start="3">
+<li><p>Optional: The runner also supports running individual components as needed</p></li>
+</ol>
+<p>Example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Runner</span><span class="o">.</span><span class="n">run_data_preprocessor</span><span class="p">(</span><span class="n">pipeline_config</span><span class="o">=</span><span class="n">pipeline_config</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="kubeflow-orchestration">
+<h2>Kubeflow Orchestration<a class="headerlink" href="#kubeflow-orchestration" title="Link to this heading">#</a></h2>
+<p>GiGL also supports orchestration of your workflows using <a class="reference external" href="https://www.kubeflow.org/docs/components/pipelines/v2/">Kubeflow Pipelines</a> using a <code class="docutils literal notranslate"><span class="pre">KfpOrchestrator</span></code> class.</p>
+<p>This guide assumes you have a KFP pipeline deployed and access to the experiment ID, pipeline ID, and KFP host. If not, you can see <a class="reference external" href="https://www.kubeflow.org/docs/components/pipelines/v1/sdk/connect-api/">Kubeflow Docs</a>.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">KfpOrchestrator</span></code> requires your Kubeflow metadata, which can be passed in 2 different ways.</p>
+<ul class="simple">
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">kfp_metadata</span></code></strong> (<code class="docutils literal notranslate"><span class="pre">KfpEnvMetadata</span></code>, optional): Instance containing KFP environment metadata. Loaded from environment variables if not provided.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">env_path</span></code></strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>, optional): Path to the environment file with KFP metadata. Defaults to the current directory.</p></li>
+</ul>
+<p><strong>KFP_HOST</strong>: This is the URL of your Kubeflow Pipelines endpoint. You can find it in the Kubeflow user interface or in your cloud provider’s Kubernetes cluster configuration where Kubeflow is deployed.</p>
+<p><strong>K8_SA</strong> (Kubernetes Service Account): The name of the Kubernetes service account used by your pipeline runs. This can typically be found in your Kubernetes cluster configuration or set up through your cluster’s service account management.</p>
+<p><strong>EXPERIMENT_ID</strong>: This is the ID of the experiment under which your pipeline runs will be grouped. You can create a new experiment in the Kubeflow Pipelines UI and use the generated ID, or you can use the ID of an existing experiment.</p>
+<p><strong>PIPELINE_ID</strong>: The unique identifier for your pipeline. This ID can be obtained from the Kubeflow Pipelines UI after you have initially uploaded your pipeline.</p>
+<p><strong>EXPERIMENT_NAME</strong> (optional): The name of the experiment in Kubeflow. This is usually set when you create an experiment in the Kubeflow UI and can be used for easier identification of your experiment runs.</p>
+<p>For more information see <a class="reference external" href="https://www.kubeflow.org/docs/components/pipelines/v2/installation/quickstart/">Kubeflow Quickstart</a></p>
+<p>The .env file would look like:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">KFP_HOST</span><span class="o">=</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">example</span><span class="o">-</span><span class="n">kubeflow</span><span class="o">-</span><span class="n">host</span><span class="o">.</span><span class="n">com</span>
+<span class="n">K8_SA</span><span class="o">=</span><span class="n">my</span><span class="o">-</span><span class="n">k8</span><span class="o">-</span><span class="n">service</span><span class="o">-</span><span class="n">account</span>
+<span class="n">EXPERIMENT_ID</span><span class="o">=</span><span class="n">my</span><span class="o">-</span><span class="n">experiment</span><span class="o">-</span><span class="nb">id</span>
+<span class="n">PIPELINE_ID</span><span class="o">=</span><span class="n">my</span><span class="o">-</span><span class="n">pipeline</span><span class="o">-</span><span class="nb">id</span>
+<span class="n">EXPERIMENT_NAME</span><span class="o">=</span><span class="n">my</span><span class="o">-</span><span class="n">experiment</span><span class="o">-</span><span class="n">name</span>
+</pre></div>
+</div>
+<section id="usage-example">
+<h3>Usage Example<a class="headerlink" href="#usage-example" title="Link to this heading">#</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
+<span class="kn">from</span> <span class="nn">gigl.orchestration.kubeflow.kfp_orchestrator</span> <span class="kn">import</span> <span class="n">KfpOrchestrator</span>
+<span class="kn">from</span> <span class="nn">gigl.common</span> <span class="kn">import</span> <span class="n">UriFactory</span>
+<span class="kn">from</span> <span class="nn">gigl.src.common.types</span> <span class="kn">import</span> <span class="n">AppliedTaskIdentifier</span>
+
+<span class="n">orchestrator</span> <span class="o">=</span> <span class="n">KfpOrchestrator</span><span class="p">(</span><span class="s2">&quot;path/to/.env&quot;</span><span class="p">)</span>
+
+<span class="n">task_config_uri</span> <span class="o">=</span> <span class="n">UriFactory</span><span class="o">.</span><span class="n">create_uri</span><span class="p">(</span><span class="s2">&quot;gs://path/to/task_config.yaml&quot;</span><span class="p">)</span>
+<span class="n">resource_config_uri</span> <span class="o">=</span> <span class="n">UriFactory</span><span class="o">.</span><span class="n">create_uri</span><span class="p">(</span><span class="s2">&quot;gs://path/to/resource_config.yaml&quot;</span><span class="p">)</span>
+<span class="n">applied_task_identifier</span> <span class="o">=</span> <span class="n">AppliedTaskIdentifier</span><span class="p">(</span><span class="s2">&quot;kfp_demo&quot;</span><span class="p">)</span>
+
+<span class="n">orchestrator</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+    <span class="n">applied_task_identifier</span><span class="o">=</span><span class="n">applied_task_identifier</span><span class="p">,</span>
+    <span class="n">task_config_uri</span><span class="o">=</span><span class="n">task_config_uri</span><span class="p">,</span>
+    <span class="n">resource_config_uri</span><span class="o">=</span><span class="n">resource_config_uri</span><span class="p">,</span>
+    <span class="n">start_at</span><span class="o">=</span><span class="s2">&quot;config_populator&quot;</span>
+<span class="p">)</span>
+
+</pre></div>
+</div>
+</section>
+</section>
+<section id="importable-gigl">
+<h2>Importable GiGL<a class="headerlink" href="#importable-gigl" title="Link to this heading">#</a></h2>
+<p>You may want to integrate gigl into your existing workflows or create custom orchestration logic. This can be done by importing the components and using each of their <code class="docutils literal notranslate"><span class="pre">.run()</span></code> components.</p>
+<section id="trainer-component-example">
+<h3>Trainer Component Example:<a class="headerlink" href="#trainer-component-example" title="Link to this heading">#</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">gigl.src.training.trainer</span> <span class="kn">import</span> <span class="n">Trainer</span>
+
+<span class="n">trainer</span> <span class="o">=</span> <span class="n">Trainer</span><span class="p">()</span>
+<span class="n">trainer</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">task_config_uri</span><span class="p">,</span> <span class="n">resource_config_uri</span><span class="p">,</span> <span class="n">job_name</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>For component specific parameters/information, see <a class="reference internal" href="#%22../overview/components"><span class="xref myst">Components</span></a></p>
+</section>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="cloud_setup_guide.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Cloud Setup Guide</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="../custom_specs/data_preprocessor_spec_guide.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Data Preprocessor Spec Guide</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#local-runner">Local Runner</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#kubeflow-orchestration">Kubeflow Orchestration</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#usage-example">Usage Example</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#importable-gigl">Importable GiGL</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#trainer-component-example">Trainer Component Example:</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  <div class="tocsection sourcelink">
+    <a href="../../_sources/user_guide/getting_started/orchestration.md.txt">
+      <i class="fa-solid fa-file-lines"></i> Show Source
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2025, Snap Inc.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.15.2.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
