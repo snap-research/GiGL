@@ -5,7 +5,7 @@ The Inferencer component is responsible for running inference of a trained model
 ## Input
 
 - **job_name** (AppliedTaskIdentifier):  which uniquely identifies an end-to-end task.
-- **task_config_uri** (Uri):  Path which points to a "template" `GbmlConfig` proto yaml file.
+- **task_config_uri** (Uri):  Path which points to a "frozen" `GbmlConfig` proto yaml file - generated from `config_populator`
 - **resource_config_uri** (Uri): Path which points to a `GiGLResourceConfig` yaml
 - **Optional: custom_worker_image_uri**: Path to docker file to be used for dataflow worker harness image
 
@@ -13,7 +13,7 @@ The Inferencer component is responsible for running inference of a trained model
 
 The Inferencer undertakes the following actions:
 
-- Reads frozen `GbmlConfig` proto yaml.  This proto contains a pointer to a class instance which implements the `BaseInferencer` protocol (see `inferencerClsPath` field of `inferencerConfig` in `GbmlConfig`).  This class houses logic which dictates how to run inference for a batch of samples (see `infer_batch` in [modeling task spec](../../python/gigl/src/common/modeling_task_specs/node_anchor_based_link_prediction_modeling_task_spec.py)) -- the types of these samples are determined by the `taskMetadata` in the frozen `GbmlConfig`.
+- Reads frozen `GbmlConfig` proto yaml.  This proto contains a pointer to a class instance which implements the `BaseInferencer` protocol (see `inferencerClsPath` field of `inferencerConfig` in `GbmlConfig`).  This class houses logic which dictates how to run inference for a batch of samples (see `infer_batch` in [modeling task spec](../../../../python/gigl/src/common/modeling_task_specs/node_anchor_based_link_prediction_modeling_task_spec.py)) -- the types of these samples are determined by the `taskMetadata` in the frozen `GbmlConfig`.
 
   Custom arguments can also be passed into the class instance by including them in the `inferencerArgs` field inside `inferencerConfig` section of `GbmlConfig`.  Several standard configurations of this instance are implemented already at a GiGL platform-level; for example, the `NodeAnchorBasedLinkPredictionModelingTaskSpec` instance referenced in the sample frozen `GbmlConfig` can be used with no/minimal changes for other node-anchor based link prediction tasks.
 
@@ -27,26 +27,25 @@ The Inferencer undertakes the following actions:
 **Import GiGL**
 
 ```python
-from gigl.src.inference.v1.gnn_inferencer import InferencerV1
+from gigl.src.inference.inferencer import Inferencer
 from gigl.common import UriFactory
 from gigl.src.common.types import AppliedTaskIdentifier
 
-inferencer = InferencerV1()
+inferencer = Inferencer()
 
 inferencer.run(
-    applied_task_identifier=AppliedTaskIdentifier("my_gigl_job_name"),
-    task_config_uri=UriFactory.create_uri("gs://my-temp-assets-bucket/task_config.yaml"),
+    applied_task_identifier=AppliedTaskIdentifier("sample_job_name"),
+    task_config_uri=UriFactory.create_uri("gs://my-temp-assets-bucket/frozen_task_config.yaml"),
     resource_config_uri=UriFactory.create_uri("gs://my-temp-assets-bucket/resource_config.yaml")
     custom_worker_image_uri="gcr.io/project/directory/dataflow_image:x.x.x",  # Optional
 )
 ```
 
 **Command Line**
-
 ```
 python -m gigl.src.inference.v1.gnn_inferencer \
-    --job_name my_gigl_job_name \
-    --task_config_uri "gs://my-temp-assets-bucket/task_config.yaml"
+    --job_name="sample_job_name" \
+    --task_config_uri="gs://my-temp-assets-bucket/frozen_task_config.yaml"
     --resource_config_uri="gs://my-temp-assets-bucket/resource_config.yaml"
 ```
 

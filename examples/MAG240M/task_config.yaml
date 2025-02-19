@@ -53,12 +53,12 @@ trainerConfig:
     # More data loaders prefetch more data into memory, which significantly saves data read and preprocess time.
     # However, it also significantly increases CPU memory consumption and could lead to CPU memory OOM.
     # The CPU memory consumption depends on both the number of data loaders and the batch size. 
-    train_main_sample_num_workers: '10'
-    train_random_sample_num_workers: '10'
-    val_main_sample_num_workers: '4'
-    val_random_sample_num_workers: '4'
-    test_main_sample_num_workers: '8'
-    test_random_sample_num_workers: '8'
+    train_main_num_workers: '10'
+    train_random_negative_num_workers: '10'
+    val_main_num_workers: '4'
+    val_random_negative_num_workers: '4'
+    test_main_num_workers: '8'
+    test_random_negative_num_workers: '8'
 inferencerConfig:
   # inferencerArgs: We don't need to pass any special arguments for inferencer
   # Note: The inferencerClsPath is the same as the trainerClsPath

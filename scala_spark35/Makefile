@@ -74,7 +74,7 @@ spark_run_splitgen_on_cluster:
 	--region us-central1 \
 	--jar $(GCS_SPLITGEN_ASSEMBLY_JAR_PATH) \
 	--jars $(GCS_SPARK_JAR_PATH) \
-	-- my_app_name gs://TEMP DEV GBML PLACEHOLDER/norway-sgs-data/config_populator/frozen_gbml_config.yaml gs://DEV PERM ASSET PLACEHOLDER/resource_configs/platform/test_default_resource_config.yaml
+	-- my_app_name gs://TEMP DEV GBML PLACEHOLDER/norway-sgs-data/config_populator/frozen_gbml_config.yaml deployment/configs/unittest_resource_config.yaml
 
 upload_test_assets_to_gcs:
 	gsutil -m cp -r ./common/src/test/scala/assets gs://TEST ASSET PLACEHOLDER/scala

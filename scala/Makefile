@@ -66,7 +66,7 @@ spark_run_splitgen_on_cluster:
 	--region us-central1 \
 	--jar gs://TEMP DEV GBML PLACEHOLDER/elham_test/split_generator-assembly-1.0.jar \
 	--jars gs://gigl-public/tools/scala/spark_packages/snap-spark-custom-tfrecord_2.12-0.5.0.jar \
-	-- my_app_name gs://TEMP DEV GBML PLACEHOLDER/norway-sgs-data/config_populator/frozen_gbml_config.yaml gs://DEV PERM ASSET PLACEHOLDER/resource_configs/platform/test_default_resource_config.yaml
+	-- my_app_name gs://TEMP DEV GBML PLACEHOLDER/norway-sgs-data/config_populator/frozen_gbml_config.yaml deployment/configs/unittest_resource_config.yaml
 
 upload_test_assets_to_gcs:
 	gsutil -m cp -r ./common/src/test/scala/assets gs://TEST ASSET PLACEHOLDER/scala
