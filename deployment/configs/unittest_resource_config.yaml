@@ -11,16 +11,18 @@ shared_resource_config:
   #   | Post  Processor} so we can get more accurate cost measurements
   #   of each component. This will be automatically filled in code.
     cost_resource_group_tag: dev_experiments_COMPONENT
-    cost_resource_group: gigl_platform  
+    cost_resource_group: gigl_platform
   common_compute_config:
     project: "external-snap-ci-github-gigl"
     region: "us-central1"
+    # For test, we use temp assets bucket and bq dataset since these assets should be short lived
+    # by default. Since, we are not using them for development.
     temp_assets_bucket: "gs://gigl-cicd-temp"
     temp_regional_assets_bucket: "gs://gigl-cicd-temp"
-    perm_assets_bucket: "gs://gigl-cicd-perm"
+    perm_assets_bucket: "gs://gigl-cicd-temp"
     temp_assets_bq_dataset_name: "gigl_temp_assets"
-    embedding_bq_dataset_name: "gigl_embeddings"
-    gcp_service_account_email: "untrusted-external-github-gigl@external-snap-ci-github-gigl.iam.gserviceaccount.com"    dataflow_runner: "DirectRunner"
+    embedding_bq_dataset_name: "gigl_temp_assets"
+    gcp_service_account_email: "untrusted-external-github-gigl@external-snap-ci-github-gigl.iam.gserviceaccount.com"
     dataflow_runner: "DirectRunner"
 preprocessor_config:
   edge_preprocessor_config:
