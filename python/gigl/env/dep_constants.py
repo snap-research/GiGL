@@ -21,7 +21,7 @@ GIGL_DATAFLOW_IMAGE = (
 _SPARK_35_DIR_NAME = "scala_spark35"
 _SPARK_DIR_NAME = "scala"
 
-GIGL_PUBLIC_BUCKET_NAME = "gigl-public"
+GIGL_PUBLIC_BUCKET_NAME = "public-gigl"
 
 
 def _get_scala_dir_name(use_spark35: bool = False) -> str:

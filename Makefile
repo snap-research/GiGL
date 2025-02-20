@@ -112,7 +112,7 @@ precondition_tests:
 assert_yaml_configs_parse:
 	python scripts/assert_yaml_configs_parse.py -d .
 
-# TODO: (Open Source) Integration and unit tests currently run with project specific information. Before open sourcing we should swap out this resource config to point to all the public assets (gigl-public). 
+# TODO: (Open Source) Integration and unit tests currently run with project specific information. Before open sourcing we should swap out this resource config to point to all the public assets (public-gigl). 
 
 # Set PY_TEST_FILES=<TEST_FILE_NAME_GLOB> to test a specifc file.
 # Ex. `make unit_test_py PY_TEST_FILES="eval_metrics_test.py"`

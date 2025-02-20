@@ -209,7 +209,7 @@ class SubgraphSamplerTest(unittest.TestCase):
                 max_job_duration=ANY,
                 runtime_args=ANY,
                 extra_jar_file_uris=[
-                    "gs://gigl-public/tools/scala/spark_packages/spark-custom-tfrecord_2.12-0.5.1.jar",
+                    "gs://public-gigl/tools/scala/spark_packages/spark-custom-tfrecord_2.12-0.5.1.jar",
                 ],
                 use_spark35=False,
             )
@@ -326,7 +326,7 @@ class SubgraphSamplerTest(unittest.TestCase):
                         subgraph_sampler_root,
                         "sidecar.jar",
                     ).uri,
-                    "gs://gigl-public/tools/scala/registry/spark_3.5.0-custom-tfrecord_2.12-0.6.1.jar",
+                    "gs://public-gigl/tools/scala/registry/spark_3.5.0-custom-tfrecord_2.12-0.6.1.jar",
                 ],
                 use_spark35=True,
             )

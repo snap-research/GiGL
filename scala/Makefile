@@ -40,7 +40,7 @@ spark_run_sgs_on_cluster:
 	--cluster sgs-udl-mau-clus-200-8 \
 	--region us-central1 \
 	--jar gs://TEMP DEV GBML PLACEHOLDER/elham_test/subgraph_sampler-assembly-1.0.jar \
-	--jars gs://gigl-public/tools/scala/spark_packages/snap-spark-custom-tfrecord_2.12-0.5.0.jar \
+	--jars gs://public-gigl/tools/scala/spark_packages/snap-spark-custom-tfrecord_2.12-0.5.0.jar \
 	-- gs://TEST ASSET PLACEHOLDER/mocked_assets/mau_user_defined_labels/config_populator/frozen_gbml_config_sgs_225_100M.yaml my_app_name gs://DEV PERM ASSET PLACEHOLDER/resource_configs/platform/dev_mega_udl_resource_config.yaml
 
 
@@ -54,7 +54,7 @@ spark_run_sgs_graphdb_on_cluster:
 	--region us-central1 \
 	--project external-snap-ci-github-gigl \
 	--jar gs://TEMP DEV GBML PLACEHOLDER/elham_test/subgraph_sampler-assembly-1.0.jar \
-	--jars gs://gigl-public/tools/scala/spark_packages/snap-spark-custom-tfrecord_2.12-0.5.0.jar \
+	--jars gs://public-gigl/tools/scala/spark_packages/snap-spark-custom-tfrecord_2.12-0.5.0.jar \
 	-- gs://TEST ASSET PLACEHOLDER/nebula_graphdb/subgraph_sampler/configs/frozen_gbml_config_graphdb_content_cluster.yaml my_app_name gs://DEV PERM ASSET PLACEHOLDER/resource_configs/platform/dev_mega_resource_config.yaml
 +
 
@@ -65,7 +65,7 @@ spark_run_splitgen_on_cluster:
 	--cluster refactor \
 	--region us-central1 \
 	--jar gs://TEMP DEV GBML PLACEHOLDER/elham_test/split_generator-assembly-1.0.jar \
-	--jars gs://gigl-public/tools/scala/spark_packages/snap-spark-custom-tfrecord_2.12-0.5.0.jar \
+	--jars gs://public-gigl/tools/scala/spark_packages/snap-spark-custom-tfrecord_2.12-0.5.0.jar \
 	-- my_app_name gs://TEMP DEV GBML PLACEHOLDER/norway-sgs-data/config_populator/frozen_gbml_config.yaml deployment/configs/unittest_resource_config.yaml
 
 upload_test_assets_to_gcs:

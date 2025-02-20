@@ -115,7 +115,11 @@ You may want to integrate gigl into your existing workflows or create custom orc
 from gigl.src.training.trainer import Trainer
 
 trainer = Trainer()
-trainer.run(task_config_uri, resource_config_uri, job_name)
+trainer.run(
+    applied_task_identifier=job_name,
+    task_config_uri="gs://...",
+    resource_config_uri=="gs://...",
+)
 ```
 
-For component specific parameters/information, see [Components]("../overview/components)
+For component specific parameters/information, see [Components](../overview/components.md)

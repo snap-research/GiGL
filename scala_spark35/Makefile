@@ -2,7 +2,7 @@
 # and add option --files file:/full_path_to_local_files (local files are frozen gbml, preprocessedmetadata, node, edge data)
 # run under scala_spark35/
 LOCAL_SPARK_JAR_PATH:=external-jars/spark_3.5.0-custom-tfrecord_2.12-0.6.1.jar
-GCS_SPARK_JAR_PATH:=gs://gigl-public/tools/scala/registry/spark_3.5.0-custom-tfrecord_2.12-0.6.1.jar
+GCS_SPARK_JAR_PATH:=gs://public-gigl/tools/scala/registry/spark_3.5.0-custom-tfrecord_2.12-0.6.1.jar
 
 LOCAL_SGS_ASSEMBLY_JAR_PATH:=subgraph_sampler/target/scala-2.12/subgraph_sampler-assembly-1.0.jar
 GCS_SGS_ASSEMBLY_JAR_PATH:=gs://my-temp-bucket/jars/subgraph_sampler-assembly-1.0.jar
