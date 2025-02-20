@@ -4,7 +4,7 @@ from gigl.src.common.constants.local_fs import get_gigl_root_directory
 from gigl.src.common.types.graph_data import EdgeType, EdgeUsageType, NodeType
 from gigl.src.common.utils.bq import BqUtils
 
-TEST_DATA_GCS_BUCKET = GcsUri(f"gs://{dep_constants.GIGL_PUBLIC_BUCKET_NAME}/")
+TEST_DATA_GCS_BUCKET = GcsUri(f"gs://{dep_constants.GIGL_TEST_BUCKET_NAME}/")
 EXAMPLE_TASK_ASSETS_GCS_PATH = GcsUri.join(TEST_DATA_GCS_BUCKET, "mocked_assets")
 EXAMPLE_TASK_ASSETS_BQ_PATH = "external-snap-ci-github-gigl.gbml_mocked_assets"
 MOCKED_DATASET_ARTIFACT_METADATA_LOCAL_PATH = LocalUri.join(
