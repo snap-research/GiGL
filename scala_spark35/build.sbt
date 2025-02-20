@@ -42,7 +42,7 @@ lazy val dependencies =
     // TODO: (svij-sc) Find a common place to pull this jar uri from
     // The jar file is built using Snap's fork of the Linkedin TfRecord Spark Connector.
     val tfRecordConnector =
-      "com.linkedin.sparktfrecord" % "spark-tfrecord_2.12" % "0.6.1" % Test from "gs://gigl-public/tools/scala/registry/spark_3.5.0-custom-tfrecord_2.12-0.6.1.jar"
+      "com.linkedin.sparktfrecord" % "spark-tfrecord_2.12" % "0.6.1" % Test from "gs://public-gigl/tools/scala/registry/spark_3.5.0-custom-tfrecord_2.12-0.6.1.jar"
 
     // nebula client
     val nebulaClient = "com.vesoft" % "client" % "3.6.1"

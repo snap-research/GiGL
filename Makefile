@@ -112,7 +112,7 @@ precondition_tests:
 assert_yaml_configs_parse:
 	python scripts/assert_yaml_configs_parse.py -d .
 
-# TODO: (Open Source) Integration and unit tests currently run with project specific information. Before open sourcing we should swap out this resource config to point to all the public assets (gigl-public). 
+# TODO: (Open Source) Integration and unit tests currently run with project specific information. Before open sourcing we should swap out this resource config to point to all the public assets (public-gigl). 
 
 # Set PY_TEST_FILES=<TEST_FILE_NAME_GLOB> to test a specifc file.
 # Ex. `make unit_test_py PY_TEST_FILES="eval_metrics_test.py"`
@@ -167,7 +167,7 @@ integration_test:
 	)
 
 mock_assets:
-	( cd python ; python -m gigl.src.mocking.dataset_asset_mocking_suite --resource_config_uri="../do_not_open_source/resource_configs/dev_default_resource_config.yaml" --env test)
+	( cd python ; python -m gigl.src.mocking.dataset_asset_mocking_suite --resource_config_uri="deployment/configs/e2e_cicd_resource_config.yaml" --env test)
 
 format_py:
 	autoflake --config python/pyproject.toml python scripts
@@ -219,10 +219,10 @@ push_new_docker_images: push_cuda_docker_image push_cpu_docker_image push_datafl
 # Compile and run an instance of pipelines
 # Example:
 # make \
-  job_name="{alias}_run_dev_gnn_kubeflow_pipeline" \
-  start_at="inferencer" \
-  task_config_uri="gs://TEMP DEV GBML PLACEHOLDER/e2e_DIST_cora_anchor_link_pred_1/config_populator/frozen_gbml_config.yaml" \
-  resource_config_uri="internal/resource_configs/platform/dev_mega_resource_config.yaml" \
+  job_name="{alias}_run_dev_mag240m_kfp_pipeline" \
+  start_at="config_populator" \
+  task_config_uri="examples/MAG240M/task_config.yaml" \
+  resource_config_uri="examples/MAG240M/resource_config.yaml" \
   run_dev_gnn_kubeflow_pipeline
 run_dev_gnn_kubeflow_pipeline: compile_jars push_new_docker_images
 	python -m do_not_open_source.deployment.gnn \

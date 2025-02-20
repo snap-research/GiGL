@@ -25,27 +25,27 @@ mkdir -p tools/scalapbc
 mkdir -p tools/scala
 
 echo "Installing tooling for spark 3.1"
-gsutil cp gs://gigl-public/tools/scala/spark/spark-3.1.3-bin-hadoop3.2.tgz tools/scala/spark-3.1.3-bin-hadoop3.2.tgz
+gsutil cp gs://public-gigl/tools/scala/spark/spark-3.1.3-bin-hadoop3.2.tgz tools/scala/spark-3.1.3-bin-hadoop3.2.tgz
 gunzip -c tools/scala/spark-3.1.3-bin-hadoop3.2.tgz | tar xopf - -C tools/scala
 # Pulls custom package which allows for parsing and output tf records
-gsutil cp gs://gigl-public/tools/scala/spark_packages/spark-custom-tfrecord_2.12-0.5.1.jar tools/scala/spark_packages/spark-custom-tfrecord_2.12-0.5.1.jar
+gsutil cp gs://public-gigl/tools/scala/spark_packages/spark-custom-tfrecord_2.12-0.5.1.jar tools/scala/spark_packages/spark-custom-tfrecord_2.12-0.5.1.jar
 
 
 echo "Installing tooling for spark 3.5; this will deprecate regular installation for spark 3.1 above"
-gsutil cp gs://gigl-public/tools/scala/spark/spark-3.5.0-bin-hadoop3.tgz tools/scala/spark-3.5.0-bin-hadoop3.tgz
+gsutil cp gs://public-gigl/tools/scala/spark/spark-3.5.0-bin-hadoop3.tgz tools/scala/spark-3.5.0-bin-hadoop3.tgz
 gunzip -c tools/scala/spark-3.5.0-bin-hadoop3.tgz | tar xopf - -C tools/scala
 # Pulls custom package which allows for parsing and output tf records
-gsutil cp gs://gigl-public/tools/scala/registry/spark_3.5.0-custom-tfrecord_2.12-0.6.1.jar tools/scala/spark_packages/spark-custom-tfrecord_2.12-0.5.1.jar
+gsutil cp gs://public-gigl/tools/scala/registry/spark_3.5.0-custom-tfrecord_2.12-0.6.1.jar tools/scala/spark_packages/spark-custom-tfrecord_2.12-0.5.1.jar
 
 
 echo "Installing tooling for scala protobuf"
 # Commenting out as we are seeing some issues in the builders downloading this from github
 # curl -L -o tools/scalapbc/scalapbc.zip "https://github.com/scalapb/ScalaPB/releases/download/v0.11.11/scalapbc-0.11.11.zip"
-gsutil cp gs://gigl-public/tools/scala/scalapbc/scalapbc-0.11.11.zip tools/scalapbc/scalapbc.zip
+gsutil cp gs://public-gigl/tools/scala/scalapbc/scalapbc-0.11.11.zip tools/scalapbc/scalapbc.zip
 unzip -o tools/scalapbc/scalapbc.zip -d tools/scalapbc
 rm tools/scalapbc/scalapbc.zip
 # (svij-sc) scala35 support (this will eventually deprecate above)
-gsutil cp gs://gigl-public/tools/scala/scalapbc/scalapbc-0.11.14.zip tools/scalapbc/scalapbc.zip
+gsutil cp gs://public-gigl/tools/scala/scalapbc/scalapbc-0.11.14.zip tools/scalapbc/scalapbc.zip
 unzip -o tools/scalapbc/scalapbc.zip -d tools/scalapbc
 rm tools/scalapbc/scalapbc.zip
 
