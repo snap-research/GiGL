@@ -16,9 +16,9 @@ See 📖 [Documentation](docs/) for more details
 ## Key Features 🌟
 
 - 🧠 **Versatile GNN Applications**: Supports easy customization in using GNNs in supervised and unsupervised ML applications like node classification and link prediction.
-  
+
 - 🚀 **Designed for Scalability**: The architecture is built with horizontal scaling in mind, ensuring cost-effective performance throughout the process of data preprocessing and transformation, model training, and inference.
-  
+
 - 🎛️ **Easy Orchestration**: Simplified end-to-end orchestration, making it easy for developers to implement, scale, and manage their GNN projects.
 
 ------------------------------------------------------------------------
@@ -37,7 +37,7 @@ GiGL contains six components, each designed to facilitate the platforms end-to-e
 | Trainer           | [here](python/gigl/src/training/trainer.py)                    | [here](docs/sphinx/source/components/trainer.md)           |
 | Inferencer        | [here](python/gigl/src/inference/gnn_inferencer.py)            | [here](docs/sphinx/source/components/inferencer.md)        |
 
-The figure below illustrates at a high level how all the components work together for and end-to-end GiGL pipeline. 
+The figure below illustrates at a high level how all the components work together for and end-to-end GiGL pipeline.
 
 ![gigl-framework](docs/assets/images/gigl-framework.png)
 
@@ -52,7 +52,7 @@ make initialize_environment
 conda activate gnn
 ```
 
-This creates a Python 3.9 environment with some basic utilities.  Next, to install all user dependencies: 
+This creates a Python 3.9 environment with some basic utilities.  Next, to install all user dependencies:
 
 ```bash
 make install_deps
@@ -80,11 +80,11 @@ todo
 
 ## Configuration 📄
 
-Before getting started with running components in GiGL, it’s important to set up your config files. These are necessary files required for each component to operate. The two required files are: 
+Before getting started with running components in GiGL, it’s important to set up your config files. These are necessary files required for each component to operate. The two required files are:
 
 - **Resource Config**: Details the resource allocation and environmental settings across all GiGL components. This encompasses shared resources for all components, as well as component-specific settings.
 
-- **Task Config**: Specifies task-related configurations, guiding the behavior of components according to the needs of your machine learning task. 
+- **Task Config**: Specifies task-related configurations, guiding the behavior of components according to the needs of your machine learning task.
 
 To configure these files and customize your GiGL setup, follow our step-by-step guides:
 
@@ -93,11 +93,11 @@ To configure these files and customize your GiGL setup, follow our step-by-step 
 
 ## Usage 🚀
 
-GiGL offers 3 primiary methods of usage to run the components for your graph machine learning tasks. 
+GiGL offers 3 primiary methods of usage to run the components for your graph machine learning tasks.
 
 ### 1. Importable `gigl`
 
-To easily get started or incorporate gigl into your existing workflows, you can simply import `gigl` and call the `.run()` method on its components. 
+To easily get started or incorporate gigl into your existing workflows, you can simply import `gigl` and call the `.run()` method on its components.
 
 <details>
 <summary>Example</summary>
@@ -133,7 +133,7 @@ python -m \
 GiGL also supports pipeline orchestration using Kubeflow. This allows you to easily kick off an end-to-end run with little to no code. See [Kubeflow Orchestration]("todo") for more information
 
 \
-The best way to get more familiar with GiGL is to go through the various [examples]("todo") or for specific details see our [user guide]("todo"). 
+The best way to get more familiar with GiGL is to go through the various [examples]("todo") or for specific details see our [user guide]("todo").
 
 
 ## Tests 🔧
@@ -192,7 +192,7 @@ Cloud integration tests run a full end-to-end GiGL pipeline within GCP, also lev
 
 - Utilizes mocked/synthetic data publicly hosted in GCS (see: [Public Assets]("todo"))
 - Require access and run on cloud services such as BigQuery, Dataflow etc.
-- Required to pass before merging PR (Pre-merge check). Access to the orchestration, logs, etc., is restricted to authorized internal engineers to maintain security. Failures will be reported back to contributor as needed. 
+- Required to pass before merging PR (Pre-merge check). Access to the orchestration, logs, etc., is restricted to authorized internal engineers to maintain security. Failures will be reported back to contributor as needed.
 
 To test cloud integration test functionality, you can replicate by running and end-to-end pipeline by following along one of our Cora examples (See: [Examples]("todo"))
 
@@ -220,6 +220,18 @@ For more information, see our [Contributing Guide]("todo")
 ## Additional Resources ❗
 
 You may still have unanswered questions or may be facing issues. If so please see our [FAQ]("todo") or our [User Guide]("todo") for further guidence.
+
+## Citation
+If you use GiGL in publications, we would appreciate citations to [our paper](https://arxiv.org/pdf/2502.15054):
+
+```bibtex
+@article{zhao2025gigl,
+  title={GiGL: Large-Scale Graph Neural Networks at Snapchat},
+  author={Zhao, Tong and Liu, Yozen and Kolodner, Matthew and Montemayor, Kyle and Ghazizadeh, Elham and Batra, Ankit and Fan, Zihao and Gao, Xiaobin and Guo, Xuan and Ren, Jiwen and Park, Serim and Yu, Peicheng and Yu, Jun and Vij, Shubham and Shah, Neil},
+  journal={arXiv preprint arXiv:2502.15054},
+  year={2025}
+}
+```
 
 ## License 🔒
 [MIT License](LICENSE)
