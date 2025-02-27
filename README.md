@@ -222,7 +222,7 @@ For more information, see our [Contributing Guide]("todo")
 You may still have unanswered questions or may be facing issues. If so please see our [FAQ]("todo") or our [User Guide]("todo") for further guidence.
 
 ## Citation
-If you use GraphStorm in a scientific publication, we would appreciate citations to [our paper](https://arxiv.org/pdf/2502.15054):
+If you use GiGL in a scientific publication, we would appreciate citations to [our paper](https://arxiv.org/pdf/2502.15054):
 
 ```bibtex
 @article{zhao2025gigl,
