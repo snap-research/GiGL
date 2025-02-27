@@ -222,10 +222,12 @@ For more information, see our [Contributing Guide]("todo")
 You may still have unanswered questions or may be facing issues. If so please see our [FAQ]("todo") or our [User Guide]("todo") for further guidence.
 
 ## Citation
+If you use GraphStorm in a scientific publication, we would appreciate citations to [our paper](https://arxiv.org/pdf/2502.15054):
+
 ```bibtex
 @article{zhao2025gigl,
   title={GiGL: Large-Scale Graph Neural Networks at Snapchat},
-  author={Zhao, Tong and Liu, Yozen and Kolodner, Matthew and Montemayor, Kyle and Ghazizadeh, Elham and Batra, Ankit and Fan, Zihao and Gao, Xiaobin and Guo, Xuan and Ren, Jiwen and others},
+  author={Zhao, Tong and Liu, Yozen and Kolodner, Matthew and Montemayor, Kyle and Ghazizadeh, Elham and Batra, Ankit and Fan, Zihao and Gao, Xiaobin and Guo, Xuan and Ren, Jiwen and Park, Serim and Yu, Peicheng and Yu, Jun and Vij, Shubham and Shah, Neil},
   journal={arXiv preprint arXiv:2502.15054},
   year={2025}
 }
