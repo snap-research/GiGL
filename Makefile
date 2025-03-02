@@ -1,4 +1,4 @@
-include base_images.variable
+include dep_vars.env
 
 SHELL := /bin/bash
 CONDA_ENV_NAME=gnn
@@ -108,6 +108,7 @@ generate_dev_linux_cuda_hashed_requirements:
 # installation scripts
 precondition_tests:
 	python shared/tests/requirements_check.py
+	python shared/tests/dep_vars_check.py
 
 assert_yaml_configs_parse:
 	python scripts/assert_yaml_configs_parse.py -d .

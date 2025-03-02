@@ -5,7 +5,7 @@ from typing import Optional
 from gigl.env.pipelines_config import get_resource_config
 
 from .build_and_push_docker_image import build_and_push_image
-from .constants import (
+from gigl.common.constants import (
     DOCKER_LATEST_BASE_CPU_IMAGE_NAME_WITH_TAG,
     DOCKER_LATEST_BASE_CUDA_IMAGE_NAME_WITH_TAG,
     GIGL_ROOT_DIR,

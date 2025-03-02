@@ -1,9 +1,24 @@
+import scala.io.Source
+
 ThisBuild / scalaVersion := "2.12.18"
 ThisBuild / organization := "snapchat.research.gbml"
 ThisBuild / version      := "1.0"
 // Enable semantic db so that scalafix can run the "OrganizeImports" rule.
 ThisBuild / semanticdbEnabled := true
 ThisBuild / semanticdbVersion := scalafixSemanticdb.revision
+
+lazy val SPARK_35_TFRECORD_JAR_GCS_PATH: String = {
+  val filePath = "../dep_vars.env"
+  val source = Source.fromFile(filePath)
+  try {
+    source.getLines().find(_.startsWith("SPARK_35_TFRECORD_JAR_GCS_PATH=")) match {
+      case Some(line) => line.split("=")(1).trim
+      case None => throw new RuntimeException(s"SPARK_35_TFRECORD_JAR_GCS_PATH not found in $filePath")
+    }
+  } finally {
+    source.close()
+  }
+}
 
 // Dependencies ========================================
 lazy val dependencies =
@@ -39,10 +54,9 @@ lazy val dependencies =
     // Testing
     val scalatest = "org.scalatest" %% "scalatest" % "3.2.11" % Test
     // Not included in fat jar during compile time due to dependency issues; injected through spark-submit at runtime
-    // TODO: (svij-sc) Find a common place to pull this jar uri from
     // The jar file is built using Snap's fork of the Linkedin TfRecord Spark Connector.
     val tfRecordConnector =
-      "com.linkedin.sparktfrecord" % "spark-tfrecord_2.12" % "0.6.1" % Test from "gs://public-gigl/tools/scala/registry/spark_3.5.0-custom-tfrecord_2.12-0.6.1.jar"
+      "com.linkedin.sparktfrecord" % "spark-tfrecord_2.12" % "0.6.1" % Test from SPARK_35_TFRECORD_JAR_GCS_PATH
 
     // nebula client
     val nebulaClient = "com.vesoft" % "client" % "3.6.1"

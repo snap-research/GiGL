@@ -27,18 +27,13 @@ from gigl.src.common.utils.spark_job_manager import (
     SparkJobManager,
 )
 from gigl.src.subgraph_sampler.lib.ingestion_protocol import BaseIngestion
+from gigl.common.constants import SPARK_31_TFRECORD_JAR_GCS_PATH, SPARK_35_TFRECORD_JAR_GCS_PATH
 
 logger = Logger()
 
 MAX_JOB_DURATION = datetime.timedelta(
     hours=5
 )  # Allowed max job duration for SGS job -- for MAU workload
-
-# TODO: (Open Source) Make this publically accessible
-# See scala/README.md for more details on these jars and how to build and deploy.
-SPARK_TFRECORD_JAR_PATH = f"gs://{dep_constants.GIGL_PUBLIC_BUCKET_NAME}/tools/scala/spark_packages/spark-custom-tfrecord_2.12-0.5.1.jar"
-SNAP_SPARK_35_TFRECORD_JAR_PATH = f"gs://{dep_constants.GIGL_PUBLIC_BUCKET_NAME}/tools/scala/registry/spark_3.5.0-custom-tfrecord_2.12-0.6.1.jar"
-
 
 class SubgraphSampler:
     """
@@ -212,9 +207,9 @@ class SubgraphSampler:
             if jar != main_jar_file_uri
         ]
         if use_spark35:
-            extra_jar_file_uris.append(SNAP_SPARK_35_TFRECORD_JAR_PATH)
+            extra_jar_file_uris.append(SPARK_35_TFRECORD_JAR_GCS_PATH)
         else:
-            extra_jar_file_uris.append(SPARK_TFRECORD_JAR_PATH)
+            extra_jar_file_uris.append(SPARK_31_TFRECORD_JAR_GCS_PATH)
 
         logger.info(f"Will add the following jars to all jobs: {extra_jar_file_uris}")
 

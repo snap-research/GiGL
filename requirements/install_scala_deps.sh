@@ -1,6 +1,11 @@
 #!/bin/bash
 set -e
 
+# Get the directory of the current script
+SCRIPT_DIR="$(dirname "$0")"
+# Source the dep_vars.env file to use its variables
+source "$SCRIPT_DIR/../dep_vars.env"
+
 is_running_on_mac() {
     [ "$(uname)" == "Darwin" ]
     return $?
@@ -27,15 +32,14 @@ mkdir -p tools/scala
 echo "Installing tooling for spark 3.1"
 gsutil cp gs://public-gigl/tools/scala/spark/spark-3.1.3-bin-hadoop3.2.tgz tools/scala/spark-3.1.3-bin-hadoop3.2.tgz
 gunzip -c tools/scala/spark-3.1.3-bin-hadoop3.2.tgz | tar xopf - -C tools/scala
-# Pulls custom package which allows for parsing and output tf records
-gsutil cp gs://public-gigl/tools/scala/spark_packages/spark-custom-tfrecord_2.12-0.5.1.jar tools/scala/spark_packages/spark-custom-tfrecord_2.12-0.5.1.jar
 
 
 echo "Installing tooling for spark 3.5; this will deprecate regular installation for spark 3.1 above"
 gsutil cp gs://public-gigl/tools/scala/spark/spark-3.5.0-bin-hadoop3.tgz tools/scala/spark-3.5.0-bin-hadoop3.tgz
 gunzip -c tools/scala/spark-3.5.0-bin-hadoop3.tgz | tar xopf - -C tools/scala
 # Pulls custom package which allows for parsing and output tf records
-gsutil cp gs://public-gigl/tools/scala/registry/spark_3.5.0-custom-tfrecord_2.12-0.6.1.jar tools/scala/spark_packages/spark-custom-tfrecord_2.12-0.5.1.jar
+gsutil cp $SPARK_31_TFRECORD_JAR_GCS_PATH $SPARK_31_TFRECORD_JAR_LOCAL_PATH
+gsutil cp $SPARK_35_TFRECORD_JAR_GCS_PATH $SPARK_35_TFRECORD_JAR_LOCAL_PATH
 
 
 echo "Installing tooling for scala protobuf"
