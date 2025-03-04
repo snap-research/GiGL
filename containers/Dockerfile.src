@@ -15,6 +15,8 @@ COPY python/setup.py setup.py
 COPY python/snapchat snapchat
 COPY python/gigl gigl
 COPY examples examples
+COPY deployment deployment
+
 
 # enables usage of tcm as the memory allocator instead of default C memory allocators. Mainly, advantageous for CPU training jobs
 # Either boosts performance or does not make any improvement compared to default settings.

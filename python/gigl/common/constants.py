@@ -1,27 +1,25 @@
 from pathlib import Path
 from typing import Dict, List, Final
 
-GIGL_ROOT_DIR: Path = (
+GIGL_ROOT_DIR: Final[Path] = (
     Path(__file__).resolve().parent.parent.parent.parent
 )  # common -> gigl -> python -> root
-PATH_GIGL_PKG_INIT_FILE: Path = Path.joinpath(
+PATH_GIGL_PKG_INIT_FILE: Final[Path] = Path.joinpath(
     GIGL_ROOT_DIR, "python", "gigl", "__init__.py"
 )
-PATH_BASE_IMAGES_VARIABLE_FILE: Path = Path.joinpath(
+PATH_BASE_IMAGES_VARIABLE_FILE: Final[Path] = Path.joinpath(
     GIGL_ROOT_DIR, "dep_vars.env"
 ).absolute()
 
 def parse_makefile_vars(makefile_path: Path) -> Dict[str, str]:
     vars_dict: Dict[str, str] = {}
-    lines: List[str] = []
     with open(makefile_path, "r") as f:
-        lines = f.readlines()
-    for line in lines:
-        if line.strip().startswith("#") or not line.strip():
-            continue
-        if "=" in line:
-            key, value = line.split("=")
-            vars_dict[key.strip()] = value.strip()
+        for line in f.readlines():
+            if line.strip().startswith("#") or not line.strip():
+                continue
+            if "=" in line:
+                key, value = line.split("=")
+                vars_dict[key.strip()] = value.strip()
     return vars_dict
 
 
