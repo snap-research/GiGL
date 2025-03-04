@@ -1,4 +1,4 @@
-include base_images.variable
+include dep_vars.env
 
 SHELL := /bin/bash
 CONDA_ENV_NAME=gnn
@@ -108,11 +108,10 @@ generate_dev_linux_cuda_hashed_requirements:
 # installation scripts
 precondition_tests:
 	python shared/tests/requirements_check.py
+	python shared/tests/dep_vars_check.py
 
 assert_yaml_configs_parse:
 	python scripts/assert_yaml_configs_parse.py -d .
-
-# TODO: (Open Source) Integration and unit tests currently run with project specific information. Before open sourcing we should swap out this resource config to point to all the public assets (gigl-public). 
 
 # Set PY_TEST_FILES=<TEST_FILE_NAME_GLOB> to test a specifc file.
 # Ex. `make unit_test_py PY_TEST_FILES="eval_metrics_test.py"`
@@ -167,7 +166,7 @@ integration_test:
 	)
 
 mock_assets:
-	( cd python ; python -m gigl.src.mocking.dataset_asset_mocking_suite --resource_config_uri="../do_not_open_source/resource_configs/dev_default_resource_config.yaml" --env test)
+	( cd python ; python -m gigl.src.mocking.dataset_asset_mocking_suite --resource_config_uri="deployment/configs/e2e_cicd_resource_config.yaml" --env test)
 
 format_py:
 	autoflake --config python/pyproject.toml python scripts
@@ -219,10 +218,10 @@ push_new_docker_images: push_cuda_docker_image push_cpu_docker_image push_datafl
 # Compile and run an instance of pipelines
 # Example:
 # make \
-  job_name="{alias}_run_dev_gnn_kubeflow_pipeline" \
-  start_at="inferencer" \
-  task_config_uri="gs://TEMP DEV GBML PLACEHOLDER/e2e_DIST_cora_anchor_link_pred_1/config_populator/frozen_gbml_config.yaml" \
-  resource_config_uri="internal/resource_configs/platform/dev_mega_resource_config.yaml" \
+  job_name="{alias}_run_dev_mag240m_kfp_pipeline" \
+  start_at="config_populator" \
+  task_config_uri="examples/MAG240M/task_config.yaml" \
+  resource_config_uri="examples/MAG240M/resource_config.yaml" \
   run_dev_gnn_kubeflow_pipeline
 run_dev_gnn_kubeflow_pipeline: compile_jars push_new_docker_images
 	python -m do_not_open_source.deployment.gnn \
@@ -290,12 +289,12 @@ _run_e2e_kfp_test: compile_jars push_new_docker_images
 	)
 
 run_cora_nalp_e2e_kfp_test: job_name_prefixes_str:="cora_nalp_test_on"
-run_cora_nalp_e2e_kfp_test: task_config_uris_str:="gigl/src/mocking/configs/e2e_node_anchor_based_link_prediction_template_gbml_config.yaml"
+run_cora_nalp_e2e_kfp_test: task_config_uris_str:="src/mocking/configs/e2e_node_anchor_based_link_prediction_template_gbml_config.yaml"
 run_cora_nalp_e2e_kfp_test: resource_config_uris_str:="deployment/configs/e2e_cicd_resource_config.yaml"
 run_cora_nalp_e2e_kfp_test: _run_e2e_kfp_test
 
 run_cora_snc_e2e_kfp_test: job_name_prefixes_str:="cora_snc_test_on"
-run_cora_snc_e2e_kfp_test: task_config_uris_str:="gigl/src/mocking/configs/e2e_supervised_node_classification_template_gbml_config.yaml"
+run_cora_snc_e2e_kfp_test: task_config_uris_str:="src/mocking/configs/e2e_supervised_node_classification_template_gbml_config.yaml"
 run_cora_snc_e2e_kfp_test: resource_config_uris_str:="deployment/configs/e2e_cicd_resource_config.yaml"
 run_cora_snc_e2e_kfp_test: _run_e2e_kfp_test
 
@@ -303,12 +302,12 @@ run_cora_snc_e2e_kfp_test: _run_e2e_kfp_test
 # where in some cases the root node doesn't properly get added back to 
 # the returned subgraph. Meaning, trainer will fail.
 run_cora_udl_e2e_kfp_test: job_name_prefixes_str:="cora_udl_test_on"
-run_cora_udl_e2e_kfp_test: task_config_uris_str:="gigl/src/mocking/configs/e2e_udl_node_anchor_based_link_prediction_template_gbml_config.yaml"
+run_cora_udl_e2e_kfp_test: task_config_uris_str:="src/mocking/configs/e2e_udl_node_anchor_based_link_prediction_template_gbml_config.yaml"
 run_cora_udl_e2e_kfp_test: resource_config_uris_str:="deployment/configs/e2e_cicd_resource_config.yaml"
 run_cora_udl_e2e_kfp_test: _run_e2e_kfp_test
 
 run_dblp_nalp_e2e_kfp_test: job_name_prefixes_str:="dblp_nalp_test_on"
-run_dblp_nalp_e2e_kfp_test: task_config_uris_str:="gigl/src/mocking/configs/dblp_node_anchor_based_link_prediction_template_gbml_config.yaml"
+run_dblp_nalp_e2e_kfp_test: task_config_uris_str:="src/mocking/configs/dblp_node_anchor_based_link_prediction_template_gbml_config.yaml"
 run_dblp_nalp_e2e_kfp_test: resource_config_uris_str:="deployment/configs/e2e_cicd_resource_config.yaml"
 run_dblp_nalp_e2e_kfp_test: _run_e2e_kfp_test
 
@@ -322,11 +321,11 @@ run_all_e2e_tests: job_name_prefixes_str:=\
 		"dblp_nalp_test_on"
 
 # Removed UDL due to transient issue:
-# "gigl/src/mocking/configs/e2e_udl_node_anchor_based_link_prediction_template_gbml_config.yaml"
+# "src/mocking/configs/e2e_udl_node_anchor_based_link_prediction_template_gbml_config.yaml"
 run_all_e2e_tests: task_config_uris_str:=\
-		"gigl/src/mocking/configs/e2e_node_anchor_based_link_prediction_template_gbml_config.yaml" \
-		"gigl/src/mocking/configs/e2e_supervised_node_classification_template_gbml_config.yaml" \
-		"gigl/src/mocking/configs/dblp_node_anchor_based_link_prediction_template_gbml_config.yaml"
+		"src/mocking/configs/e2e_node_anchor_based_link_prediction_template_gbml_config.yaml" \
+		"src/mocking/configs/e2e_supervised_node_classification_template_gbml_config.yaml" \
+		"src/mocking/configs/dblp_node_anchor_based_link_prediction_template_gbml_config.yaml"
 run_all_e2e_tests: resource_config_uris_str:=\
 		"deployment/configs/e2e_cicd_resource_config.yaml"\
 		"deployment/configs/e2e_cicd_resource_config.yaml"\

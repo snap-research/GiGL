@@ -42,6 +42,7 @@ from tests.integration.pipeline_tests.split_generator.lib import (
     node_anchor_based_link_prediction,
     supervised_node_classification,
 )
+from gigl.common.constants import SPARK_35_TFRECORD_JAR_LOCAL_PATH
 from tests.integration.pipeline_tests.utils import (
     get_gcs_assets_dir_from_frozen_gbml_config_uri,
 )
@@ -364,7 +365,7 @@ class SplitGeneratorPipelineTest(unittest.TestCase):
             f"""{_SCALA_TOOLS_PATH}/spark-3.5.0-bin-hadoop3/bin/spark-submit \\
                 --class Main \\
                 --master local \\
-                --jars {_PATH_TO_SPLIT_GEN_SCALA_ROOT}/external-jars/spark_3.5.0-custom-tfrecord_2.12-0.6.1.jar \\
+                --jars {SPARK_35_TFRECORD_JAR_LOCAL_PATH} \\
                 {_PATH_TO_SPLIT_GEN_SCALA_ROOT}/{_SPLIT_GEN_SCALA_PROJECT_NAME}/target/scala-2.12/split_generator-assembly-1.0.jar \\
                 splitgen_integration_test_{current_formatted_datetime()} \\
                 {frozen_gbml_config_uri.uri} \\

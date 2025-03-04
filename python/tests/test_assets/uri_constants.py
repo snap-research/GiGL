@@ -6,7 +6,7 @@ from gigl.common import GcsUri, UriFactory
 from gigl.env import dep_constants
 
 # TODO: (svij) This bucket needs to be updated
-TEST_DATA_GCS_BUCKET = GcsUri(f"gs://{dep_constants.GIGL_PUBLIC_BUCKET_NAME}/")
+TEST_DATA_GCS_BUCKET = GcsUri(f"gs://{dep_constants.GIGL_TEST_BUCKET_NAME}/")
 EXAMPLE_TASK_ASSETS_GCS_PATH = GcsUri.join(TEST_DATA_GCS_BUCKET, "example_task_assets")
 
 DEFAULT_TEST_RESOURCE_CONFIG_URI = UriFactory.create_uri(
