@@ -95,7 +95,7 @@ If you would like to view the logs locally, you can also use: `gcloud ai custom-
 
 ### Parameters
 
-We provide some base class implimentations for training.
+We provide some base class implementations for training.
 See:
 - `python/gigl/src/common/modeling_task_specs/graphsage_template_modeling_spec.py`
 - `python/gigl/src/common/modeling_task_specs/node_anchor_based_link_prediction_modeling_task_spec.py`
@@ -106,12 +106,12 @@ See:
 They all provide runtime arguments similar to below that can help with your model training behaviour/configs. We present the args and short example below for params that might be passed in for ABLP type training:
 
 - Training environment parameters (number of workers for different dataloaders)
-    - train_main_num_workers
-    - train_random_negative_num_workers
-    - val_main_num_workers
-    - val_random_negative_num_workers
-    - test_main_num_workers
-    - test_random_negative_num_workers
+    - `train_main_num_workers`
+    - `train_random_negative_num_workers`
+    - `val_main_num_workers`
+    - `val_random_negative_num_workers`
+    - `test_main_num_workers`
+    - `test_random_negative_num_workers`
   
   Note that training involves multiple dataloaders simultaneously.  Take care to specify these parameters in a way which avoids overburdening your machine.  It is recommended to specify `(train_main_sample_num_workers + train_random_sample_num_workers + val_main_sample_num_workers + val_random_sample_num_workers < num_cpus)`, and `(test_main_sample_num_workers + test_random_sample_num_workers < num_cpus)` to avoid training stalling due to contention.
 
@@ -122,38 +122,37 @@ They all provide runtime arguments similar to below that can help with your mode
 
 
 - Non Exhaustive list of Model parameters:
-    - hidden_dim: dimension of the hidden layers
-    - num_layers: number of layers in the GNN (this should be the same as numHops under subgraphSamplerConfig)
-    - out_channels: dimension of the output embeddings
-    - should_l2_normalize_embedding_layer_output: whether apply L2 normalization on the output embeddings
+    - `hidden_dim`: dimension of the hidden layers
+    - `num_layers`: number of layers in the GNN (this should be the same as numHops under subgraphSamplerConfig)
+    - `out_channels`: dimension of the output embeddings
+    - `should_l2_normalize_embedding_layer_output`: whether apply L2 normalization on the output embeddings
 
 - Non Exhaustive list of Training parameters:
-    - num_heads
-    - val_every_num_batches: validation frequence per training batches
-    - num_val_batches: number of validation batches
-    - num_test_batches: number of testing batches
-    - optim_class_path: defaults to "torch.optim.Adam"
-    - optim_lr: learning rate of the optimizer
-    - optim_weight_decay: weight decay of the optimizer
-    - clip_grad_norm
-    - lr_scheduler_name: defaults to "torch.optim.lr_scheduler.ConstantLR"
-    - factor: param for lr scheduler
-    - total_iters: param for lr scheduler
-    - main_sample_batch_size: training batch size
-    - random_negative_sample_batch_size: random negative sample batch size for training
-    - random_negative_sample_batch_size_for_evaluation: random negative sample batch size for evaluation
-    - train_main_num_workers
-    - val_main_num_workers
-    - test_main_num_workers
-    - train_random_negative_num_workers
-    - val_random_negative_num_workers
-    - test_random_negative_num_workers
-    - early_stop_criterion: defaults to "loss"
-    - early_stop_patience: patience for earlystopping
-    - task_path: python class path to supported training tasks i.e. Retrieval `gigl.src.common.models.layers.task.Retrieval`; see gigl.src.common.models.layers.task.py for more info
-    - softmax_temp: temperature parameter in the `softmax` loss
-    - should_remove_accidental_hits
-
+    - `num_heads`
+    - `val_every_num_batches`: validation frequence per training batches
+    - `num_val_batches`: number of validation batches
+    - `num_test_batches`: number of testing batches
+    - `optim_class_path`: defaults to "torch.optim.Adam"
+    - `optim_lr`: learning rate of the optimizer
+    - `optim_weight_decay`: weight decay of the optimizer
+    - `clip_grad_norm`
+    - `lr_scheduler_name`: defaults to "torch.optim.lr_scheduler.ConstantLR"
+    - `factor`: param for lr scheduler
+    - `total_iters`: param for lr scheduler
+    - `main_sample_batch_size`: training batch size
+    - `random_negative_sample_batch_size`: random negative sample batch size for training
+    - `random_negative_sample_batch_size_for_evaluation`: random negative sample batch size for evaluation
+    - `train_main_num_workers`
+    - `val_main_num_workers`
+    - `test_main_num_workers`
+    - `train_random_negative_num_workers`
+    - `val_random_negative_num_workers`
+    - `test_random_negative_num_workers`
+    - `early_stop_criterion`: defaults to "loss"
+    - `early_stop_patience`: patience for earlystopping
+    - `task_path`: python class path to supported training tasks i.e. Retrieval `gigl.src.common.models.layers.task.Retrieval`; see gigl.src.common.models.layers.task.py for more info
+    - `softmax_temp`: temperature parameter in the `softmax` loss
+    - `should_remove_accidental_hits`
 
 
 ###  Background for distributed training

@@ -1,6 +1,6 @@
 include ../dep_vars.env
 
-# Ensure that path can be resollved globally to the jar
+# Ensure that path can be resolved globally to the jar
 # In this case, MAKEFILE_DIRS_PARENT_PATH resolves to the root of the repo
 MAKEFILE_DIRS_PARENT_PATH := $(realpath $(dir $(realpath $(firstword $(MAKEFILE_LIST))))/..)
 ROOTED_SPARK_35_TFRECORD_JAR_LOCAL_PATH:=$(MAKEFILE_DIRS_PARENT_PATH)/$(SPARK_35_TFRECORD_JAR_LOCAL_PATH)
