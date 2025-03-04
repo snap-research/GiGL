@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Dict, List
+from typing import Dict, List, Final
 
 GIGL_ROOT_DIR: Path = (
     Path(__file__).resolve().parent.parent.parent.parent
@@ -27,22 +27,22 @@ def parse_makefile_vars(makefile_path: Path) -> Dict[str, str]:
 
 _make_file_vars: Dict[str, str] = parse_makefile_vars(PATH_BASE_IMAGES_VARIABLE_FILE)
 
-DOCKER_LATEST_BASE_CUDA_IMAGE_NAME_WITH_TAG: str = _make_file_vars[
+DOCKER_LATEST_BASE_CUDA_IMAGE_NAME_WITH_TAG: Final[str]  = _make_file_vars[
     "DOCKER_LATEST_BASE_CUDA_IMAGE_NAME_WITH_TAG"
 ]
-DOCKER_LATEST_BASE_CPU_IMAGE_NAME_WITH_TAG: str = _make_file_vars[
+DOCKER_LATEST_BASE_CPU_IMAGE_NAME_WITH_TAG: Final[str]  = _make_file_vars[
     "DOCKER_LATEST_BASE_CPU_IMAGE_NAME_WITH_TAG"
 ]
-DOCKER_LATEST_BASE_DATAFLOW_IMAGE_NAME_WITH_TAG: str = _make_file_vars[
+DOCKER_LATEST_BASE_DATAFLOW_IMAGE_NAME_WITH_TAG: Final[str]  = _make_file_vars[
     "DOCKER_LATEST_BASE_DATAFLOW_IMAGE_NAME_WITH_TAG"
 ]
-SPARK_35_TFRECORD_JAR_GCS_PATH: str = _make_file_vars["SPARK_35_TFRECORD_JAR_GCS_PATH"]
-SPARK_31_TFRECORD_JAR_GCS_PATH: str = _make_file_vars["SPARK_31_TFRECORD_JAR_GCS_PATH"]
+SPARK_35_TFRECORD_JAR_GCS_PATH: Final[str]  = _make_file_vars["SPARK_35_TFRECORD_JAR_GCS_PATH"]
+SPARK_31_TFRECORD_JAR_GCS_PATH: Final[str]  = _make_file_vars["SPARK_31_TFRECORD_JAR_GCS_PATH"]
 
 # Ensure that the local path is a fully resolved local path
-SPARK_35_TFRECORD_JAR_LOCAL_PATH: str = str(
+SPARK_35_TFRECORD_JAR_LOCAL_PATH: Final[str]  = str(
     Path.joinpath(GIGL_ROOT_DIR, _make_file_vars["SPARK_35_TFRECORD_JAR_LOCAL_PATH"])
 )
-SPARK_31_TFRECORD_JAR_LOCAL_PATH: str = str(
+SPARK_31_TFRECORD_JAR_LOCAL_PATH: Final[str]  = str(
     Path.joinpath(GIGL_ROOT_DIR, _make_file_vars["SPARK_31_TFRECORD_JAR_LOCAL_PATH"])
 )

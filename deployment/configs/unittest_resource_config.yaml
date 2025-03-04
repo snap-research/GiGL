@@ -19,7 +19,7 @@ shared_resource_config:
     # by default. Since, we are not using them for development.
     temp_assets_bucket: "gs://gigl-cicd-temp"
     temp_regional_assets_bucket: "gs://gigl-cicd-temp"
-    perm_assets_bucket: "gs://gigl-cicd-temp"
+    perm_assets_bucket: "gs://gigl-cicd-temp" # For testing, we don't persist models, configs, etc. - they should expire w/ TTL
     temp_assets_bq_dataset_name: "gigl_temp_assets"
     embedding_bq_dataset_name: "gigl_temp_assets"
     gcp_service_account_email: "untrusted-external-github-gigl@external-snap-ci-github-gigl.iam.gserviceaccount.com"

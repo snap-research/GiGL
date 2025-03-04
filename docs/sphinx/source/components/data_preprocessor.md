@@ -5,7 +5,7 @@ The Data Preprocessor reads node, edge and respective feature data from a data s
 ##  Input
 
 - **job_name** (AppliedTaskIdentifier):  which uniquely identifies an end-to-end task.
-- **task_config_uri** (Uri):  Path which points to a "frozen" `GbmlConfig` proto yaml file - generated from `config_populator`
+- **task_config_uri** (Uri):  Path which points to a "frozen" `GbmlConfig` proto yaml file - Can be either manually created, or `config_populator` component (recommended approach) can be used which can generate this frozen config from a template config.
 - **resource_config_uri** (Uri): Path which points to a `GiGLResourceConfig` yaml
 - **Optional: custom_worker_image_uri**: Path to docker file to be used for dataflow worker harness image
 
@@ -40,8 +40,8 @@ data_preprocessor = DataPreprocessor()
 
 data_preprocessor.run(
     applied_task_identifier=AppliedTaskIdentifier("sample_job_name"),
-    task_config_uri=UriFactory.create_uri("gs://my-temp-assets-bucket/frozen_task_config.yaml"),
-    resource_config_uri=UriFactory.create_uri("gs://my-temp-assets-bucket/resource_config.yaml")
+    task_config_uri=UriFactory.create_uri("gs://MY TEMP ASSETS BUCKET/frozen_task_config.yaml"),
+    resource_config_uri=UriFactory.create_uri("gs://MY TEMP ASSETS BUCKET/resource_config.yaml")
     custom_worker_image_uri="gcr.io/project/directory/dataflow_image:x.x.x",  # Optional
 )
 ```
@@ -52,8 +52,8 @@ data_preprocessor.run(
 python -m \
     gigl.src.data_preprocessor.data_preprocessor \
     --job_name="sample_job_name" \
-    --task_config_uri="gs://my-temp-assets-bucket/frozen_task_config.yaml" \
-    --resource_config_uri="gs://my-temp-assets-bucket/resource_config.yaml"
+    --task_config_uri="gs://MY TEMP ASSETS BUCKET/frozen_task_config.yaml" \
+    --resource_config_uri="gs://MY TEMP ASSETS BUCKET/resource_config.yaml"
 ```
 
 ## Output

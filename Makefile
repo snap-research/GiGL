@@ -113,8 +113,6 @@ precondition_tests:
 assert_yaml_configs_parse:
 	python scripts/assert_yaml_configs_parse.py -d .
 
-# TODO: (Open Source) Integration and unit tests currently run with project specific information. Before open sourcing we should swap out this resource config to point to all the public assets (public-gigl). 
-
 # Set PY_TEST_FILES=<TEST_FILE_NAME_GLOB> to test a specifc file.
 # Ex. `make unit_test_py PY_TEST_FILES="eval_metrics_test.py"`
 # By default, runs all tests under python/testing/unit.
@@ -291,12 +289,12 @@ _run_e2e_kfp_test: compile_jars push_new_docker_images
 	)
 
 run_cora_nalp_e2e_kfp_test: job_name_prefixes_str:="cora_nalp_test_on"
-run_cora_nalp_e2e_kfp_test: task_config_uris_str:="gigl/src/mocking/configs/e2e_node_anchor_based_link_prediction_template_gbml_config.yaml"
+run_cora_nalp_e2e_kfp_test: task_config_uris_str:="src/mocking/configs/e2e_node_anchor_based_link_prediction_template_gbml_config.yaml"
 run_cora_nalp_e2e_kfp_test: resource_config_uris_str:="deployment/configs/e2e_cicd_resource_config.yaml"
 run_cora_nalp_e2e_kfp_test: _run_e2e_kfp_test
 
 run_cora_snc_e2e_kfp_test: job_name_prefixes_str:="cora_snc_test_on"
-run_cora_snc_e2e_kfp_test: task_config_uris_str:="gigl/src/mocking/configs/e2e_supervised_node_classification_template_gbml_config.yaml"
+run_cora_snc_e2e_kfp_test: task_config_uris_str:="src/mocking/configs/e2e_supervised_node_classification_template_gbml_config.yaml"
 run_cora_snc_e2e_kfp_test: resource_config_uris_str:="deployment/configs/e2e_cicd_resource_config.yaml"
 run_cora_snc_e2e_kfp_test: _run_e2e_kfp_test
 
@@ -304,12 +302,12 @@ run_cora_snc_e2e_kfp_test: _run_e2e_kfp_test
 # where in some cases the root node doesn't properly get added back to 
 # the returned subgraph. Meaning, trainer will fail.
 run_cora_udl_e2e_kfp_test: job_name_prefixes_str:="cora_udl_test_on"
-run_cora_udl_e2e_kfp_test: task_config_uris_str:="gigl/src/mocking/configs/e2e_udl_node_anchor_based_link_prediction_template_gbml_config.yaml"
+run_cora_udl_e2e_kfp_test: task_config_uris_str:="src/mocking/configs/e2e_udl_node_anchor_based_link_prediction_template_gbml_config.yaml"
 run_cora_udl_e2e_kfp_test: resource_config_uris_str:="deployment/configs/e2e_cicd_resource_config.yaml"
 run_cora_udl_e2e_kfp_test: _run_e2e_kfp_test
 
 run_dblp_nalp_e2e_kfp_test: job_name_prefixes_str:="dblp_nalp_test_on"
-run_dblp_nalp_e2e_kfp_test: task_config_uris_str:="gigl/src/mocking/configs/dblp_node_anchor_based_link_prediction_template_gbml_config.yaml"
+run_dblp_nalp_e2e_kfp_test: task_config_uris_str:="src/mocking/configs/dblp_node_anchor_based_link_prediction_template_gbml_config.yaml"
 run_dblp_nalp_e2e_kfp_test: resource_config_uris_str:="deployment/configs/e2e_cicd_resource_config.yaml"
 run_dblp_nalp_e2e_kfp_test: _run_e2e_kfp_test
 
@@ -323,11 +321,11 @@ run_all_e2e_tests: job_name_prefixes_str:=\
 		"dblp_nalp_test_on"
 
 # Removed UDL due to transient issue:
-# "gigl/src/mocking/configs/e2e_udl_node_anchor_based_link_prediction_template_gbml_config.yaml"
+# "src/mocking/configs/e2e_udl_node_anchor_based_link_prediction_template_gbml_config.yaml"
 run_all_e2e_tests: task_config_uris_str:=\
-		"gigl/src/mocking/configs/e2e_node_anchor_based_link_prediction_template_gbml_config.yaml" \
-		"gigl/src/mocking/configs/e2e_supervised_node_classification_template_gbml_config.yaml" \
-		"gigl/src/mocking/configs/dblp_node_anchor_based_link_prediction_template_gbml_config.yaml"
+		"src/mocking/configs/e2e_node_anchor_based_link_prediction_template_gbml_config.yaml" \
+		"src/mocking/configs/e2e_supervised_node_classification_template_gbml_config.yaml" \
+		"src/mocking/configs/dblp_node_anchor_based_link_prediction_template_gbml_config.yaml"
 run_all_e2e_tests: resource_config_uris_str:=\
 		"deployment/configs/e2e_cicd_resource_config.yaml"\
 		"deployment/configs/e2e_cicd_resource_config.yaml"\

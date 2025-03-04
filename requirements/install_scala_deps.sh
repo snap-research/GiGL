@@ -57,4 +57,4 @@ rm tools/scalapbc/scalapbc.zip
 # `java.lang.NoClassDefFoundError: Could not initialize class org.apache.spark.storage.StorageUtils$`
 # export JAVA_OPTS='--add-exports java.base/sun.nio.ch=ALL-UNNAMED'
 
-echo "Finished installation"
+echo "Finished Scala environment installation"

@@ -5,7 +5,7 @@ The Trainer component reads the outputs of split generator (which paths are spec
 ## Input
 
 - **job_name** (AppliedTaskIdentifier):  which uniquely identifies an end-to-end task.
-- **task_config_uri** (Uri):  Path which points to a "frozen" `GbmlConfig` proto yaml file - generated from `config_populator`
+- **task_config_uri** (Uri):  Path which points to a "frozen" `GbmlConfig` proto yaml file - Can be either manually created, or `config_populator` component (recommended approach) can be used which can generate this frozen config from a template config.
 - **resource_config_uri** (Uri): Path which points to a `GiGLResourceConfig` yaml
 
 ## What does it do?
@@ -39,8 +39,8 @@ trainer = Trainer()
 
 trainer.run(
     applied_task_identifier=AppliedTaskIdentifier("sample_job_name"),
-    task_config_uri=UriFactory.create_uri("gs://my-temp-assets-bucket/frozen_task_config.yaml"),
-    resource_config_uri=UriFactory.create_uri("gs://my-temp-assets-bucket/resource_config.yaml")
+    task_config_uri=UriFactory.create_uri("gs://MY TEMP ASSETS BUCKET/frozen_task_config.yaml"),
+    resource_config_uri=UriFactory.create_uri("gs://MY TEMP ASSETS BUCKET/resource_config.yaml")
 )
 ```
 
@@ -53,8 +53,8 @@ Note: If you are training on VertexAI and using a custom class, you will have to
 python -m \
     gigl.src.training.trainer \
     --job_name="sample_job_name" \
-    --task_config_uri="gs://my-temp-assets-bucket/frozen_task_config.yaml"
-    --resource_config_uri="gs://my-temp-assets-bucket/resource_config.yaml"
+    --task_config_uri="gs://MY TEMP ASSETS BUCKET/frozen_task_config.yaml"
+    --resource_config_uri="gs://MY TEMP ASSETS BUCKET/resource_config.yaml"
 ```
 
 ## Output
@@ -101,11 +101,11 @@ See:
 - `python/gigl/src/common/modeling_task_specs/node_anchor_based_link_prediction_modeling_task_spec.py`
 - `python/gigl/src/common/modeling_task_specs/node_classification_modeling_task_spec.py`
 
-**** Note: many training/model params require dep on using the right model / training setup i.e. specific configurations may not be supported - see individual implementations to understand how each param is used. Infact, everything for training specs is user customizable and we provide no restrictions, rather just a couple examples of what is possible. Users are encouraged to write their own training specs.
+**** Note: many training/model params require dep on using the right model / training setup i.e. specific configurations may not be supported - see individual implementations to understand how each param is used. Training specs are fully customizable - these are only examples
 
-They all provide runtime arguments similar to below that can help with your model training behaviour/configs. We present the args and short examples below:
+They all provide runtime arguments similar to below that can help with your model training behaviour/configs. We present the args and short example below for params that might be passed in for ABLP type training:
 
-- Training environment parameters (number of workers for different dataloaders). Note: Not all below are availalbe for all task specs i.e. random_negative_num_workers is only configurable for ABLP type training.
+- Training environment parameters (number of workers for different dataloaders)
     - train_main_num_workers
     - train_random_negative_num_workers
     - val_main_num_workers

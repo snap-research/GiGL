@@ -23,8 +23,8 @@ config_populator = ConfigPopulator()
 
 task_config_uri = config_populator.run(
     applied_task_identifier=AppliedTaskIdentifier("sample_job_name"),
-    task_config_uri=UriFactory.create_uri("gs://my-temp-assets-bucket/task_config.yaml"),
-    resource_config_uri=UriFactory.create_uri("gs://my-temp-assets-bucket/resource_config.yaml")
+    task_config_uri=UriFactory.create_uri("gs://MY TEMP ASSETS BUCKET/task_config.yaml"),
+    resource_config_uri=UriFactory.create_uri("gs://MY TEMP ASSETS BUCKET/resource_config.yaml")
 )
 ```
 
@@ -33,8 +33,8 @@ task_config_uri = config_populator.run(
 python -m \
     gigl.src.config_populator.config_populator \
     --job_name="sample_job_name" \
-    --template_uri="gs://my-temp-assets-bucket/task_config.yaml" \
-    --output_file_path_frozen_gbml_config_uri="gs://my-temp-assets-bucket/resource_config.yaml"
+    --template_uri="gs://MY TEMP ASSETS BUCKET/task_config.yaml" \
+    --output_file_path_frozen_gbml_config_uri="gs://MY TEMP ASSETS BUCKET/resource_config.yaml"
 ```
 
 **Notes:**
