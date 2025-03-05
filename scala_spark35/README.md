@@ -3,7 +3,7 @@
 ### Building and Testing the project
 
 Run `make install_deps` first if you haven't to install scala & spark.
-cd inside the ```scala``` directory.
+cd inside the ```scala_spark35``` directory.
 To compile all projects in the repo and generate the jar files, run:
 ```
 sbt assembly
@@ -47,10 +47,13 @@ To silence the worker logs
 Note: Mocked assets are generated using the dataset asset mocking suite (in `python/gigl/src/mocking/`)
 
 ### How to build and deploy spark-tfrecord package used in the Spark Jobs
-We now utilize our own fork of the Spark TfRecord Connector. This is a fork of the Linkedin repo [linkedin/spark-tfrecord](https://github.com/linkedin/spark-tfrecord). To build:
+Note: remember to have local deps for developing installed by running `make install_deps`. See main README.md for more details.
+
+We make use of the Spark [TFRecord](https://www.tensorflow.org/tutorials/load_data/tfrecord) Connector provided by the Linkedin repo [linkedin/spark-tfrecord](https://github.com/linkedin/spark-tfrecord). We deploy and maintain our own copies off the jar since not all sbt/scala vers are available on Maven Central, etc.
+
+To build:
 
 First clone the repo, then cd into directory. 
-Run `make install_deps` first if you haven't to install scala & spark. 
 
 Install maven if not already installed:
 ```
@@ -69,6 +72,9 @@ Copy to GCS and deploy:
 ```
 gsutil cp target/spark-tfrecord_2.12-0.5.0.jar gs://$YOUR_BUCKET/your/path/to/snap-spark-custom-tfrecord_2.12-{version_number}.jar
 ```
+
+Note: Snap currently hosts these in the `public-gigl` GCS bucket.
+
 
 ## FAQ / Common Issues
 

@@ -4,8 +4,8 @@ from gigl.src.common.constants.local_fs import get_gigl_root_directory
 from gigl.src.common.types.graph_data import EdgeType, EdgeUsageType, NodeType
 from gigl.src.common.utils.bq import BqUtils
 
-TEST_DATA_GCS_BUCKET = GcsUri(f"gs://{dep_constants.GIGL_PUBLIC_BUCKET_NAME}/")
-EXAMPLE_TASK_ASSETS_GCS_PATH = GcsUri.join(TEST_DATA_GCS_BUCKET, "mocked_assets")
+MOCK_DATA_GCS_BUCKET = GcsUri(f"gs://{dep_constants.GIGL_PUBLIC_BUCKET_NAME}/")
+EXAMPLE_TASK_ASSETS_GCS_PATH = GcsUri.join(MOCK_DATA_GCS_BUCKET, "mocked_assets")
 EXAMPLE_TASK_ASSETS_BQ_PATH = "external-snap-ci-github-gigl.gbml_mocked_assets"
 MOCKED_DATASET_ARTIFACT_METADATA_LOCAL_PATH = LocalUri.join(
     get_gigl_root_directory(),
@@ -21,8 +21,8 @@ def update_gcs_uri_with_test_assets_and_version(uri_str: str, version: str) -> s
     Replaces the bucket and path of a GCS URI with the test assets bucket and path.
 
     Example:
-        input gs://TEMP DEV GBML PLACEHOLDER/<task_identifier>/data_preprocess/preprocessed_metadata.yaml
-        output gs://TEST ASSET PLACEHOLDER/mocked_assets/<version>/<task_identifier>/data_preprocess/preprocessed_metadata.yaml
+        input gs://some_bucket_name/<task_identifier>/data_preprocess/preprocessed_metadata.yaml
+        output gs://{MOCK_DATA_GCS_BUCKET}/mocked_assets/<version>/<task_identifier>/data_preprocess/preprocessed_metadata.yaml
     """
 
     uri_tokens = uri_str.split("/")

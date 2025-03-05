@@ -41,6 +41,7 @@ from snapchat.research.gbml import (
     preprocessed_metadata_pb2,
     training_samples_schema_pb2,
 )
+from gigl.common.constants import SPARK_35_TFRECORD_JAR_LOCAL_PATH, SPARK_31_TFRECORD_JAR_LOCAL_PATH
 
 logger = Logger()
 
@@ -596,7 +597,7 @@ def compile_and_run_sgs_pipeline_locally(
             f"""{_PATH_TO_SPARK35_SUBMIT} \\
             --class Main \\
             --master local \\
-            --jars {_PATH_TO_SGS_SCALA_SPARK_35_ROOT}/external-jars/spark_3.5.0-custom-tfrecord_2.12-0.6.1.jar \\
+            --jars {SPARK_35_TFRECORD_JAR_LOCAL_PATH} \\
             {_PATH_TO_SGS_SCALA_SPARK_35_ROOT}/{_SGS_SCALA_PROJECT_NAME}/target/scala-2.12/subgraph_sampler-assembly-1.0.jar\\
             {frozen_gbml_config_uri.uri} \\
             sgs_integration_test_{current_formatted_datetime()} \\
@@ -609,7 +610,7 @@ def compile_and_run_sgs_pipeline_locally(
             f"""{_PATH_TO_SPARK_SUBMIT} \\
             --class Main \\
             --master local \\
-            --jars {_PATH_TO_SGS_SCALA_ROOT}/external-jars/snap-spark-custom-tfrecord_2.12-0.5.0.jar \\
+            --jars {SPARK_31_TFRECORD_JAR_LOCAL_PATH} \\
             {_PATH_TO_SGS_SCALA_ROOT}/{_SGS_SCALA_PROJECT_NAME}/target/scala-2.12/subgraph_sampler-assembly-1.0.jar \\
             {frozen_gbml_config_uri.uri} \\
             sgs_integration_test_{current_formatted_datetime()} \\
