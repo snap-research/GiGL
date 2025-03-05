@@ -103,7 +103,7 @@ See:
 
 **** Note: many training/model params require dep on using the right model / training setup i.e. specific configurations may not be supported - see individual implementations to understand how each param is used. Training specs are fully customizable - these are only examples
 
-They all provide runtime arguments similar to below that can help with your model training behaviour/configs. We present the args and short example below for params that might be passed in for ABLP type training:
+They all provide runtime arguments similar to below that can help with your model training behaviour/configs. We present example of the args for `node_anchor_based_link_prediction_modeling_task_spec.py` below. Please look at the respective coasses above for more exhaustive list.
 
 - Training environment parameters (number of workers for different dataloaders)
     - `train_main_num_workers`

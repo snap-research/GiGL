@@ -49,7 +49,7 @@ Note: Mocked assets are generated using the dataset asset mocking suite (in `pyt
 ### How to build and deploy spark-tfrecord package used in the Spark Jobs
 Note: remember to have local deps for developing installed by running `make install_deps`. See main README.md for more details.
 
-We make use of the Spark TfRecord Connector provided by the Linkedin repo [linkedin/spark-tfrecord](https://github.com/linkedin/spark-tfrecord). We deploy and maintain our own copies off the jar since not all sbt/scala vers are available on Maven Central, etc.
+We make use of the Spark [TFRecord](https://www.tensorflow.org/tutorials/load_data/tfrecord) Connector provided by the Linkedin repo [linkedin/spark-tfrecord](https://github.com/linkedin/spark-tfrecord). We deploy and maintain our own copies off the jar since not all sbt/scala vers are available on Maven Central, etc.
 
 To build:
 
