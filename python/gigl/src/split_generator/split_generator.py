@@ -18,6 +18,7 @@ from gigl.src.common.utils.metrics_service_provider import (
     get_metrics_service_instance,
     initialize_metrics,
 )
+from gigl.common.constants import SPARK_35_TFRECORD_JAR_GCS_PATH
 from gigl.src.common.utils.spark_job_manager import (
     DataprocClusterInitData,
     SparkJobManager,
@@ -28,7 +29,6 @@ logger = Logger()
 MAX_JOB_DURATION = datetime.timedelta(
     hours=4
 )  # Allowed max job duration for SplitGen job -- for MAU workload
-SNAP_SPARK_TFRECORD_JAR_PATH = f"gs://{dep_constants.GIGL_PUBLIC_BUCKET_NAME}/tools/scala/registry/spark_3.5.0-custom-tfrecord_2.12-0.6.1.jar"
 
 
 class SplitGenerator:
@@ -185,7 +185,7 @@ class SplitGenerator:
                 task_config_uri.uri,
                 resource_config_gcs_path.uri,
             ],
-            extra_jar_file_uris=[SNAP_SPARK_TFRECORD_JAR_PATH],
+            extra_jar_file_uris=[SPARK_35_TFRECORD_JAR_GCS_PATH],
             use_spark35=use_spark35,
         )
         if not skip_cluster_delete:

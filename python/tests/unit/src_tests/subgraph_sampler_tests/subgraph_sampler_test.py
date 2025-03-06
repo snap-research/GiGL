@@ -14,6 +14,7 @@ from gigl.src.common.utils import metrics_service_provider
 from gigl.src.subgraph_sampler import subgraph_sampler
 from gigl.src.subgraph_sampler.lib.ingestion_protocol import BaseIngestion
 from snapchat.research.gbml import gbml_config_pb2, gigl_resource_config_pb2
+from gigl.common.constants import SPARK_35_TFRECORD_JAR_GCS_PATH, SPARK_31_TFRECORD_JAR_GCS_PATH
 
 
 # Class that's used as a dummy to be injected and then mocked out
@@ -209,7 +210,7 @@ class SubgraphSamplerTest(unittest.TestCase):
                 max_job_duration=ANY,
                 runtime_args=ANY,
                 extra_jar_file_uris=[
-                    "gs://gigl-public/tools/scala/spark_packages/spark-custom-tfrecord_2.12-0.5.1.jar",
+                    SPARK_31_TFRECORD_JAR_GCS_PATH,
                 ],
                 use_spark35=False,
             )
@@ -326,7 +327,7 @@ class SubgraphSamplerTest(unittest.TestCase):
                         subgraph_sampler_root,
                         "sidecar.jar",
                     ).uri,
-                    "gs://gigl-public/tools/scala/registry/spark_3.5.0-custom-tfrecord_2.12-0.6.1.jar",
+                    SPARK_35_TFRECORD_JAR_GCS_PATH,
                 ],
                 use_spark35=True,
             )

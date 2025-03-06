@@ -5,7 +5,7 @@ The Subgraph Sampler receives node and edge data from Data Preprocessor and main
 ## Input
 
 - **job_name** (AppliedTaskIdentifier):  which uniquely identifies an end-to-end task.
-- **task_config_uri** (Uri):  Path which points to a "template" `GbmlConfig` proto yaml file.
+- **task_config_uri** (Uri):  Path which points to a "frozen" `GbmlConfig` proto yaml file - Can be either manually created, or `config_populator` component (recommended approach) can be used which can generate this frozen config from a template config.
 - **resource_config_uri** (Uri): Path which points to a `GiGLResourceConfig` yaml
 
 Optional Development Args:
@@ -148,18 +148,18 @@ from gigl.src.common.types import AppliedTaskIdentifier
 subgraph_sampler = SubgraphSampler()
 
 subgraph_sampler.run(
-    applied_task_identifier=AppliedTaskIdentifier("my_gigl_job_name"),
-    task_config_uri=UriFactory.create_uri("gs://my-temp-assets-bucket/task_config.yaml"),
-    resource_config_uri=UriFactory.create_uri("gs://my-temp-assets-bucket/resource_config.yaml")
+    applied_task_identifier=AppliedTaskIdentifier("sample_job_name"),
+    task_config_uri=UriFactory.create_uri("gs://MY TEMP ASSETS BUCKET/frozen_task_config.yaml"),
+    resource_config_uri=UriFactory.create_uri("gs://MY TEMP ASSETS BUCKET/resource_config.yaml")
 )
 ```
 
 **Command Line**
 ```
 python -m gigl.src.subgraph_sampler.subgraph_sampler \
-  --job_name my_gigl_job_name \
-  --task_config_uri "gs://my-temp-assets-bucket/task_config.yaml"
-  --resource_config_uri="gs://my-temp-assets-bucket/resource_config.yaml"
+  --job_name="sample_job_name" \
+  --task_config_uri="gs://MY TEMP ASSETS BUCKET/frozen_task_config.yaml"
+  --resource_config_uri="gs://MY TEMP ASSETS BUCKET/resource_config.yaml"
 ```
 
 The python entry point `split_generator.py` performs the following:
@@ -188,9 +188,9 @@ i.e. for username some_user, provide debug_cluster_owner_alias="some_user"
 *Example for when you would want to use cluster for development:*
 ```
 python -m gigl.src.split_generator.split_generator \
-  --job_name my_gigl_job_name \
-  --task_config_uri "gs://my-temp-assets-bucket/task_config.yaml"
-  --resource_config_uri="gs://my-temp-assets-bucket/resource_config.yaml"
+  --job_name="sample_job_name" \
+  --task_config_uri="gs://MY TEMP ASSETS BUCKET/frozen_task_config.yaml"
+  --resource_config_uri="gs://MY TEMP ASSETS BUCKET/resource_config.yaml"
   --cluster_name="unique-name-for-the-cluster"\
   --skip_cluster_delete \
   --debug_cluster_owner_alias="$(whoami)"

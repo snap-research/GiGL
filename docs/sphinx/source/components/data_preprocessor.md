@@ -5,7 +5,7 @@ The Data Preprocessor reads node, edge and respective feature data from a data s
 ##  Input
 
 - **job_name** (AppliedTaskIdentifier):  which uniquely identifies an end-to-end task.
-- **task_config_uri** (Uri):  Path which points to a "template" `GbmlConfig` proto yaml file.
+- **task_config_uri** (Uri):  Path which points to a "frozen" `GbmlConfig` proto yaml file - Can be either manually created, or `config_populator` component (recommended approach) can be used which can generate this frozen config from a template config.
 - **resource_config_uri** (Uri): Path which points to a `GiGLResourceConfig` yaml
 - **Optional: custom_worker_image_uri**: Path to docker file to be used for dataflow worker harness image
 
@@ -39,9 +39,9 @@ from gigl.src.common.types import AppliedTaskIdentifier
 data_preprocessor = DataPreprocessor()
 
 data_preprocessor.run(
-    applied_task_identifier=AppliedTaskIdentifier("my_gigl_job_name"),
-    task_config_uri=UriFactory.create_uri("gs://my-temp-assets-bucket/task_config.yaml"),
-    resource_config_uri=UriFactory.create_uri("gs://my-temp-assets-bucket/resource_config.yaml")
+    applied_task_identifier=AppliedTaskIdentifier("sample_job_name"),
+    task_config_uri=UriFactory.create_uri("gs://MY TEMP ASSETS BUCKET/frozen_task_config.yaml"),
+    resource_config_uri=UriFactory.create_uri("gs://MY TEMP ASSETS BUCKET/resource_config.yaml")
     custom_worker_image_uri="gcr.io/project/directory/dataflow_image:x.x.x",  # Optional
 )
 ```
@@ -51,14 +51,14 @@ data_preprocessor.run(
 ```bash
 python -m \
     gigl.src.data_preprocessor.data_preprocessor \
-    --job_name my_gigl_job_name \
-    --task_config_uri "gs://my-temp-assets-bucket/task_config.yaml"
-    --resource_config_uri="gs://my-temp-assets-bucket/resource_config.yaml"
+    --job_name="sample_job_name" \
+    --task_config_uri="gs://MY TEMP ASSETS BUCKET/frozen_task_config.yaml" \
+    --resource_config_uri="gs://MY TEMP ASSETS BUCKET/resource_config.yaml"
 ```
 
 ## Output
 
-Upon completing the Dataflow jobs referenced in the last bullet point of  [What](#what-does-it-do) above, the component writes out a `PreprocessedMetadata` proto to URI specified by the `preprocessedMetadataUri` field in the `sharedConfig` section of the frozen `GbmlConfig`.  
+Upon completing the Dataflow jobs referenced in the last bullet point of  [What](#what-does-it-do) above, the component writes out a `PreprocessedMetadata` proto to URI specified by the `preprocessedMetadataUri` field in the `sharedConfig` section of the frozen `GbmlConfig` i.e. the frozen task spec specified by `task_config_uri`.  
 
 This proto houses information about
 - The inferred `GraphMetadata`
@@ -69,7 +69,7 @@ This proto houses information about
 
 ## Custom Usage
 
-- The actions this component undertakes are largely determined by the imperative transformation logic specified in the user-provided `DataPreprocessorConfig` class instance.  This leaves much to user control.  Please take a look at the instance provided at the `dataPreprocessorConfigClsPath` field of `datasetConfig`.`dataPreprocessorConfig` in order to learn more.  For an example `dataPreprocessorConfig`, see [here](../../python/tests/test_assets/dataset_mocking/pipeline_test_assets/passthrough_preprocessor_config_for_mocked_assets.py)
+- The actions this component undertakes are largely determined by the imperative transformation logic specified in the user-provided `DataPreprocessorConfig` class instance.  This leaves much to user control.  Please take a look at the instance provided at the `dataPreprocessorConfigClsPath` field of `datasetConfig`.`dataPreprocessorConfig` in order to learn more.  For an example `dataPreprocessorConfig`, see [here](../../../../python/gigl/src/mocking/mocking_assets/passthrough_preprocessor_config_for_mocked_assets.py)
 
 - In order to customize transformation logic for existing node features, take a look at preprocessing functions in [Tensorflow Transform ](https://www.tensorflow.org/tfx/transform/get_started) documentation.  In order to add or remove node and edge features, you can modify the logic in `feature_spec_fn` and `preprocessing_fn` housed by `NodeDataPreprocessingSpec` and  `EdgeDataPreprocessingSpec`.  You can use the `build_ingestion_feature_spec_fn` function to conveniently generate feature specs which allow you to ingest and then transform these fields
 

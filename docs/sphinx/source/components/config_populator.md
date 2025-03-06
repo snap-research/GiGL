@@ -22,9 +22,9 @@ from gigl.src.common.types import AppliedTaskIdentifier
 config_populator = ConfigPopulator()
 
 task_config_uri = config_populator.run(
-    applied_task_identifier=AppliedTaskIdentifier("my_gigl_job_name"),
-    task_config_uri=UriFactory.create_uri("gs://my-temp-assets-bucket/task_config.yaml"),
-    resource_config_uri=UriFactory.create_uri("gs://my-temp-assets-bucket/resource_config.yaml")
+    applied_task_identifier=AppliedTaskIdentifier("sample_job_name"),
+    task_config_uri=UriFactory.create_uri("gs://MY TEMP ASSETS BUCKET/task_config.yaml"),
+    resource_config_uri=UriFactory.create_uri("gs://MY TEMP ASSETS BUCKET/resource_config.yaml")
 )
 ```
 
@@ -32,9 +32,9 @@ task_config_uri = config_populator.run(
 ```bash
 python -m \
     gigl.src.config_populator.config_populator \
-    --job_name mau_sample_task_id \
-    --template_uri gs://TEST ASSET PLACEHOLDER/example_task_assets/mau/configs/mau_template_gbml_config_20230213.yaml \
-    --output_file_path_frozen_gbml_config_uri my-output-frozen-config_path.yaml
+    --job_name="sample_job_name" \
+    --template_uri="gs://MY TEMP ASSETS BUCKET/task_config.yaml" \
+    --output_file_path_frozen_gbml_config_uri="gs://MY TEMP ASSETS BUCKET/resource_config.yaml"
 ```
 
 **Notes:**

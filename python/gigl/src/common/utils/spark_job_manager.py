@@ -15,7 +15,7 @@ from google.cloud.dataproc_v1.types import (
 )
 from google.protobuf.duration_pb2 import Duration
 
-from gigl.common import Uri
+from gigl.common import Uri, GcsUri
 from gigl.common.logger import Logger
 from gigl.common.services.dataproc import DataprocService
 
@@ -34,8 +34,9 @@ class DataprocClusterInitData:
     num_workers: int
     machine_type: str
     num_local_ssds: int
-    debug_cluster_owner_alias: Optional[str]
     is_debug_mode: bool
+    debug_cluster_owner_alias: Optional[str] = None
+    init_script_uri: Optional[GcsUri] = None
     labels: Optional[Dict[str, str]] = None
 
 
@@ -52,15 +53,17 @@ class SparkJobManager:
         init_actions = []
         metadata = {}
 
+        if cluster_init_data.init_script_uri is not None:
+            init_action = NodeInitializationAction(
+                executable_file=cluster_init_data.init_script_uri,
+                execution_timeout=Duration(seconds=300),  # 5 mins
+            )
+            init_actions.append(init_action)
+
         if cluster_init_data.debug_cluster_owner_alias is not None:
             logger.info(
                 f"Trying to setup a debug cluster with cluster_owner: {cluster_init_data.debug_cluster_owner_alias}"
             )
-            init_action = NodeInitializationAction(
-                executable_file="gs://DEV PERM ASSET PLACEHOLDER/scripts/debug_cluster_setup.sh",
-                execution_timeout=Duration(seconds=300),  # 5 mins
-            )
-            init_actions.append(init_action)
             metadata["OWNER"] = cluster_init_data.debug_cluster_owner_alias
 
         idle_ttl_s = SparkJobManager.__get_cluster_idle_time(
