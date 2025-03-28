@@ -1,17 +1,29 @@
 name: generate-hashed-requirements
 
 # This GitHub Action is triggered when a new comment is created on an issue.
-on:
-  issue_comment:                                     
-    types: [created, edited]
+# on:
+#   issue_comment:                                     
+#     types: [created, edited]
+
+on: [push]
 
 jobs:
+  comment-link-to-workflow:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Post a comment with the workflow run link
+        run: |
+          curl -X POST -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+          -d '{"body": "The workflow run is starting. You can view the details here: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"}' \
+          https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments
+
   setup-python-and-tools:
     # This job sets up Python and pip-tools on both Linux and macOS.
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: [ubuntu-latest, macos-14]
+    needs: comment-link-to-workflow  # Ensure that a comment is posted with workflow id
     steps:
       # Step 1: Check out the repository code.
       - uses: actions/checkout@v3
@@ -20,7 +32,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.9.18'
+          python-version: '3.9.23'
 
       # Step 3: Install pip-tools, which is used to generate hashed requirements.
       - name: Install pip-tools
