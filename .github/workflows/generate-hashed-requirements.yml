@@ -2,8 +2,8 @@ name: generate-hashed-requirements
 
 # This GitHub Action is triggered when a new comment is created on an issue.
 on:
-  issue_comment:
-    types: [created]
+  issue_comment:                                     
+    types: [created, edited]
 
 jobs:
   setup-python-and-tools:
@@ -27,12 +27,12 @@ jobs:
         run: pip install pip-tools
 
   generate-linux-cpu-hashed-requirements:
+    if: contains(github.event.comment.html_url, '/pull/') && contains(github.event.comment.body, '/generate_hashed_requirements')
+
     # This job runs on an Ubuntu-based runner.
     runs-on: ubuntu-latest
     needs: setup-python-and-tools  # Ensures Python setup is completed first
-    
-    if: github.event.issue.pull_request && contains(github.event.comment.body, '/generate_hashed_requirements')
-    
+        
     steps:
       # Step 4: Generate a hashed requirements file from pyproject.toml using pip-compile.
       - name: Generate hashed requirements for Linux Platform
@@ -50,11 +50,12 @@ jobs:
           path: requirements/linux_cpu_requirements_unified.txt
 
   generate-dev-linux-cpu-hashed-requirements:
+    if: contains(github.event.comment.html_url, '/pull/') && contains(github.event.comment.body, '/generate_hashed_requirements')
+
     # This job runs on an Ubuntu-based runner.
     runs-on: ubuntu-latest
     needs: setup-python-and-tools  # Ensures Python setup is completed first
   
-    if: github.event.issue.pull_request && contains(github.event.comment.body, '/generate_hashed_requirements')
   
     steps:
       # Step 4: Generate a different hashed requirements file.
@@ -73,12 +74,12 @@ jobs:
           path: requirements/dev_linux_cpu_requirements_unified.txt
 
   generate-mac-hashed-requirements:
+    if: contains(github.event.comment.html_url, '/pull/') && contains(github.event.comment.body, '/generate_hashed_requirements')
+
     # This job runs on a macOS-based runner (macOS 14) - Arm64 (Apple Silicon) runner.
     runs-on: macos-14
     needs: setup-python-and-tools  # Ensures Python setup is completed first
-    
-    if: github.event.issue.pull_request && contains(github.event.comment.body, '/generate_hashed_requirements')
-    
+        
     steps:
       # Step 4: Generate a hashed requirements file from pyproject.toml using pip-compile.
       - name: Generate hashed requirements for MAC
