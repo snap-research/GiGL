@@ -2,7 +2,7 @@ name: generate-hashed-requirements
 
 # This GitHub Action is triggered when a new comment is created on an issue.
 on:
-  issue_comment:
+  pull_request_review_comment:
     types: [created]
 
 jobs:
