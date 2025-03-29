@@ -22,131 +22,70 @@ jobs:
   #         https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments \
   #         -d '{"body": "The workflow run is starting. You can view the details here: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"}'
 
-  generate-linux-cpu-hashed-requirements:
+  compute-linux-hashed-requirements:
+    runs-on: ubuntu-latest
+    steps:
+      # Step 1: Check out the repository code.
+      - uses: actions/checkout@v3
+      # Step 2: Check out the repository code and set up the Python environment.
+      - uses: ./.github/actions/setup-python-tools 
+      # Step 3: Generate a hashed requirements file from pyproject.toml using pip-compile.
+      - name: Generate all hashed requirements for Linux Platform
+        run: |
+          make generate_dev_linux_cuda_hashed_requirements
+          make generate_linux_cuda_hashed_requirements
+          make generate_dev_linux_cpu_hashed_requirements
+          make generate_linux_cpu_hashed_requirements
+      # Step 4: Upload the computed hashed requirements file as an artifact.
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux_requirements
+          path: |
+            requirements/linux_cuda_requirements_unified.txt
+            requirements/dev_linux_cuda_requirements_unified.txt
+            requirements/linux_cpu_requirements_unified.txt
+            requirements/dev_linux_cpu_requirements_unified.txt
+
+  compute-mac-hashed-requirements:
+    runs-on: macos-14 # macOS-based runner (macOS 14) - Arm64 (Apple Silicon) runner.
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/setup-python-tools 
+      - name: Generate hashed requirements for MACOS (Silicon) platform
+        run: |
+          make generate_mac_hashed_requirements
+          make generate_dev_mac_hashed_requirements
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: mac_requirements
+          path: |
+            requirements/darwin_arm64_requirements_unified.txt
+            requirements/dev_darwin_arm64_requirements_unified.txt
+
+  commit-hashed-requirements:
     # This job only runs if its a pull request and the comment contains `/generate_hashed_requirements`
     # See: https://docs.github.com/en/actions/writing-workflows/choosing-when-your-workflow-runs/events-that-trigger-workflows#issue_comment-on-issues-only-or-pull-requests-only
     # if: ${{ github.event.issue.pull_request }} && contains(github.event.comment.body, '/generate_hashed_requirements')
-
-    # This job runs on an Ubuntu-based runner.
-    runs-on: ubuntu-latest
-        
-    steps:
-        # Step 1: Check out the repository code.
-      - uses: actions/checkout@v3
-      # Step 1: Check out the repository code and set up the Python environment.
-      - uses: ./.github/actions/setup-python-tools 
-      # Step 4: Generate a hashed requirements file from pyproject.toml using pip-compile.
-      - name: Generate hashed requirements for Linux Platform
-        run: |
-          pip-compile -v --allow-unsafe --generate-hashes --no-emit-index-url --resolver=backtracking \
-          --output-file=requirements/linux_cpu_requirements_unified.txt \
-          --extra torch25-cpu --extra transform \
-          ./python/pyproject.toml
-
-      # Step 5: Upload the generated hashed requirements file as an artifact.
-      - name: Upload Artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: linux_cpu_requirements_unified
-          path: requirements/linux_cpu_requirements_unified.txt
-
-  generate-dev-linux-cpu-hashed-requirements:
-    # if: ${{ github.event.issue.pull_request }} && contains(github.event.comment.body, '/generate_hashed_requirements')
-    # This job runs on an Ubuntu-based runner.
-    runs-on: ubuntu-latest
-  
-    steps:
-      # Step 1: Check out the repository code.
-      - uses: actions/checkout@v3
-      # Step 1: Check out the repository code and set up the Python environment.
-      - uses: ./.github/actions/setup-python-tools 
-      # Step 4: Generate a different hashed requirements file.
-      - name: Generate dev hashed requirements for Linux CPU platform
-        run: |
-          pip-compile -v --allow-unsafe --generate-hashes --no-emit-index-url --resolver=backtracking \
-          --output-file=requirements/dev_linux_cpu_requirements_unified.txt \
-          --extra torch25-cpu --extra transform --extra dev \
-          ./python/pyproject.toml
-
-      # Step 5: Upload the new hashed requirements file as an artifact.
-      - name: Upload Artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: dev_linux_cpu_requirements_unified
-          path: requirements/dev_linux_cpu_requirements_unified.txt
-
-  generate-mac-hashed-requirements:
-    # if: ${{ github.event.issue.pull_request }} && contains(github.event.comment.body, '/generate_hashed_requirements')
-
-    # This job runs on a macOS-based runner (macOS 14) - Arm64 (Apple Silicon) runner.
-    runs-on: macos-14
-        
-    steps:
-      # Step 1: Check out the repository code.
-      - uses: actions/checkout@v3
-      # Step 1: Check out the repository code and set up the Python environment.
-      - uses: ./.github/actions/setup-python-tools 
-      # Step 4: Generate a hashed requirements file from pyproject.toml using pip-compile.
-      - name: Generate hashed requirements for MAC
-        run: |
-          pip-compile -v --allow-unsafe --generate-hashes --no-emit-index-url --resolver=backtracking \
-          --output-file=requirements/darwin_arm64_requirements_unified.txt \
-          --extra torch25-cpu --extra transform \
-          ./python/pyproject.toml
-
-      # Step 5: Upload the generated hashed requirements file as an artifact.
-      - name: Upload Artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: darwin_arm64_requirements_unified
-          path: requirements/darwin_arm64_requirements_unified.txt
-
-  commit-hashed-requirements:
     needs: 
-      - generate-linux-cpu-hashed-requirements
-      - generate-dev-linux-cpu-hashed-requirements
-      - generate-mac-hashed-requirements
+      - compute-linux-hashed-requirements
+      - compute-mac-hashed-requirements
     runs-on: ubuntu-latest
-
     steps:
-      # Step 1: Check out the repository
       - name: Checkout repository
         uses: actions/checkout@v3
-
-      # Step 2: Download all artifacts
-      - name: Download Linux CPU requirements
+      - name: Download generated linux requirements artifacts
         uses: actions/download-artifact@v4
         with:
-          name: linux_cpu_requirements_unified
+          name: linux_requirements
           path: requirements/
-
-      - name: Download Dev Linux CPU requirements
+      - name: Download generated mac requirements artifacts
         uses: actions/download-artifact@v4
         with:
-          name: dev_linux_cpu_requirements_unified
+          name: mac_requirements
           path: requirements/
-
-      - name: Download Mac requirements
-        uses: actions/download-artifact@v4
+      - name: Commit and Push Hashed Requirement updates
+        uses: ./.github/actions/commit-and-push
         with:
-          name: darwin_arm64_requirements_unified
-          path: requirements/
-
-      # Step 3: Commit and push changes
-      - name: Commit and push changes
-        env:
-          COMMIT_MESSAGE: "Update all hashed requirements files"
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add requirements/
-          
-          # Check if there are any changes
-          if git diff --cached --exit-code; then
-            echo "No changes to commit."
-            exit 0
-          fi
-          
-          git commit -m "$COMMIT_MESSAGE"
-          git push
+          commit_message: "Updated hashed requirements files"
