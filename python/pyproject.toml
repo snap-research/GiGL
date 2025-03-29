@@ -73,7 +73,7 @@ torch25-cuda-121 = [ # Torch 2.5.1 w/ Cuda 12.1
     "torch-spline-conv @ https://data.pyg.org/whl/torch-2.5.0+cu121/torch_spline_conv-1.2.2+pt25cu121-cp39-cp39-linux_x86_64.whl ; platform_system=='Linux' and python_version=='3.9'",
 
     # ===================================== Deps for TorchRec =====================================
-    "torchrec @ https://download.pytorch.org/whl/cu121/torchrec-1.0.0+cu121-py3-none-any.whl ; platform_system=='Linux' and python_version=='3.9'",
+    "torchrec @ https://download.pytorch.org/whl/cu121/torchrec-1.0.0%2Bcu121-py3-none-any.whl ; platform_system=='Linux' and python_version=='3.9'",
     "fbgemm-gpu @ https://download.pytorch.org/whl/cu121/fbgemm_gpu-1.0.0+cu121-cp39-cp39-manylinux2014_x86_64.whl ; platform_system=='Linux' and python_version=='3.9'",
 
     # =========================================== Deps for graphlearn-torch   ===========================================
@@ -101,7 +101,7 @@ torch25-cpu = [
     "torch-spline-conv @ https://data.pyg.org/whl/torch-2.5.0+cpu/torch_spline_conv-1.2.2+pt25cpu-cp39-cp39-linux_x86_64.whl ; platform_system=='Linux' and python_version=='3.9'",
 
     # ===================================== Deps for TorchRec =====================================
-    "torchrec @ https://download.pytorch.org/whl/cpu/torchrec-1.0.0+cpu-py3-none-any.whl ; platform_system=='Linux' and python_version=='3.9'",
+    "torchrec @ https://download.pytorch.org/whl/cpu/torchrec-1.0.0%2Bcpu-py3-none-any.whl ; platform_system=='Linux' and python_version=='3.9'",
     "fbgemm-gpu @ https://download.pytorch.org/whl/cpu/fbgemm_gpu-1.0.0+cpu-cp39-cp39-manylinux2014_x86_64.whl ; platform_system=='Linux' and python_version=='3.9'",
 
     # =========================================== Deps for graphlearn-torch   ===========================================
@@ -116,7 +116,7 @@ transform = [
     "pyarrow==10.0.1",
     # Tensorflow-transform natively doesnt provide wheels for arm64 Macs.   
 
-    "tfx-bsl==1.14.0 ; platform_machine!='arm64'",
+    "tfx-bsl~=1.14.0 ; platform_machine!='arm64'",
     
     "tensorflow_data_validation==1.14.0 ; platform_machine!='arm64'",
     "tensorflow-transform~=1.14.0",
