@@ -54,8 +54,8 @@ jobs:
       - uses: ./.github/actions/setup-python-tools 
       - name: Generate hashed requirements for MACOS (Silicon) platform
         run: |
-          make generate_mac_hashed_requirements
-          make generate_dev_mac_hashed_requirements
+          make generate_mac_arm64_cpu_hashed_requirements
+          make generate_dev_mac_arm64_cpu_hashed_requirements
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
