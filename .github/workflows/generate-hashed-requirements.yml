@@ -31,6 +31,8 @@ jobs:
     runs-on: ubuntu-latest
         
     steps:
+        # Step 1: Check out the repository code.
+      - uses: actions/checkout@v3
       # Step 1: Check out the repository code and set up the Python environment.
       - uses: ./.github/actions/setup-python-tools 
       # Step 4: Generate a hashed requirements file from pyproject.toml using pip-compile.
@@ -54,6 +56,8 @@ jobs:
     runs-on: ubuntu-latest
   
     steps:
+      # Step 1: Check out the repository code.
+      - uses: actions/checkout@v3
       # Step 1: Check out the repository code and set up the Python environment.
       - uses: ./.github/actions/setup-python-tools 
       # Step 4: Generate a different hashed requirements file.
@@ -78,6 +82,8 @@ jobs:
     runs-on: macos-14
         
     steps:
+      # Step 1: Check out the repository code.
+      - uses: actions/checkout@v3
       # Step 1: Check out the repository code and set up the Python environment.
       - uses: ./.github/actions/setup-python-tools 
       # Step 4: Generate a hashed requirements file from pyproject.toml using pip-compile.
