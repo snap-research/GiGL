@@ -22,29 +22,6 @@ jobs:
   #         https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments \
   #         -d '{"body": "The workflow run is starting. You can view the details here: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"}'
 
-  setup-python-and-tools:
-    # This job sets up Python and pip-tools on both Linux and macOS.
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest, macos-14]
-    # needs: comment-link-to-workflow  # Ensure that a comment is posted with workflow id
-    steps:
-      # Step 1: Check out the repository code.
-      - uses: actions/checkout@v3
-
-      # Step 2: Set up Python environment (Python 3.9.13).
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          # Available versions: https://raw.githubusercontent.com/actions/python-versions/main/versions-manifest.json
-          # Ensure to use a version that has support for arm64-darwin so we can build for Apple Silicon (macOS 14).
-          python-version: '3.9.13' 
-
-      # Step 3: Install pip-tools, which is used to generate hashed requirements.
-      - name: Install pip-tools
-        run: pip install pip-tools
-
   generate-linux-cpu-hashed-requirements:
     # This job only runs if its a pull request and the comment contains `/generate_hashed_requirements`
     # See: https://docs.github.com/en/actions/writing-workflows/choosing-when-your-workflow-runs/events-that-trigger-workflows#issue_comment-on-issues-only-or-pull-requests-only
@@ -52,9 +29,10 @@ jobs:
 
     # This job runs on an Ubuntu-based runner.
     runs-on: ubuntu-latest
-    needs: setup-python-and-tools  # Ensures Python setup is completed first
         
     steps:
+      # Step 1: Check out the repository code and set up the Python environment.
+      - uses: ./.github/actions/setup-python-tools 
       # Step 4: Generate a hashed requirements file from pyproject.toml using pip-compile.
       - name: Generate hashed requirements for Linux Platform
         run: |
@@ -74,9 +52,10 @@ jobs:
     # if: ${{ github.event.issue.pull_request }} && contains(github.event.comment.body, '/generate_hashed_requirements')
     # This job runs on an Ubuntu-based runner.
     runs-on: ubuntu-latest
-    needs: setup-python-and-tools  # Ensures Python setup is completed first
   
     steps:
+      # Step 1: Check out the repository code and set up the Python environment.
+      - uses: ./.github/actions/setup-python-tools 
       # Step 4: Generate a different hashed requirements file.
       - name: Generate dev hashed requirements for Linux CPU platform
         run: |
@@ -97,9 +76,10 @@ jobs:
 
     # This job runs on a macOS-based runner (macOS 14) - Arm64 (Apple Silicon) runner.
     runs-on: macos-14
-    needs: setup-python-and-tools  # Ensures Python setup is completed first
         
     steps:
+      # Step 1: Check out the repository code and set up the Python environment.
+      - uses: ./.github/actions/setup-python-tools 
       # Step 4: Generate a hashed requirements file from pyproject.toml using pip-compile.
       - name: Generate hashed requirements for MAC
         run: |

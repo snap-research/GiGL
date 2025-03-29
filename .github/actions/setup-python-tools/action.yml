@@ -1,0 +1,22 @@
+name: setup-python-and-tools
+description: |
+  This action sets up Python and installs pip-tools, and other necessary pip-tools
+runs:
+    using: "composite"
+    # needs: comment-link-to-workflow  # Ensure that a comment is posted with workflow id
+    steps:
+      # Step 1: Check out the repository code.
+      - uses: actions/checkout@v3
+
+      # Step 2: Set up Python environment (Python 3.9.13).
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          # Available versions: https://raw.githubusercontent.com/actions/python-versions/main/versions-manifest.json
+          # Ensure to use a version that has support for arm64-darwin so we can build for Apple Silicon (macOS 14).
+          python-version: '3.9.13' 
+
+      # Step 3: Install pip-tools, which is used to generate hashed requirements.
+      - name: Install pip-tools
+        shell: bash
+        run: pip install pip-tools
