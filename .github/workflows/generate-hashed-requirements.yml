@@ -88,4 +88,5 @@ jobs:
       - name: Commit and Push Hashed Requirement updates
         uses: ./.github/actions/commit-and-push
         with:
-          commit_message: "Updated hashed requirements files"
+          commit_message: "[AUTOMATED] Update all hashed requirements files"
+          github_token: ${{ secrets.GITHUB_TOKEN }}

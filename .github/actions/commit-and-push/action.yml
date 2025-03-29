@@ -5,13 +5,16 @@ inputs:
     description: "Commit message for the changes"
     required: true
     default: "Updated files via GitHub Actions"
+  github_token:
+    description: "GitHub token to authenticate and push the changes"
+    required: true
 runs:
   using: "composite"
   steps:
     - name: Commit and push changes
       env:
         COMMIT_MESSAGE: ${{ inputs.commit_message }}
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ inputs.github_token }}
       run: |
         git config --global user.name "github-actions[bot]"
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
