@@ -47,40 +47,66 @@ dependencies = [
     "mmh3",
     "mypy-extensions",
     "chardet",
-    "google-cloud-aiplatform~=1.27.1",
-    "kfp~=1.8.18",
+    "google-cloud-aiplatform~=1.44.0",
+    "kfp~=2.5.0",
     "python-dotenv==1.0.0",
     "torch-geometric==2.5.3",
+    "torchmetrics==1.0.3"
 ]
 
 [project.optional-dependencies]
-torch23-cuda-121 = [ # Torch 2.3 w/ Cuda 12.1
+torch25-cuda-121 = [ # Torch 2.5.1 w/ Cuda 12.1
     # Assuming Linux for cuda installation
     # Currently supports py3.9. To support other python versions, wheels will need to be manually added
-    # ===================================== Deps for pytorch geometric =====================================
-    # pyg-lib==0.4.0
-    "pyg-lib @ https://data.pyg.org/whl/torch-2.3.0+cu121/pyg_lib-0.4.0+pt23cu121-cp39-cp39-linux_x86_64.whl ; platform_system=='Linux' and python_version=='3.9'",
-    # torch-cluster==1.6.3
-    "torch-cluster @ https://data.pyg.org/whl/torch-2.3.0+cu121/torch_cluster-1.6.3+pt23cu121-cp39-cp39-linux_x86_64.whl ; platform_system=='Linux' and python_version=='3.9'",
-    # torch-scatter==2.1.2
-    "torch-scatter @ https://data.pyg.org/whl/torch-2.3.0+cu121/torch_scatter-2.1.2+pt23cu121-cp39-cp39-linux_x86_64.whl ; platform_system=='Linux' and python_version=='3.9'",
-    # torch-sparse==0.6.18
-    "torch-sparse @ https://data.pyg.org/whl/torch-2.3.0+cu121/torch_sparse-0.6.18+pt23cu121-cp39-cp39-linux_x86_64.whl ; platform_system=='Linux' and python_version=='3.9'",
-    # torch-spline-conv==1.2.2
-    "torch-spline-conv @ https://data.pyg.org/whl/torch-2.3.0+cu121/torch_spline_conv-1.2.2+pt23cu121-cp39-cp39-linux_x86_64.whl ; platform_system=='Linux' and python_version=='3.9'",
+
+    # ===================================== Deps for PyTorch =====================================
+    # torch is currently installed via conda in `install_py_deps.sh` as it is needed as a prereq for pyg deps below
+    # "torch==2.5.1+cu121",
+    # "torchvision==0.20.0+cu121",
+    # "torchaudio==2.5.1",
+ 
+    # ===================================== Deps for PyTorch Geometric =====================================
+    "pyg-lib @ https://data.pyg.org/whl/torch-2.5.0+cu121/pyg_lib-0.4.0+pt25cu121-cp39-cp39-linux_x86_64.whl ; platform_system=='Linux' and python_version=='3.9'",
+    "torch-cluster @ https://data.pyg.org/whl/torch-2.5.0+cu121/torch_cluster-1.6.3+pt25cu121-cp39-cp39-linux_x86_64.whl ; platform_system=='Linux' and python_version=='3.9'",
+    "torch-scatter @ https://data.pyg.org/whl/torch-2.5.0+cu121/torch_scatter-2.1.2+pt25cu121-cp39-cp39-linux_x86_64.whl ; platform_system=='Linux' and python_version=='3.9'",
+    "torch-sparse @ https://data.pyg.org/whl/torch-2.5.0+cu121/torch_sparse-0.6.18+pt25cu121-cp39-cp39-linux_x86_64.whl ; platform_system=='Linux' and python_version=='3.9'",
+    "torch-spline-conv @ https://data.pyg.org/whl/torch-2.5.0+cu121/torch_spline_conv-1.2.2+pt25cu121-cp39-cp39-linux_x86_64.whl ; platform_system=='Linux' and python_version=='3.9'",
+
+    # ===================================== Deps for TorchRec =====================================
+    "torchrec @ https://download.pytorch.org/whl/cu121/torchrec-1.0.0%2Bcu121-py3-none-any.whl ; platform_system=='Linux' and python_version=='3.9'",
+    "fbgemm-gpu @ https://download.pytorch.org/whl/cu121/fbgemm_gpu-1.0.0%2Bcu121-cp39-cp39-manylinux2014_x86_64.whl ; platform_system=='Linux' and python_version=='3.9'",
+
+    # =========================================== Deps for graphlearn-torch   ===========================================
+    # Graph learn torch is installed from source in `install_py_deps.sh` as there are issues installing it from pypi
+    # "graphlearn-torch=="0.2.5"
 ]
 
-torch23-cpu = [
-    # pyg-lib==0.4.0
-    "pyg-lib @ https://data.pyg.org/whl/torch-2.3.0+cpu/pyg_lib-0.4.0+pt23cpu-cp39-cp39-linux_x86_64.whl ; platform_system=='Linux' and python_version=='3.9'",
-    # torch-cluster==1.6.3
-    "torch-cluster @ https://data.pyg.org/whl/torch-2.3.0+cpu/torch_cluster-1.6.3+pt23cpu-cp39-cp39-linux_x86_64.whl ; platform_system=='Linux' and python_version=='3.9'",
-    # torch-scatter==2.1.2
-    "torch-scatter @ https://data.pyg.org/whl/torch-2.3.0+cpu/torch_scatter-2.1.2+pt23cpu-cp39-cp39-linux_x86_64.whl ; platform_system=='Linux' and python_version=='3.9'",
-    # torch-sparse==0.6.18
-    "torch-sparse @ https://data.pyg.org/whl/torch-2.3.0+cpu/torch_sparse-0.6.18+pt23cpu-cp39-cp39-linux_x86_64.whl ; platform_system=='Linux' and python_version=='3.9'",
-    # torch-spline-conv==1.2.2
-    "torch-spline-conv @ https://data.pyg.org/whl/torch-2.3.0+cpu/torch_spline_conv-1.2.2+pt23cpu-cp39-cp39-linux_x86_64.whl ; platform_system=='Linux' and python_version=='3.9'",
+torch25-cpu = [
+    # PYG has not prebuild wheels for arm64 MACS i.e. (M1,M2,M3 chips), they need to be built from scratch
+    # Neither has some tensorflow-transform, and graphlearn-tprch.
+    # We currently don't suppoer MAC environment as a result.
+    
+    # ===================================== Deps for PyTorch =====================================
+    # torch is currently installed via conda 
+    # "torch==2.5.1",
+    # "torchvision==0.20.0",
+    # "torchaudio==2.5.1",
+    # ===================================== Deps for PyG =====================================
+    # https://data.pyg.org/whl/torch-2.5.0+cpu
+    # https://data.pyg.org/whl/torch-2.5.0+cpu/pyg_lib-0.4.0+pt25cpu-cp39-cp39-linux_x86_64.whl
+    "pyg-lib @ https://data.pyg.org/whl/torch-2.5.0+cpu/pyg_lib-0.4.0+pt25cpu-cp39-cp39-linux_x86_64.whl ; platform_system=='Linux' and python_version=='3.9'",
+    "torch-cluster @ https://data.pyg.org/whl/torch-2.5.0+cpu/torch_cluster-1.6.3+pt25cpu-cp39-cp39-linux_x86_64.whl ; platform_system=='Linux' and python_version=='3.9'",
+    "torch-scatter @ https://data.pyg.org/whl/torch-2.5.0+cpu/torch_scatter-2.1.2+pt25cpu-cp39-cp39-linux_x86_64.whl ; platform_system=='Linux' and python_version=='3.9'",
+    "torch-sparse @ https://data.pyg.org/whl/torch-2.5.0+cpu/torch_sparse-0.6.18+pt25cpu-cp39-cp39-linux_x86_64.whl ; platform_system=='Linux' and python_version=='3.9'",
+    "torch-spline-conv @ https://data.pyg.org/whl/torch-2.5.0+cpu/torch_spline_conv-1.2.2+pt25cpu-cp39-cp39-linux_x86_64.whl ; platform_system=='Linux' and python_version=='3.9'",
+
+    # ===================================== Deps for TorchRec =====================================
+    "torchrec @ https://download.pytorch.org/whl/cpu/torchrec-1.0.0%2Bcpu-py3-none-any.whl ; platform_system=='Linux' and python_version=='3.9'",
+    "fbgemm-gpu @ https://download.pytorch.org/whl/cpu/fbgemm_gpu-1.0.0%2Bcpu-cp39-cp39-manylinux2014_x86_64.whl ; platform_system=='Linux' and python_version=='3.9'",
+
+    # =========================================== Deps for graphlearn-torch   ===========================================
+    # Graph learn torch is installed from source in `install_py_deps.sh` as there are issues installing it from pypi
+    # "graphlearn-torch=="0.2.5"
 ]
 
 # Used for tensorflow-transform. Must move in lockstep with tensorflow, and pref if moved with
@@ -89,20 +115,20 @@ transform = [
     "apache-beam[gcp]==2.56.0",
     "pyarrow==10.0.1",
     # Tensorflow-transform natively doesnt provide wheels for arm64 Macs.   
-    # Specifically, We have internally released wheels for tfx-bsl, and
-    # tensorflow-data-validation for arm64 macs from our internal forks.
-    # External users will need to build from source until we release.
-    "tfx-bsl==1.14.0",
-    "tensorflow_data_validation==1.14.0",
-    "tensorflow-transform==1.14.0",
-    "tensorflow-metadata==1.14.0",
-    "tensorflow-serving-api==2.15.1"
+
+    "tfx-bsl~=1.14.0 ; platform_machine!='arm64'",
+    
+    "tensorflow_data_validation==1.14.0 ; platform_machine!='arm64'",
+    "tensorflow-transform~=1.14.0 ; platform_machine!='arm64'",
+    "tensorflow-metadata==1.14.0 ; platform_machine!='arm64'",
+    "tensorflow-serving-api==2.15.1 ; platform_machine!='arm64'"
 ]
 
 dev = [
     "autoflake==2.3.1",
     "black~=23.1.0",
     "isort~=5.12.0",
+    "mdformat==0.7.22",
     "mypy==1.8.0",
     "types-PyYAML~=6.0.12",
     "mypy-protobuf==3.3.0",
@@ -168,9 +194,17 @@ skip_gitignore = true
 
 
 [tool.autoflake]
-# Skip generated proto files.
 exclude =  [
+    # Skip generated proto files. If we run autoflake on generated protos
+    # their descriptor gets removed and they break, see below.
+    #   File "python/snapchat/research/gbml/gbml_config_pb2.py", line 17, in <module>
+    #   DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(...)
+    #   TypeError: Couldn't build proto file into descriptor pool!
+    #   Invalid proto descriptor for file "snapchat/research/gbml/gbml_config.proto":
+    #   snapchat/research/gbml/trained_model_metadata.proto: Import "snapchat/research/gbml/trained_model_metadata.proto" has not been loaded.
     "**_pb2.py*",
+    # __init__.py are used to "export" modules, and their input are often not directly used.
+    "__init__.py",
 ]
 remove-all-unused-imports = true
 in-place = true

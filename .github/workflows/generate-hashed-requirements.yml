@@ -1,0 +1,92 @@
+name: generate-hashed-requirements
+
+# This GitHub Action is triggered when a new comment is created on an issue.
+# on:
+#   issue_comment:                                     
+#     types: [created, edited]
+
+on: [push]
+
+jobs:
+  # comment-link-to-workflow:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Post a comment with the workflow run link
+  #     # See: https://docs.github.com/en/rest/issues/comments?apiVersion=2022-11-28#create-an-issue-comment
+  #       run: |
+  #         curl -L \
+  #         -X POST \
+  #         -H "Accept: application/vnd.github+json" \
+  #         -H "Authorization: Bearer${{ secrets.GITHUB_TOKEN }}" \
+  #         -H "X-GitHub-Api-Version: 2022-11-28" \
+  #         https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments \
+  #         -d '{"body": "The workflow run is starting. You can view the details here: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"}'
+
+  compute-linux-hashed-requirements:
+    runs-on: ubuntu-latest
+    steps:
+      # Step 1: Check out the repository code.
+      - uses: actions/checkout@v3
+      # Step 2: Check out the repository code and set up the Python environment.
+      - uses: ./.github/actions/setup-python-tools 
+      # Step 3: Generate a hashed requirements file from pyproject.toml using pip-compile.
+      - name: Generate all hashed requirements for Linux Platform
+        run: |
+          make generate_dev_linux_cuda_hashed_requirements
+          make generate_linux_cuda_hashed_requirements
+          make generate_dev_linux_cpu_hashed_requirements
+          make generate_linux_cpu_hashed_requirements
+      # Step 4: Upload the computed hashed requirements file as an artifact.
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux_requirements
+          path: |
+            requirements/linux_cuda_requirements_unified.txt
+            requirements/dev_linux_cuda_requirements_unified.txt
+            requirements/linux_cpu_requirements_unified.txt
+            requirements/dev_linux_cpu_requirements_unified.txt
+
+  compute-mac-hashed-requirements:
+    runs-on: macos-14 # macOS-based runner (macOS 14) - Arm64 (Apple Silicon) runner.
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/setup-python-tools 
+      - name: Generate hashed requirements for MACOS (Silicon) platform
+        run: |
+          make generate_mac_arm64_cpu_hashed_requirements
+          make generate_dev_mac_arm64_cpu_hashed_requirements
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: mac_requirements
+          path: |
+            requirements/darwin_arm64_requirements_unified.txt
+            requirements/dev_darwin_arm64_requirements_unified.txt
+
+  commit-hashed-requirements:
+    # This job only runs if its a pull request and the comment contains `/generate_hashed_requirements`
+    # See: https://docs.github.com/en/actions/writing-workflows/choosing-when-your-workflow-runs/events-that-trigger-workflows#issue_comment-on-issues-only-or-pull-requests-only
+    # if: ${{ github.event.issue.pull_request }} && contains(github.event.comment.body, '/generate_hashed_requirements')
+    needs: 
+      - compute-linux-hashed-requirements
+      - compute-mac-hashed-requirements
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Download generated linux requirements artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: linux_requirements
+          path: requirements/
+      - name: Download generated mac requirements artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: mac_requirements
+          path: requirements/
+      - name: Commit and Push Hashed Requirement updates
+        uses: ./.github/actions/commit-and-push
+        with:
+          commit_message: "[AUTOMATED] Update all hashed requirements files"
+          github_token: ${{ secrets.GITHUB_TOKEN }}
