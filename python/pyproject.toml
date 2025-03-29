@@ -74,7 +74,7 @@ torch25-cuda-121 = [ # Torch 2.5.1 w/ Cuda 12.1
 
     # ===================================== Deps for TorchRec =====================================
     "torchrec @ https://download.pytorch.org/whl/cu121/torchrec-1.0.0%2Bcu121-py3-none-any.whl ; platform_system=='Linux' and python_version=='3.9'",
-    "fbgemm-gpu @ https://download.pytorch.org/whl/cu121/fbgemm_gpu-1.0.0+cu121-cp39-cp39-manylinux2014_x86_64.whl ; platform_system=='Linux' and python_version=='3.9'",
+    "fbgemm-gpu @ https://download.pytorch.org/whl/cu121/fbgemm_gpu-1.0.0%2Bcu121-cp39-cp39-manylinux2014_x86_64.whl ; platform_system=='Linux' and python_version=='3.9'",
 
     # =========================================== Deps for graphlearn-torch   ===========================================
     # Graph learn torch is installed from source in `install_py_deps.sh` as there are issues installing it from pypi
@@ -102,7 +102,7 @@ torch25-cpu = [
 
     # ===================================== Deps for TorchRec =====================================
     "torchrec @ https://download.pytorch.org/whl/cpu/torchrec-1.0.0%2Bcpu-py3-none-any.whl ; platform_system=='Linux' and python_version=='3.9'",
-    "fbgemm-gpu @ https://download.pytorch.org/whl/cpu/fbgemm_gpu-1.0.0+cpu-cp39-cp39-manylinux2014_x86_64.whl ; platform_system=='Linux' and python_version=='3.9'",
+    "fbgemm-gpu @ https://download.pytorch.org/whl/cpu/fbgemm_gpu-1.0.0%2Bcpu-cp39-cp39-manylinux2014_x86_64.whl ; platform_system=='Linux' and python_version=='3.9'",
 
     # =========================================== Deps for graphlearn-torch   ===========================================
     # Graph learn torch is installed from source in `install_py_deps.sh` as there are issues installing it from pypi
