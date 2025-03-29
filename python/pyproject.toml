@@ -91,12 +91,11 @@ torch25-cpu = [
     # "torch==2.5.1",
     # "torchvision==0.20.0",
     # "torchaudio==2.5.1",
-
     # ===================================== Deps for PyG =====================================
     # https://data.pyg.org/whl/torch-2.5.0+cpu
     # https://data.pyg.org/whl/torch-2.5.0+cpu/pyg_lib-0.4.0+pt25cpu-cp39-cp39-linux_x86_64.whl
     "pyg-lib @ https://data.pyg.org/whl/torch-2.5.0+cpu/pyg_lib-0.4.0+pt25cpu-cp39-cp39-linux_x86_64.whl ; platform_system=='Linux' and python_version=='3.9'",
-    "torch-cluster @ https://data.pyg.org/whl/torch-2.5.0+cpu/1.6.3+pt25cpu/torch_cluster-1.6.3+pt25cpu-cp39-cp39-linux_x86_64.whl ; platform_system=='Linux' and python_version=='3.9'",
+    "torch-cluster @ https://data.pyg.org/whl/torch-2.5.0+cpu/torch_cluster-1.6.3+pt25cpu-cp39-cp39-linux_x86_64.whl ; platform_system=='Linux' and python_version=='3.9'",
     "torch-scatter @ https://data.pyg.org/whl/torch-2.5.0+cpu/torch_scatter-2.1.2+pt25cpu-cp39-cp39-linux_x86_64.whl ; platform_system=='Linux' and python_version=='3.9'",
     "torch-sparse @ https://data.pyg.org/whl/torch-2.5.0+cpu/torch_sparse-0.6.18+pt25cpu-cp39-cp39-linux_x86_64.whl ; platform_system=='Linux' and python_version=='3.9'",
     "torch-spline-conv @ https://data.pyg.org/whl/torch-2.5.0+cpu/torch_spline_conv-1.2.2+pt25cpu-cp39-cp39-linux_x86_64.whl ; platform_system=='Linux' and python_version=='3.9'",
@@ -120,7 +119,7 @@ transform = [
     "tfx-bsl==1.14.0 ; platform_machine!='arm64'",
     
     "tensorflow_data_validation==1.14.0 ; platform_machine!='arm64'",
-    "tensorflow-transform==1.14.0",
+    "tensorflow-transform~=1.14.0",
     "tensorflow-metadata==1.14.0",
     "tensorflow-serving-api==2.15.1"
 ]
