@@ -30,7 +30,6 @@ RUN echo "conda activate gnn" >> ~/.bashrc
 
 COPY requirements tmp/requirements
 RUN source ~/.bashrc && pip install --upgrade pip
-RUN --mount=type=secret,id=pip.conf,dst=/root/.pip/pip.conf \
-    source ~/.bashrc && cd tmp && bash ./requirements/install_py_deps.sh --no-pip-cache --mount-pip-credentials
+RUN source ~/.bashrc && cd tmp && bash ./requirements/install_py_deps.sh --no-pip-cache
 
 CMD [ "/bin/bash" ]

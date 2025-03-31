@@ -33,7 +33,7 @@ jobs:
 
         - name: Build and Push Docker Images
           run: |
-            TAG=${GITHUB_SHA::6}}.${{github.run_number}}.${{github.run_attempt}}
+            TAG=${GITHUB_SHA::6}.${{github.run_number}}.${{github.run_attempt}}
             gcloud auth configure-docker us-central1-docker.pkg.dev
             GIGL_BASE_CUDA_IMAGE=us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/gigl-base-images/gigl-cuda-base:${TAG}
             GIGL_BASE_CPU_IMAGE=us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/gigl-base-images/gigl-cpu-base:${TAG}
