@@ -1,13 +1,13 @@
 name: generate-hashed-requirements
 
 # This GitHub Action is triggered when a new comment is created on an issue.
-# on:
-#   issue_comment:                                     
-#     types: [created, edited]
-
-on: [push]
+on:
+  issue_comment:                                     
+    types: [created]
 
 jobs:
+  # TODO: (svij) test if commenting on workflow works in the future
+  # Leaving commented right now for reference 
   # comment-link-to-workflow:
   #   runs-on: ubuntu-latest
   #   steps:
@@ -67,7 +67,7 @@ jobs:
   commit-hashed-requirements:
     # This job only runs if its a pull request and the comment contains `/generate_hashed_requirements`
     # See: https://docs.github.com/en/actions/writing-workflows/choosing-when-your-workflow-runs/events-that-trigger-workflows#issue_comment-on-issues-only-or-pull-requests-only
-    # if: ${{ github.event.issue.pull_request }} && contains(github.event.comment.body, '/generate_hashed_requirements')
+    if: ${{ github.event.issue.pull_request }} && contains(github.event.comment.body, '/generate_hashed_requirements')
     needs: 
       - compute-linux-hashed-requirements
       - compute-mac-hashed-requirements
