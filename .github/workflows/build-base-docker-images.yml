@@ -16,6 +16,9 @@ jobs:
     # if: ${{ github.event.issue.pull_request }} && contains(github.event.comment.body, '/build_base_docker_images')
 
     steps:
+        - name: Delete huge unnecessary tools folder
+          run: rm -rf /opt/hostedtoolcache
+
         - name: Checkout repository
           uses: actions/checkout@v3
 
@@ -47,3 +50,13 @@ jobs:
             docker build -f ./containers/Dockerfile.dataflow.base --build-arg BASE_IMAGE=${GIGL_BASE_CPU_IMAGE} -t ${GIGL_BASE_DATAFLOW_IMAGE} .
             docker push ${GIGL_BASE_DATAFLOW_IMAGE}
             echo "Pushed Dataflow base image to ${GIGL_BASE_DATAFLOW_IMAGE}"
+            echo "Writing new image names to dep_vars.env"
+            sed -i "s|^DOCKER_LATEST_BASE_CUDA_IMAGE_NAME_WITH_TAG=.*|DOCKER_LATEST_BASE_CUDA_IMAGE_NAME_WITH_TAG=$GIGL_BASE_CUDA_IMAGE|" dep_vars.env
+            sed -i "s|^DOCKER_LATEST_BASE_CPU_IMAGE_NAME_WITH_TAG=.*|DOCKER_LATEST_BASE_CPU_IMAGE_NAME_WITH_TAG=$GIGL_BASE_CPU_IMAGE|" dep_vars.env
+            sed -i "s|^DOCKER_LATEST_BASE_DATAFLOW_IMAGE_NAME_WITH_TAG=.*|DOCKER_LATEST_BASE_DATAFLOW_IMAGE_NAME_WITH_TAG=$GIGL_BASE_DATAFLOW_IMAGE|" dep_vars.env
+       
+        - name: Commit and Push Dep Vars
+          uses: ./.github/actions/commit-and-push
+          with:
+            commit_message: "[AUTOMATED] Update dep.vars with new image names"
+            github_token: ${{ secrets.GITHUB_TOKEN }}
