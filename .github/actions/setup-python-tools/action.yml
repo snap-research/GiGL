@@ -49,7 +49,7 @@ runs:
       # Step 3: Set up Gcloud AUTH using Workload Identity Federation
       # See following for context: https://cloud.google.com/blog/products/identity-security/enabling-keyless-authentication-from-github-actions
       - name: Google Cloud Auth
-        if: inputs.stup_gcloud == 'true'
+        if: inputs.setup_gcloud == 'true'
         uses: 'google-github-actions/auth@v2'
         with:
           project_id: ${{ inputs.gcp_project_id }}
@@ -58,7 +58,7 @@ runs:
 
       # Step 4: Install gcloud tooling
       - name: Set Up Cloud SDK
-        if: inputs.stup_gcloud == 'true'
+        if: inputs.setup_gcloud == 'true'
         uses: google-github-actions/setup-gcloud@v2
         with:
           project_id: ${{ inputs.gcp_project_id }}
