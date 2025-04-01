@@ -17,7 +17,7 @@ jobs:
     permissions:
       contents: 'read'
       id-token: 'write'
-    runs-on: ubuntu-latest
+    runs-on: gigl-large-instances # x64 Ubuntu:latest w/ 4 cores, 16GB RAM, 150 GB SSD
 
     steps:
         # Step 1: Check out the repository code.
@@ -50,7 +50,7 @@ jobs:
     steps:
         # Step 1: Check out the repository code.
         - uses: actions/checkout@v3
-        
+
         - name: Setup Machine for building Docker images
           uses: ./.github/actions/setup-python-tools
           with:

@@ -114,7 +114,8 @@ if ! is_running_on_mac;
 then
     # Without Ninja, we build sequentially which is very slow.
     echo "Installing Ninja as a build backend"
-    apt install ninja-build
+    apt-get update -y
+    apt-get install -y ninja-build
     echo "Installing GraphLearn-Torch"
     # Occasionally, there is an existing GLT folder, delete it so we can clone.
     rm -rf graphlearn-for-pytorch
