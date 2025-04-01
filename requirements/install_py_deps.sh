@@ -63,9 +63,9 @@ is_running_on_m1_mac() {
     return $?
 }
 
-PYTORCH_VER="2.3.1"
-TORCHVISION_VER="0.18.1"
-TORCHAUDIO_VER="2.3.1"
+PYTORCH_VER="2.5.1"
+TORCHVISION_VER="0.20.1"
+TORCHAUDIO_VER="2.5.1"
 
 
 pip install --upgrade pip
@@ -83,7 +83,7 @@ else
     if is_running_on_mac;
     then
         echo "Setting up Mac environment"
-        conda install pytorch==$PYTORCH_VER torchvision==$TORCHVISION_VER torchaudio==$TORCHAUDIO_VER -c pytorch -y
+        conda install pytorch==$PYTORCH_VER torchvision==$TORCHVISION_VER torchaudio==$TORCHAUDIO_VER pytorch-cuda=12.1 -c pytorch -y
 
         if is_running_on_m1_mac;
         then
@@ -112,10 +112,15 @@ fi
 # Only install GLT if not running on Mac. 
 if ! is_running_on_mac;
 then
+    # Without Ninja, we build sequentially which is very slow.
+    echo "Installing Ninja as a build backend"
+    sudo apt install ninja-build
     echo "Installing GraphLearn-Torch"
+    # Occasionally, there is an existing GLT folder, delete it so we can clone.
+    rm -rf graphlearn-for-pytorch
     git clone https://github.com/alibaba/graphlearn-for-pytorch.git \
         && cd graphlearn-for-pytorch \
-        && git checkout tags/v0.2.4 \
+        && git checkout tags/v0.2.5 \
         && git submodule update --init \
         && bash install_dependencies.sh
     if has_cuda_driver;

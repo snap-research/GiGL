@@ -5,58 +5,84 @@ on: [push]
 #   issue_comment:
 #     types: [created]
 
+env:
+  DOCKER_BUILDKIT: 1
+  GIGL_BASE_CUDA_IMAGE: us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/gigl-base-images/gigl-cuda-base:${{ github.sha }}.${{ github.run_number }}.${{ github.run_attempt }}
+  GIGL_BASE_CPU_IMAGE: us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/gigl-base-images/gigl-cpu-base:${{ github.sha }}.${{ github.run_number }}.${{ github.run_attempt }}
+  GIGL_BASE_DATAFLOW_IMAGE: us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/gigl-base-images/gigl-dataflow-base:${{ github.sha }}.${{ github.run_number }}.${{ github.run_attempt }}
+
+
 jobs:
-  build-docker-images:
+  build-cuda-base-image:
     permissions:
       contents: 'read'
       id-token: 'write'
     runs-on: ubuntu-latest
-    env:
-      DOCKER_BUILDKIT: 1
-    # if: ${{ github.event.issue.pull_request }} && contains(github.event.comment.body, '/build_base_docker_images')
 
     steps:
-        - name: Delete huge unnecessary tools folder
-          run: rm -rf /opt/hostedtoolcache
-
-        - name: Checkout repository
-          uses: actions/checkout@v3
-
-        - name: Google Cloud Auth
-          uses: 'google-github-actions/auth@v2'
+        - name: Setup Machine for building Docker images
+          uses: ./.github/actions/setup-python-tools
           with:
-            project_id: ${{ secrets.GCP_PROJECT_ID }}
+            setup_gcloud: "true"
+            try_cleaning_disk_space: "true"
+            gcp_project_id: ${{ secrets.GCP_PROJECT_ID }}
             workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
-            service_account: ${{ secrets.GCP_SERVICE_ACCOUNT_EMAIL }}
-
-        - name: Set Up Cloud SDK
-          uses: google-github-actions/setup-gcloud@v2
-          with:
-            project_id: ${{ secrets.GCP_PROJECT_ID }}
-
+            gcp_service_account_email: ${{ secrets.GCP_SERVICE_ACCOUNT_EMAIL }}
+            
         - name: Build and Push Docker Images
           run: |
-            TAG=${GITHUB_SHA::6}.${{github.run_number}}.${{github.run_attempt}}
             gcloud auth configure-docker us-central1-docker.pkg.dev
-            GIGL_BASE_CUDA_IMAGE=us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/gigl-base-images/gigl-cuda-base:${TAG}
-            GIGL_BASE_CPU_IMAGE=us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/gigl-base-images/gigl-cpu-base:${TAG}
-            GIGL_BASE_DATAFLOW_IMAGE=us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/gigl-base-images/gigl-dataflow-base:${TAG}
+
             docker build -f ./containers/Dockerfile.cuda.base -t ${GIGL_BASE_CUDA_IMAGE} .
+            docker push ${GIGL_BASE_CUDA_IMAGE}
             echo "Pushed CUDA base image to ${GIGL_BASE_CUDA_IMAGE}"
+
+
+  build-cpu-base-images:
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+    runs-on: ubuntu-latest
+
+    steps:
+        - name: Setup Machine for building Docker images
+          uses: ./.github/actions/setup-python-tools
+          with:
+            setup_gcloud: "true"
+            try_cleaning_disk_space: "true"
+            gcp_project_id: ${{ secrets.GCP_PROJECT_ID }}
+            workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
+            gcp_service_account_email: ${{ secrets.GCP_SERVICE_ACCOUNT_EMAIL }}
+            
+
+        - name: Build and Push CPU Base Image and Docker CPU Image
+          run: |
+            gcloud auth configure-docker us-central1-docker.pkg.dev
+
             docker build -f ./containers/Dockerfile.cpu.base -t ${GIGL_BASE_CPU_IMAGE} .
             docker push ${GIGL_BASE_CPU_IMAGE}
             echo "Pushed CPU base image to ${GIGL_BASE_CPU_IMAGE}"
+
             echo "Will use CPU image ${GIGL_BASE_CPU_IMAGE} as base image for Dataflow image."
             docker build -f ./containers/Dockerfile.dataflow.base --build-arg BASE_IMAGE=${GIGL_BASE_CPU_IMAGE} -t ${GIGL_BASE_DATAFLOW_IMAGE} .
             docker push ${GIGL_BASE_DATAFLOW_IMAGE}
             echo "Pushed Dataflow base image to ${GIGL_BASE_DATAFLOW_IMAGE}"
-            echo "Writing new image names to dep_vars.env"
-            sed -i "s|^DOCKER_LATEST_BASE_CUDA_IMAGE_NAME_WITH_TAG=.*|DOCKER_LATEST_BASE_CUDA_IMAGE_NAME_WITH_TAG=$GIGL_BASE_CUDA_IMAGE|" dep_vars.env
-            sed -i "s|^DOCKER_LATEST_BASE_CPU_IMAGE_NAME_WITH_TAG=.*|DOCKER_LATEST_BASE_CPU_IMAGE_NAME_WITH_TAG=$GIGL_BASE_CPU_IMAGE|" dep_vars.env
-            sed -i "s|^DOCKER_LATEST_BASE_DATAFLOW_IMAGE_NAME_WITH_TAG=.*|DOCKER_LATEST_BASE_DATAFLOW_IMAGE_NAME_WITH_TAG=$GIGL_BASE_DATAFLOW_IMAGE|" dep_vars.env
-       
-        - name: Commit and Push Dep Vars
-          uses: ./.github/actions/commit-and-push
-          with:
-            commit_message: "[AUTOMATED] Update dep.vars with new image names"
-            github_token: ${{ secrets.GITHUB_TOKEN }}
+
+  build-and-commit-base-images:
+    # if: ${{ github.event.issue.pull_request }} && contains(github.event.comment.body, '/build_base_docker_images')
+    needs:
+      - build-cuda-base-image
+      - build-cpu-base-images
+    runs-on: ubuntu-latest
+    steps:
+    - name: Commit and Push Base Images
+      run: |
+        echo "Writing new image names to dep_vars.env"
+        sed -i "s|^DOCKER_LATEST_BASE_CUDA_IMAGE_NAME_WITH_TAG=.*|DOCKER_LATEST_BASE_CUDA_IMAGE_NAME_WITH_TAG=${GIGL_BASE_CUDA_IMAGE}|" dep_vars.env
+        sed -i "s|^DOCKER_LATEST_BASE_CPU_IMAGE_NAME_WITH_TAG=.*|DOCKER_LATEST_BASE_CPU_IMAGE_NAME_WITH_TAG=${GIGL_BASE_CPU_IMAGE}|" dep_vars.env
+        sed -i "s|^DOCKER_LATEST_BASE_DATAFLOW_IMAGE_NAME_WITH_TAG=.*|DOCKER_LATEST_BASE_DATAFLOW_IMAGE_NAME_WITH_TAG=${GIGL_BASE_DATAFLOW_IMAGE}|" dep_vars.env
+    - name: Commit and Push Dep Vars
+      uses: ./.github/actions/commit-and-push
+      with:
+        commit_message: "[AUTOMATED] Update dep.vars with new image names"
+        github_token: ${{ secrets.GITHUB_TOKEN }}
