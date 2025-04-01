@@ -20,6 +20,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+        # Step 1: Check out the repository code.
+        - uses: actions/checkout@v3
+
         - name: Setup Machine for building Docker images
           uses: ./.github/actions/setup-python-tools
           with:
@@ -45,6 +48,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+        # Step 1: Check out the repository code.
+        - uses: actions/checkout@v3
+        
         - name: Setup Machine for building Docker images
           uses: ./.github/actions/setup-python-tools
           with:
