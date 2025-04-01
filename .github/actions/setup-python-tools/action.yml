@@ -45,7 +45,6 @@ runs:
         shell: bash
         run: pip install pip-tools
 
-
       # Step 3: Set up Gcloud AUTH using Workload Identity Federation
       # See following for context: https://cloud.google.com/blog/products/identity-security/enabling-keyless-authentication-from-github-actions
       - name: Google Cloud Auth
@@ -68,4 +67,13 @@ runs:
       - name: Delete huge unnecessary tools folder
         if: inputs.try_cleaning_disk_space == 'true'
         shell: bash
-        run: rm -rf /opt/hostedtoolcache
+        # Delete all files and directories in the current directory (.) 
+        # except 'containerd', 'actionarchivecache', 'runner', and 'runner-cache'.
+        # Ensures only immediate children are considered (not recursive into subdirectories).
+        run: |
+          find . -maxdepth 1 -mindepth 1 \
+          ! -path ./containerd \
+          ! -path ./actionarchivecache \
+          ! -path ./runner \
+          ! -path ./runner-cache \
+          -exec rm -rf {} +
