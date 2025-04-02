@@ -67,13 +67,4 @@ runs:
       - name: Delete huge unnecessary tools folder
         if: inputs.try_cleaning_disk_space == 'true'
         shell: bash
-        # Delete all files and directories in the current directory (.) 
-        # except 'containerd', 'actionarchivecache', 'runner', and 'runner-cache'.
-        # Ensures only immediate children are considered (not recursive into subdirectories).
-        run: |
-          find . -maxdepth 1 -mindepth 1 \
-          ! -path ./containerd \
-          ! -path ./actionarchivecache \
-          ! -path ./runner \
-          ! -path ./runner-cache \
-          -exec rm -rf {} +
+        run: rm -rf /opt/hostedtoolcache
