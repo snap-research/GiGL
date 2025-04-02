@@ -23,6 +23,7 @@ jobs:
   #         -d '{"body": "The workflow run is starting. You can view the details here: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"}'
 
   compute-linux-hashed-requirements:
+    if: ${{ github.event.issue.pull_request }} && contains(github.event.comment.body, '/generate_hashed_requirements')
     runs-on: ubuntu-latest
     steps:
       # Step 1: Check out the repository code.
@@ -48,6 +49,7 @@ jobs:
             requirements/dev_linux_cpu_requirements_unified.txt
 
   compute-mac-hashed-requirements:
+    if: ${{ github.event.issue.pull_request }} && contains(github.event.comment.body, '/generate_hashed_requirements')
     runs-on: macos-14 # macOS-based runner (macOS 14) - Arm64 (Apple Silicon) runner.
     steps:
       - uses: actions/checkout@v3
