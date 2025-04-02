@@ -113,7 +113,7 @@ fi
 if ! is_running_on_mac;
 then
     # Without Ninja, we build sequentially which is very slow.
-    echo "Installing Ninja as a build backend"
+    echo "Installing Ninja as a build backend..."
     apt-get update -y
     apt-get install -y ninja-build
     echo "Installing GraphLearn-Torch"
