@@ -53,7 +53,10 @@ dependencies = [
     "kfp~=2.5.0",
     "python-dotenv==1.0.0",
     "torch-geometric==2.5.3",
-    "torchmetrics==1.0.3"
+    "torchmetrics==1.0.3",
+    # New versions of setup tools require us to update how we structure our pyproject.toml for discovering packages
+    # See: https://setuptools.pypa.io/en/latest/userguide/package_discovery.html#flat-layout
+    "setuptools~=61.0.0"
 ]
 
 [project.optional-dependencies]
