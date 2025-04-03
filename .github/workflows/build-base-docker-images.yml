@@ -1,8 +1,9 @@
 name: build-base-docker-images
 
-on:
-  issue_comment:
-    types: [created]
+# on:
+#   issue_comment:
+#     types: [created]
+on: ['push']
 
 env:
   DOCKER_BUILDKIT: 1
@@ -13,7 +14,7 @@ env:
 
 jobs:
   build-cuda-base-image:
-    if: ${{ github.event.issue.pull_request }} && contains(github.event.comment.body, '/build_base_docker_images')
+    # if: ${{ github.event.issue.pull_request }} && contains(github.event.comment.body, '/build_base_docker_images')
   
     permissions:
       contents: 'read'
@@ -43,7 +44,7 @@ jobs:
 
 
   build-cpu-base-images:
-    if: ${{ github.event.issue.pull_request }} && contains(github.event.comment.body, '/build_base_docker_images')
+    # if: ${{ github.event.issue.pull_request }} && contains(github.event.comment.body, '/build_base_docker_images')
     permissions:
       contents: 'read'
       id-token: 'write'
@@ -77,7 +78,7 @@ jobs:
             echo "Pushed Dataflow base image to ${GIGL_BASE_DATAFLOW_IMAGE}"
 
   build-and-commit-base-images:
-    if: ${{ github.event.issue.pull_request }} && contains(github.event.comment.body, '/build_base_docker_images')
+    # if: ${{ github.event.issue.pull_request }} && contains(github.event.comment.body, '/build_base_docker_images')
     needs:
       - build-cuda-base-image
       - build-cpu-base-images
