@@ -8,7 +8,6 @@ DATE:=$(shell /bin/date "+%Y%m%d-%H%M")
 # GIT HASH, or empty string if not in a git repo.
 GIT_HASH?=$(shell git rev-parse HEAD 2>/dev/null || "")
 
-# MARKED FOR DEPRECATION - OPEN SOURCE
 PROJECT:=external-snap-ci-github-gigl
 DOCKER_IMAGE_DATAFLOW_RUNTIME_NAME:=gcr.io/${PROJECT}/gbml_dataflow_runtime
 DOCKER_IMAGE_MAIN_CUDA_NAME:=gcr.io/${PROJECT}/gbml_cuda
@@ -18,7 +17,7 @@ DOCKER_IMAGE_DATAFLOW_RUNTIME_NAME_WITH_TAG:=${DOCKER_IMAGE_DATAFLOW_RUNTIME_NAM
 DOCKER_IMAGE_MAIN_CUDA_NAME_WITH_TAG:=${DOCKER_IMAGE_MAIN_CUDA_NAME}:${DATE}
 DOCKER_IMAGE_MAIN_CPU_NAME_WITH_TAG:=${DOCKER_IMAGE_MAIN_CPU_NAME}:${DATE}
 
-PYTHON_DIRS:=do_not_open_source examples python shared scripts  
+PYTHON_DIRS:=examples python shared scripts  
 PY_TEST_FILES?="*_test.py"
 
 get_ver_hash:
