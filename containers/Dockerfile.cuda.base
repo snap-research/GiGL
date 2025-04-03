@@ -6,9 +6,11 @@ FROM nvidia/cuda:12.1.0-cudnn8-devel-ubuntu22.04
 SHELL ["/bin/bash", "-c"]
 
 # Install basic dependencies
+# TODO(mkolodner-sc): iputils-ping temporarily needed to setup inter-job VAI communication for GLT Inference. 
+# Once VAI natively supports this communication, we can remove this requirement.
 RUN apt-get update \
-    && apt-get install -y build-essential \
-    && apt-get install -y git wget cmake \
+    && apt-get upgrade -y \
+    && apt-get install -y build-essential git wget cmake iputils-ping \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -30,7 +32,6 @@ RUN echo "conda activate gnn" >> ~/.bashrc
 
 COPY requirements tmp/requirements
 RUN source ~/.bashrc && pip install --upgrade pip
-RUN --mount=type=secret,id=pip.conf,dst=/root/.pip/pip.conf \
-    source ~/.bashrc && cd tmp && bash ./requirements/install_py_deps.sh --no-pip-cache --mount-pip-credentials
+RUN source ~/.bashrc && cd tmp && bash ./requirements/install_py_deps.sh --no-pip-cache
 
 CMD [ "/bin/bash" ]
