@@ -3,7 +3,9 @@
 # A tutorial on packages: https://realpython.com/pypi-publish-python-package/#prepare-your-package-for-publication
 # What are python wheels: https://realpython.com/python-wheels/
 [build-system]
-requires      = ["setuptools>=61.0.0", "wheel"]
+# New versions of setup tools require us to update how we structure our pyproject.toml for discovering packages
+# See: https://setuptools.pypa.io/en/latest/userguide/package_discovery.html#flat-layout
+requires      = ["setuptools~=61.0.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]

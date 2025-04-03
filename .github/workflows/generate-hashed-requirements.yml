@@ -33,10 +33,10 @@ jobs:
       # Step 3: Generate a hashed requirements file from pyproject.toml using pip-compile.
       - name: Generate all hashed requirements for Linux Platform
         run: |
-          make generate_dev_linux_cuda_hashed_requirements
-          make generate_linux_cuda_hashed_requirements
-          make generate_dev_linux_cpu_hashed_requirements
-          make generate_linux_cpu_hashed_requirements
+          make -j4 generate_dev_linux_cuda_hashed_requirements \
+            generate_linux_cuda_hashed_requirements \
+            generate_dev_linux_cpu_hashed_requirements \
+            make generate_linux_cpu_hashed_requirements
       # Step 4: Upload the computed hashed requirements file as an artifact.
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
@@ -56,8 +56,8 @@ jobs:
       - uses: ./.github/actions/setup-python-tools 
       - name: Generate hashed requirements for MACOS (Silicon) platform
         run: |
-          make generate_mac_arm64_cpu_hashed_requirements
-          make generate_dev_mac_arm64_cpu_hashed_requirements
+          make -j2 generate_mac_arm64_cpu_hashed_requirements \
+            generate_dev_mac_arm64_cpu_hashed_requirements
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
