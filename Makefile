@@ -5,6 +5,10 @@ CONDA_ENV_NAME=gnn
 PYTHON_VERSION=3.9
 DATE:=$(shell /bin/date "+%Y%m%d-%H%M")
 
+# GIT HASH, or empty string if not in a git repo.
+GIT_HASH?=$(shell git rev-parse HEAD 2>/dev/null || "")
+
+# MARKED FOR DEPRECATION - OPEN SOURCE
 PROJECT:=external-snap-ci-github-gigl
 DOCKER_IMAGE_DATAFLOW_RUNTIME_NAME:=gcr.io/${PROJECT}/gbml_dataflow_runtime
 DOCKER_IMAGE_MAIN_CUDA_NAME:=gcr.io/${PROJECT}/gbml_cuda
@@ -14,6 +18,7 @@ DOCKER_IMAGE_DATAFLOW_RUNTIME_NAME_WITH_TAG:=${DOCKER_IMAGE_DATAFLOW_RUNTIME_NAM
 DOCKER_IMAGE_MAIN_CUDA_NAME_WITH_TAG:=${DOCKER_IMAGE_MAIN_CUDA_NAME}:${DATE}
 DOCKER_IMAGE_MAIN_CPU_NAME_WITH_TAG:=${DOCKER_IMAGE_MAIN_CPU_NAME}:${DATE}
 
+PYTHON_DIRS:=do_not_open_source examples python shared scripts  
 PY_TEST_FILES?="*_test.py"
 
 get_ver_hash:
@@ -65,42 +70,42 @@ install_deps:
 generate_mac_arm64_cpu_hashed_requirements:
 	pip-compile -v --allow-unsafe --generate-hashes --no-emit-index-url --resolver=backtracking \
 	--output-file=requirements/darwin_arm64_requirements_unified.txt \
-	--extra torch23-cpu --extra transform \
+	--extra torch25-cpu --extra transform \
 	./python/pyproject.toml
 
 # Can only be run on an arm64 mac, otherwise generated hashed req file will be wrong
 generate_dev_mac_arm64_cpu_hashed_requirements:
 	pip-compile -v --allow-unsafe --generate-hashes --no-emit-index-url --resolver=backtracking \
 	--output-file=requirements/dev_darwin_arm64_requirements_unified.txt \
-	--extra torch23-cpu --extra transform --extra dev \
+	--extra torch25-cpu --extra transform --extra dev \
 	./python/pyproject.toml
 
 # Can only be run on linux, otherwise generated hashed req file will be wrong
 generate_linux_cpu_hashed_requirements:
 	pip-compile -v --allow-unsafe --generate-hashes --no-emit-index-url --resolver=backtracking \
 	--output-file=requirements/linux_cpu_requirements_unified.txt \
-	--extra torch23-cpu --extra transform \
+	--extra torch25-cpu --extra transform \
 	./python/pyproject.toml
 
 # Can only be run on linux, otherwise generated hashed req file will be wrong
 generate_dev_linux_cpu_hashed_requirements:
 	pip-compile -v --allow-unsafe --generate-hashes --no-emit-index-url --resolver=backtracking \
 	--output-file=requirements/dev_linux_cpu_requirements_unified.txt \
-	--extra torch23-cpu --extra transform --extra dev \
+	--extra torch25-cpu --extra transform --extra dev \
 	./python/pyproject.toml
 
 # Can only be run on linux, otherwise generated hashed req file will be wrong
 generate_linux_cuda_hashed_requirements:
 	pip-compile  -v --allow-unsafe --generate-hashes --no-emit-index-url --resolver=backtracking \
 	--output-file=requirements/linux_cuda_requirements_unified.txt \
-	--extra torch23-cuda-121 --extra transform \
+	--extra torch25-cuda-121 --extra transform \
 	./python/pyproject.toml
 
 # Can only be run on linux, otherwise generated hashed req file will be wrong
 generate_dev_linux_cuda_hashed_requirements:
 	pip-compile -v --allow-unsafe --generate-hashes --no-emit-index-url --resolver=backtracking \
 	--output-file=requirements/dev_linux_cuda_requirements_unified.txt \
-	--extra torch23-cuda-121 --extra transform --extra dev \
+	--extra torch25-cuda-121 --extra transform --extra dev \
 	./python/pyproject.toml
 
 # These are a collection of tests that are run before anything is installed using tools abialable on host.
@@ -121,7 +126,7 @@ unit_test_py: clean_build_files_py type_check
 	( cd python ; \
 	python -m tests.unit.main \
 		--env=test \
-		--resource_config_uri deployment/configs/unittest_resource_config.yaml \
+		--resource_config_uri ../deployment/configs/unittest_resource_config.yaml \
 		--test_file_pattern=$(PY_TEST_FILES) \
 	)
 
@@ -141,9 +146,9 @@ unit_test: precondition_tests unit_test_py unit_test_scala assert_yaml_configs_p
 	make check_format
 
 check_format_py:
-	autoflake --check --config python/pyproject.toml python scripts examples
-	isort --check-only --settings-path=python/pyproject.toml python scripts examples
-	black --check --config=python/pyproject.toml python scripts examples
+	autoflake --check --config python/pyproject.toml ${PYTHON_DIRS}
+	isort --check-only --settings-path=python/pyproject.toml ${PYTHON_DIRS}
+	black --check --config=python/pyproject.toml ${PYTHON_DIRS}
 
 check_format_scala:
 	( cd scala; sbt "scalafmtCheckAll; scalafixAll --check"; )
@@ -161,7 +166,7 @@ integration_test:
 	cd python ;\
 	python -m tests.integration.main \
 	--env=test \
-	--resource_config_uri deployment/configs/unittest_resource_config.yaml \
+	--resource_config_uri ../deployment/configs/unittest_resource_config.yaml \
 	--test_file_pattern=$(PY_TEST_FILES) \
 	)
 
@@ -169,9 +174,9 @@ mock_assets:
 	( cd python ; python -m gigl.src.mocking.dataset_asset_mocking_suite --resource_config_uri="deployment/configs/e2e_cicd_resource_config.yaml" --env test)
 
 format_py:
-	autoflake --config python/pyproject.toml python scripts
-	isort --settings-path=python/pyproject.toml python scripts
-	black --config=python/pyproject.toml python scripts
+	autoflake --config python/pyproject.toml ${PYTHON_DIRS}
+	isort --settings-path=python/pyproject.toml ${PYTHON_DIRS}
+	black --config=python/pyproject.toml ${PYTHON_DIRS}
 
 format_scala:	
 	# We run "clean" before the formatting because otherwise some "scalafix.sbt.ScalafixFailed: NoFilesError" may get thrown after switching branches...
@@ -182,7 +187,7 @@ format_scala:
 format: format_py format_scala
 
 type_check:
-	mypy python scripts examples --check-untyped-defs
+	mypy ${PYTHON_DIRS} --check-untyped-defs
 
 # compiles current working state of scala projects to local jars
 compile_jars:
@@ -214,29 +219,7 @@ push_new_docker_images: push_cuda_docker_image push_cpu_docker_image push_datafl
 	# See ci.yaml or type in `/help` in your PR for more info.
 	@echo "All Docker images compiled and pushed"
 
-# MARKED FOR REFACTOR - OPEN SOURCE
-# Compile and run an instance of pipelines
-# Example:
-# make \
-  job_name="{alias}_run_dev_mag240m_kfp_pipeline" \
-  start_at="config_populator" \
-  task_config_uri="examples/MAG240M/task_config.yaml" \
-  resource_config_uri="examples/MAG240M/resource_config.yaml" \
-  run_dev_gnn_kubeflow_pipeline
-run_dev_gnn_kubeflow_pipeline: compile_jars push_new_docker_images
-	python -m do_not_open_source.deployment.gnn \
-		--container_image_cuda=${DOCKER_IMAGE_MAIN_CUDA_NAME_WITH_TAG} \
-		--container_image_cpu=${DOCKER_IMAGE_MAIN_CPU_NAME_WITH_TAG} \
-		--container_image_dataflow=${DOCKER_IMAGE_DATAFLOW_RUNTIME_NAME_WITH_TAG} \
-		--kfp_env=dev \
-		--action=run \
-		--job_name=$(job_name) \
-		--start_at=$(start_at) \
-		$(if $(stop_after),--stop_after=$(stop_after)) \
-		--task_config_uri=$(task_config_uri) \
-		--resource_config_uri=$(resource_config_uri) \
 
-# MARKED FOR DEPRECATION - OPEN SOURCE
 # Generic make target to run e2e tests. Used by other make targets to run e2e tests.
 # See usage w/ run_cora_nalp_e2e_kfp_test, run_cora_snc_e2e_kfp_test, run_cora_udl_e2e_kfp_test
 # and run_all_e2e_tests
@@ -250,27 +233,52 @@ _run_e2e_kfp_test: compile_jars push_new_docker_images
 		read -a task_config_uris <<< "$(task_config_uris_str)"; \
 		read -a resource_config_uris <<< "$(resource_config_uris_str)"; \
 		read -a job_name_prefixes_str <<< "$(job_name_prefixes_str)"; \
-		if [ $${#task_config_uris[@]} -ne $${#resource_config_uris[@]} ] || [ $${#task_config_uris[@]} -ne $${#job_name_prefixes_str[@]} ]; then \
+		read -a should_compile_then_run <<< "$(should_compile_then_run_str)"; \
+		if [ $${#task_config_uris[@]} -ne $${#resource_config_uris[@]} ] || [ $${#task_config_uris[@]} -ne $${#job_name_prefixes_str[@]} ] || [ $${#task_config_uris[@]} -ne $${#should_compile_then_run[@]} ]; then \
 			echo "Error: Arrays are not of the same length"; \
 			echo "  task_config_uris = $${task_config_uris[@]}"; \
 			echo "  resource_config_uris = $${resource_config_uris[@]}";\
 			echo "  job_name_prefixes_str = $${job_name_prefixes_str[@]}"; \
+			echo "  should_compile_then_run = $${should_compile_then_run_str[@]}"; \
 			exit 1; \
 		fi; \
 		for i in $${!task_config_uris[@]}; do \
 			job_name="$${job_name_prefixes_str[$$i]}_${TRIMMED_BRANCH}_${TRIMMED_TIME}"; \
-			CMD="python -m do_not_open_source.deployment.gnn \
-				--container_image_cuda=${DOCKER_IMAGE_MAIN_CUDA_NAME_WITH_TAG} \
-				--container_image_cpu=${DOCKER_IMAGE_MAIN_CPU_NAME_WITH_TAG} \
-				--container_image_dataflow=${DOCKER_IMAGE_DATAFLOW_RUNTIME_NAME_WITH_TAG} \
-				--action=run \
-				--kfp_env=dev \
-				$(if $(filter ${should_wait_for_job_to_finish},true),--wait,) \
-				--job_name='$${job_name}' \
-				--start_at='config_populator' \
-				--task_config_uri='$${task_config_uris[$$i]}' \
-				--resource_config_uri='$${resource_config_uris[$$i]}'"; \
-			echo "Running: $$CMD"; \
+			echo "$${job_name} will use compile_then_run = $${should_compile_then_run[$$i]}"; \
+			if [ "$${should_compile_then_run[$$i]}" == "true" ]; then \
+				compiled_pipeline_path="/tmp/gigl/$${job_name}.yaml"; \
+				CMD="python -m gigl.orchestration.kubeflow.runner \
+					--container_image_cuda=${DOCKER_IMAGE_MAIN_CUDA_NAME_WITH_TAG} \
+					--container_image_cpu=${DOCKER_IMAGE_MAIN_CPU_NAME_WITH_TAG} \
+					--container_image_dataflow=${DOCKER_IMAGE_DATAFLOW_RUNTIME_NAME_WITH_TAG} \
+					--action=compile \
+					--pipeline_tag=$(GIT_HASH) \
+					--compiled_pipeline_path='$${compiled_pipeline_path}'"; \
+				echo "Compiling pipeline: $$CMD"; \
+				eval "$${CMD}"; \
+				CMD="python -m gigl.orchestration.kubeflow.runner \
+					--action=run_no_compile \
+					$(if $(filter ${should_wait_for_job_to_finish},true),--wait,) \
+					--job_name='$${job_name}' \
+					--start_at='config_populator' \
+					--task_config_uri='$${task_config_uris[$$i]}' \
+					--resource_config_uri='$${resource_config_uris[$$i]}' \
+					--compiled_pipeline_path='$${compiled_pipeline_path}'"; \
+				echo "Running from precompiled pipeline: $$CMD"; \
+			else \
+				CMD="python -m gigl.orchestration.kubeflow.runner \
+					--container_image_cuda=${DOCKER_IMAGE_MAIN_CUDA_NAME_WITH_TAG} \
+					--container_image_cpu=${DOCKER_IMAGE_MAIN_CPU_NAME_WITH_TAG} \
+					--container_image_dataflow=${DOCKER_IMAGE_DATAFLOW_RUNTIME_NAME_WITH_TAG} \
+					--action=run \
+					$(if $(filter ${should_wait_for_job_to_finish},true),--wait,) \
+					--job_name='$${job_name}' \
+					--start_at='config_populator' \
+					--pipeline_tag=$(GIT_HASH) \
+					--task_config_uri='$${task_config_uris[$$i]}' \
+					--resource_config_uri='$${resource_config_uris[$$i]}'"; \
+				echo "Running: $$CMD"; \
+			fi; \
 			if [ "$(should_send_job_to_background)" == true ]; then \
 				echo "Will run CMD in background..."; \
 				eval "$${CMD} &"; \
@@ -288,14 +296,20 @@ _run_e2e_kfp_test: compile_jars push_new_docker_images
 		fi; \
 	)
 
+
+
+# cora_nalp_test_on is run by compiling the pipeline first then using the compiled pipeline to run the job
+# Vs. all other pipelines right now are run directly i.e. compilation + run together in the same process
 run_cora_nalp_e2e_kfp_test: job_name_prefixes_str:="cora_nalp_test_on"
 run_cora_nalp_e2e_kfp_test: task_config_uris_str:="gigl/src/mocking/configs/e2e_node_anchor_based_link_prediction_template_gbml_config.yaml"
 run_cora_nalp_e2e_kfp_test: resource_config_uris_str:="deployment/configs/e2e_cicd_resource_config.yaml"
+run_cora_nalp_e2e_kfp_test: should_compile_then_run_str:="true"
 run_cora_nalp_e2e_kfp_test: _run_e2e_kfp_test
 
 run_cora_snc_e2e_kfp_test: job_name_prefixes_str:="cora_snc_test_on"
 run_cora_snc_e2e_kfp_test: task_config_uris_str:="gigl/src/mocking/configs/e2e_supervised_node_classification_template_gbml_config.yaml"
 run_cora_snc_e2e_kfp_test: resource_config_uris_str:="deployment/configs/e2e_cicd_resource_config.yaml"
+run_cora_snc_e2e_kfp_test: should_compile_then_run_str:="false"
 run_cora_snc_e2e_kfp_test: _run_e2e_kfp_test
 
 # Note UDL dataset produces a transient issue due to UDL Split Strategy 
@@ -304,12 +318,20 @@ run_cora_snc_e2e_kfp_test: _run_e2e_kfp_test
 run_cora_udl_e2e_kfp_test: job_name_prefixes_str:="cora_udl_test_on"
 run_cora_udl_e2e_kfp_test: task_config_uris_str:="gigl/src/mocking/configs/e2e_udl_node_anchor_based_link_prediction_template_gbml_config.yaml"
 run_cora_udl_e2e_kfp_test: resource_config_uris_str:="deployment/configs/e2e_cicd_resource_config.yaml"
+run_cora_udl_e2e_kfp_test: should_compile_then_run_str:="false"
 run_cora_udl_e2e_kfp_test: _run_e2e_kfp_test
 
 run_dblp_nalp_e2e_kfp_test: job_name_prefixes_str:="dblp_nalp_test_on"
 run_dblp_nalp_e2e_kfp_test: task_config_uris_str:="gigl/src/mocking/configs/dblp_node_anchor_based_link_prediction_template_gbml_config.yaml"
 run_dblp_nalp_e2e_kfp_test: resource_config_uris_str:="deployment/configs/e2e_cicd_resource_config.yaml"
+run_dblp_nalp_e2e_kfp_test: should_compile_then_run_str:="false"
 run_dblp_nalp_e2e_kfp_test: _run_e2e_kfp_test
+
+run_cora_glt_udl_kfp_test: job_name_prefixes_str:="cora_glt_udl_test_on"
+run_cora_glt_udl_kfp_test: task_config_uris_str:="examples/distributed/configs/e2e_cora_udl_glt_task_config.yaml"
+run_cora_glt_udl_kfp_test: resource_config_uris_str:="deployment/configs/e2e_glt_resource_config.yaml"
+run_cora_glt_udl_kfp_test: should_compile_then_run_str:="false"
+run_cora_glt_udl_kfp_test: _run_e2e_kfp_test
 
 # Spawns a background job for each e2e test defined by job_name_prefix, task_config_uri, and resource_config_uri
 # Waits for all jobs to finish since should_wait_for_job_to_finish:=true
@@ -318,29 +340,73 @@ run_all_e2e_tests: should_wait_for_job_to_finish:=true
 run_all_e2e_tests: job_name_prefixes_str:=\
 		"cora_nalp_test_on" \
 		"cora_snc_test_on" \
-		"dblp_nalp_test_on"
-
+		"dblp_nalp_test_on" \
+		"cora_glt_udl_test_on"
 # Removed UDL due to transient issue:
 # "gigl/src/mocking/configs/e2e_udl_node_anchor_based_link_prediction_template_gbml_config.yaml"
 run_all_e2e_tests: task_config_uris_str:=\
 		"gigl/src/mocking/configs/e2e_node_anchor_based_link_prediction_template_gbml_config.yaml" \
 		"gigl/src/mocking/configs/e2e_supervised_node_classification_template_gbml_config.yaml" \
-		"gigl/src/mocking/configs/dblp_node_anchor_based_link_prediction_template_gbml_config.yaml"
+		"gigl/src/mocking/configs/dblp_node_anchor_based_link_prediction_template_gbml_config.yaml" \
+		"examples/distributed/configs/e2e_cora_udl_glt_task_config.yaml"
 run_all_e2e_tests: resource_config_uris_str:=\
 		"deployment/configs/e2e_cicd_resource_config.yaml"\
 		"deployment/configs/e2e_cicd_resource_config.yaml"\
-		"deployment/configs/e2e_cicd_resource_config.yaml"
+		"deployment/configs/e2e_cicd_resource_config.yaml"\
+		"deployment/configs/e2e_glt_resource_config.yaml"
+run_all_e2e_tests: should_compile_then_run_str:=\
+		"true" \
+		"false" \
+		"false" \
+		"false"
 run_all_e2e_tests: _run_e2e_kfp_test
 
 
-# MARKED FOR REFACTOR - OPEN SOURCE
-# Compile instance of kfp pipeline
+# Compile an instance of a kfp pipeline
+# If you want to compile a pipeline and save it to a specific path, set compiled_pipeline_path
+# Example:
+# `make compiled_pipeline_path="/tmp/gigl/my_pipeline.yaml" compile_gigl_kubeflow_pipeline`
+# Can be a GCS URI as well
 compile_gigl_kubeflow_pipeline: compile_jars push_new_docker_images
-	python -m do_not_open_source.deployment.gnn \
+	python -m gigl.orchestration.kubeflow.runner \
 		--action=compile \
 		--container_image_cuda=${DOCKER_IMAGE_MAIN_CUDA_NAME_WITH_TAG} \
 		--container_image_cpu=${DOCKER_IMAGE_MAIN_CPU_NAME_WITH_TAG} \
 		--container_image_dataflow=${DOCKER_IMAGE_DATAFLOW_RUNTIME_NAME_WITH_TAG} \
+		$(if $(compiled_pipeline_path),--compiled_pipeline_path=$(compiled_pipeline_path)) \
+
+_skip_build_deps:
+	@echo "compiled_pipeline_path was provided. Skipping build dependencies i.e. Compiling jars and pushing docker images"
+
+# Compile and run an instance of pipelines
+# Example:
+# make \
+  job_name="{alias}_run_dev_mag240m_kfp_pipeline" \
+  start_at="config_populator" \
+  task_config_uri="examples/MAG240M/task_config.yaml" \
+  resource_config_uri="examples/MAG240M/resource_config.yaml" \
+  run_dev_gnn_kubeflow_pipeline
+# If you have precompiled to some specified poth using `make compile_gigl_kubeflow_pipeline`
+# You can use it here instead of re-compiling by setting `compiled_pipeline_path`
+# Example:
+# make \
+# 	job_name=... \ , and other params
+# 	compiled_pipeline_path="/tmp/gigl/my_pipeline.yaml" \
+# 	run_dev_gnn_kubeflow_pipeline
+run_dev_gnn_kubeflow_pipeline: $(if $(compiled_pipeline_path), _skip_build_deps, compile_jars push_new_docker_images)
+	python -m gigl.orchestration.kubeflow.runner \
+		$(if $(compiled_pipeline_path),,--container_image_cuda=${DOCKER_IMAGE_MAIN_CUDA_NAME_WITH_TAG}) \
+		$(if $(compiled_pipeline_path),,--container_image_cpu=${DOCKER_IMAGE_MAIN_CPU_NAME_WITH_TAG}) \
+		$(if $(compiled_pipeline_path),,--container_image_dataflow=${DOCKER_IMAGE_DATAFLOW_RUNTIME_NAME_WITH_TAG}) \
+		--action=$(if $(compiled_pipeline_path),run_no_compile,run) \
+		--job_name=$(job_name) \
+		--start_at=$(start_at) \
+		$(if $(stop_after),--stop_after=$(stop_after)) \
+		--task_config_uri=$(task_config_uri) \
+		--resource_config_uri=$(resource_config_uri) \
+		--pipeline_tag=$(GIT_HASH) \
+		$(if $(compiled_pipeline_path),--compiled_pipeline_path=$(compiled_pipeline_path)) \
+
 
 clean_build_files_py:
 	find . -name "*.pyc" -exec rm -f {} \;
