@@ -9,9 +9,9 @@ DATE:=$(shell /bin/date "+%Y%m%d-%H%M")
 GIT_HASH?=$(shell git rev-parse HEAD 2>/dev/null || "")
 
 PROJECT:=external-snap-ci-github-gigl
-DOCKER_IMAGE_DATAFLOW_RUNTIME_NAME:=gcr.io/${PROJECT}/gbml_dataflow_runtime
-DOCKER_IMAGE_MAIN_CUDA_NAME:=gcr.io/${PROJECT}/gbml_cuda
-DOCKER_IMAGE_MAIN_CPU_NAME:=gcr.io/${PROJECT}/gbml_cpu
+DOCKER_IMAGE_DATAFLOW_RUNTIME_NAME:=us-central1-docker.pkg.dev/${PROJECT}/gigl/src_cpu_dataflow
+DOCKER_IMAGE_MAIN_CUDA_NAME:=us-central1-docker.pkg.dev/${PROJECT}/gigl/src_cuda
+DOCKER_IMAGE_MAIN_CPU_NAME:=us-central1-docker.pkg.dev/${PROJECT}/gigl/src_cpu
 
 DOCKER_IMAGE_DATAFLOW_RUNTIME_NAME_WITH_TAG:=${DOCKER_IMAGE_DATAFLOW_RUNTIME_NAME}:${DATE}
 DOCKER_IMAGE_MAIN_CUDA_NAME_WITH_TAG:=${DOCKER_IMAGE_MAIN_CUDA_NAME}:${DATE}
