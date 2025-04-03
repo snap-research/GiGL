@@ -51,7 +51,7 @@ dependencies = [
     "kfp~=2.5.0",
     "python-dotenv==1.0.0",
     "torch-geometric==2.5.3",
-    "torchmetrics==1.0.3",
+    "torchmetrics==1.0.3"
 ]
 
 [project.optional-dependencies]
