@@ -92,7 +92,7 @@ jobs:
       # Some packages like PyG require a prior installation of torch to install, thus having it listed as a dep
       # might result in issues - even seg faults if the version installed != one that pyg or dgl expect.
       - name: Remove torch dependency using Python
-        run: python .github/scripts/remove_torch_dependency.py
+        run: python .github/scripts/remove_torch_hashed_deps.py
       - name: Commit and Push Hashed Requirement updates
         uses: ./.github/actions/commit-and-push
         with:
