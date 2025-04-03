@@ -1,10 +1,9 @@
 name: generate-hashed-requirements
 
 # This GitHub Action is triggered when a new comment is created on an issue.
-# on:
-#   issue_comment:                                     
-#     types: [created]
-on: ['push']
+on:
+  issue_comment:                                     
+    types: [created]
 
 jobs:
   # TODO: (svij) test if commenting on workflow works in the future
@@ -24,7 +23,7 @@ jobs:
   #         -d '{"body": "The workflow run is starting. You can view the details here: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"}'
 
   compute-linux-hashed-requirements:
-    # if: ${{ github.event.issue.pull_request }} && contains(github.event.comment.body, '/generate_hashed_requirements')
+    if: ${{ github.event.issue.pull_request }} && contains(github.event.comment.body, '/generate_hashed_requirements')
     runs-on: ubuntu-latest
     steps:
       # Step 1: Check out the repository code.
@@ -50,7 +49,7 @@ jobs:
             requirements/dev_linux_cpu_requirements_unified.txt
 
   compute-mac-hashed-requirements:
-    # if: ${{ github.event.issue.pull_request }} && contains(github.event.comment.body, '/generate_hashed_requirements')
+    if: ${{ github.event.issue.pull_request }} && contains(github.event.comment.body, '/generate_hashed_requirements')
     runs-on: macos-14 # macOS-based runner (macOS 14) - Arm64 (Apple Silicon) runner.
     steps:
       - uses: actions/checkout@v3
@@ -70,7 +69,7 @@ jobs:
   commit-hashed-requirements:
     # This job only runs if its a pull request and the comment contains `/generate_hashed_requirements`
     # See: https://docs.github.com/en/actions/writing-workflows/choosing-when-your-workflow-runs/events-that-trigger-workflows#issue_comment-on-issues-only-or-pull-requests-only
-    # if: ${{ github.event.issue.pull_request }} && contains(github.event.comment.body, '/generate_hashed_requirements')
+    if: ${{ github.event.issue.pull_request }} && contains(github.event.comment.body, '/generate_hashed_requirements')
     needs: 
       - compute-linux-hashed-requirements
       - compute-mac-hashed-requirements
