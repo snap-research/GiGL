@@ -1,0 +1,71 @@
+name: 'Comment'
+description: 'Comment on an Issue or PR given the PR/Issue Number'
+
+inputs:
+  pr_number:
+    description: 'The number of the PR to comment on'
+    required: true
+  message:
+    description: 'Comment message to post on the PR'
+    required: true
+  github-token:
+    description: 'GitHub token to authenticate API requests'
+    required: true
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Create Comment on Issue
+      uses: actions/github-script@v7
+      with:
+        script: |
+          await github.rest.issues.createComment({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            issue_number: inputs.pr_number,
+            body: inputs.message
+          });
+      env:
+        GITHUB_TOKEN: ${{ inputs.github-token }}
+
+# name: 'Comment on PR for Branch'
+# description: 'Finds the PR associated with a branch and comments with a custom message'
+
+# inputs:
+#   branch:
+#     description: 'Branch name to look for'
+#     required: true
+#   message:
+#     description: 'Comment message to post on the PR'
+#     required: true
+#   github-token:
+#     description: 'GitHub token to authenticate API requests'
+#     required: true
+
+# runs:
+#   using: 'composite'
+#   steps:
+#     - name: Find PR and Comment on it
+#       uses: actions/github-script@v7
+#       with:
+#         script: |
+#           const { data: pulls } = await github.rest.pulls.list({
+#             owner: context.repo.owner,
+#             repo: context.repo.repo,
+#             head: `${context.repo.owner}:${inputs.branch}`,
+#             state: 'open'
+#           });
+          
+#           if (pulls.length !== 1) {
+#             throw new Error(`Expected exactly one open PR, but found ${pulls.length} PRs for branch: ${inputs.branch}`);
+#           }
+
+#           const prNumber = pulls[0].number;
+#           await github.rest.issues.createComment({
+#             owner: context.repo.owner,
+#             repo: context.repo.repo,
+#             issue_number: prNumber,
+#             body: inputs.message
+#           });
+#       env:
+#         GITHUB_TOKEN: ${{ inputs.github-token }}
