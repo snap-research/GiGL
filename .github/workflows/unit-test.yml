@@ -6,7 +6,7 @@ env:
   # Setting an environment variable with the value of a configuration variable
   owners: ${{ vars.OWNERS }}
   actor: ${{ github.actor }}
-  actor-id: ${{ github.actor_id }}
+  actorid: ${{ github.actor_id }}
 
 jobs:
   unit-test:
@@ -20,5 +20,5 @@ jobs:
             echo "Debugging information:"
             echo "$owners"
             echo "$actor"
-            echo "$actor-id"
+            echo "$actorid"
 
