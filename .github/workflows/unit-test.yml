@@ -5,6 +5,8 @@ on: ["push"]
 env:
   # Setting an environment variable with the value of a configuration variable
   owners: ${{ vars.OWNERS }}
+  actor: ${{ github.actor }}
+  actor-id: ${{ github.actor_id }}
 
 jobs:
   unit-test:
@@ -15,5 +17,8 @@ jobs:
           uses: actions/checkout@v3
         - name: Debug
           run: |
+            echo "Debugging information:"
             echo "$owners"
+            echo "$actor"
+            echo "$actor-id"
 
