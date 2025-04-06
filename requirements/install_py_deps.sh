@@ -63,51 +63,25 @@ is_running_on_m1_mac() {
     return $?
 }
 
-PYTORCH_VER="2.5.1"
-TORCHVISION_VER="0.20.1"
-TORCHAUDIO_VER="2.5.1"
-
-
 pip install --upgrade pip
 
-if has_cuda_driver; # Assumed Linux
+if is_running_on_mac;
 then
-    echo "Installing CUDA-based packages..."
-    conda install pytorch==$PYTORCH_VER torchvision==$TORCHVISION_VER torchaudio==$TORCHAUDIO_VER pytorch-cuda=12.1 -c pytorch -c nvidia -y
-    req_file="requirements/${REQ_FILE_PREFIX}linux_cuda_requirements_unified.txt"
-    echo "Installing from ${req_file}"
-    pip install -r $req_file $PIP_ARGS
+    echo "Setting up Mac CPU environment"
+    req_file="requirements/${REQ_FILE_PREFIX}darwin_arm64_requirements_unified.txt"
 else
-    echo "Installing non-CUDA-based packages"
-    # Seperately installing torch first because of issues with install order and failures in installing pyg
-    if is_running_on_mac;
+    if has_cuda_driver;
     then
-        echo "Setting up Mac environment"
-        conda install pytorch==$PYTORCH_VER torchvision==$TORCHVISION_VER torchaudio==$TORCHAUDIO_VER pytorch-cuda=12.1 -c pytorch -y
-
-        if is_running_on_m1_mac;
-        then
-            # See: https://github.com/actions/setup-python/issues/279#issuecomment-1097704505
-            # Without this we will not be able to install some wheels.
-            # i.e. any wheel taged with MAC OSX v 11.0 or higher will fail to install, even if
-            # your Mac is running 11.0 or higher.
-            req_file="requirements/${REQ_FILE_PREFIX}darwin_arm64_requirements_unified.txt"
-            echo "Installing from ${req_file}"
-            SYSTEM_VERSION_COMPAT=0 pip install -r $req_file $PIP_ARGS
-        else
-            echo "Detected running on Intel based Mac; installing required deps"
-            req_file="requirements/${REQ_FILE_PREFIX}darwin_x86_64_requirements_unified.txt"
-            echo "Installing from ${req_file}"
-            pip install -r $req_file $PIP_ARGS
-        fi
+        echo "Setting up Linux CUDA environment"
+        req_file="requirements/${REQ_FILE_PREFIX}linux_cuda_requirements_unified.txt"
     else
-        echo "Setting up Linux Environment"
-        conda install pytorch==$PYTORCH_VER torchvision==$TORCHVISION_VER torchaudio==$TORCHAUDIO_VER cpuonly -c pytorch -y
+        echo "Setting up Linux CPU environment"
         req_file="requirements/${REQ_FILE_PREFIX}linux_cpu_requirements_unified.txt"
-        echo "Installing from $req_file"
-        pip install -r $req_file $PIP_ARGS 
     fi
 fi
+
+echo "Installing from ${req_file}"
+pip install -r $req_file $PIP_ARGS
 
 # Only install GLT if not running on Mac. 
 if ! is_running_on_mac;
@@ -121,7 +95,7 @@ then
     rm -rf graphlearn-for-pytorch
     git clone https://github.com/alibaba/graphlearn-for-pytorch.git \
         && cd graphlearn-for-pytorch \
-        && git checkout tags/v0.2.5 \
+        && git checkout cb61c2734cf43d9b353c30755ccb8bdd678519c1 \
         && git submodule update --init \
         && bash install_dependencies.sh
     if has_cuda_driver;
