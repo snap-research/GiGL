@@ -1,30 +1,36 @@
 name: build-base-docker-images
 
 on:
-  issue_comment:
-    types: [created]
-
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: 'PR to run the workflow on'
+        required: true
 env:
   DOCKER_BUILDKIT: 1
   GIGL_BASE_CUDA_IMAGE: us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/gigl-base-images/gigl-cuda-base:${{ github.sha }}.${{ github.run_number }}.${{ github.run_attempt }}
   GIGL_BASE_CPU_IMAGE: us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/gigl-base-images/gigl-cpu-base:${{ github.sha }}.${{ github.run_number }}.${{ github.run_attempt }}
   GIGL_BASE_DATAFLOW_IMAGE: us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/gigl-base-images/gigl-dataflow-base:${{ github.sha }}.${{ github.run_number }}.${{ github.run_attempt }}
 
-
 jobs:
-  build-cuda-base-image:
-    if: ${{ github.event.issue.pull_request }} && contains(github.event.comment.body, '/build_base_docker_images')
-    permissions:
-      contents: 'read'
-      id-token: 'write'
-    runs-on: gigl-large-instances # x64 Ubuntu:latest w/ 4 cores, 16GB RAM, 150 GB SSD
-
+  comment-workflow-started:
+    runs-on: ubuntu-latest
     steps:
-        # Step 1: Check out the repository code.
-        - uses: actions/checkout@v3
+    - name: Comment on PR
+      uses: snap-research/gigl/.github/actions/comment-on-pr@main
+      with:
+        pr_number: ${{ inputs.pr_number }}
+        message: |
+          [BOT] Starting to build base images for CUDA and CPU.
+          This may take a while, please be patient.
+          The images will be pushed to the GCP Artifact Registry.
+          One done, the workflow will update the `dep_vars.env` file with the new image names.
 
+  build-cuda-base-image:
+    runs-on: gigl-large-instances # x64 Ubuntu:latest w/ 4 cores, 16GB RAM, 150 GB SSD
+    steps:
         - name: Setup Machine for building Docker images
-          uses: ./.github/actions/setup-python-tools
+          uses: snap-research/gigl/.github/actions/setup-python-tools@main
           with:
             setup_gcloud: "true"
             try_cleaning_disk_space: "true"
@@ -33,69 +39,86 @@ jobs:
             gcp_service_account_email: ${{ secrets.GCP_SERVICE_ACCOUNT_EMAIL }}
             
         - name: Build and Push Docker Images
-          run: |
-            gcloud auth configure-docker us-central1-docker.pkg.dev
-
-            docker build -f ./containers/Dockerfile.cuda.base -t ${GIGL_BASE_CUDA_IMAGE} .
-            docker push ${GIGL_BASE_CUDA_IMAGE}
-            echo "Pushed CUDA base image to ${GIGL_BASE_CUDA_IMAGE}"
-
+          uses: snap-research/gigl/.github/actions/run-command-on-pr@main
+          with:
+            pr_number: ${{ inputs.pr_number }}
+            should_leave_progress_comments: "false"
+            command: |
+              gcloud auth configure-docker us-central1-docker.pkg.dev
+              docker build -f ./containers/Dockerfile.cuda.base -t ${GIGL_BASE_CUDA_IMAGE} .
+              docker push ${GIGL_BASE_CUDA_IMAGE}
+              echo "Pushed CUDA base image to ${GIGL_BASE_CUDA_IMAGE}"
 
   build-cpu-base-images:
-    if: ${{ github.event.issue.pull_request }} && contains(github.event.comment.body, '/build_base_docker_images')
-    permissions:
+    permissions: # https://docs.github.com/en/rest/issues/comments?apiVersion=2022-11-28#create-an-issue-comment
       contents: 'read'
-      id-token: 'write'
+      issues: 'write'
+      pull-requests: 'write'
     runs-on: ubuntu-latest
-
     steps:
-        # Step 1: Check out the repository code.
-        - uses: actions/checkout@v3
+    - name: Setup Machine for building Docker images
+      uses: snap-research/gigl/.github/actions/setup-python-tools
+      with:
+        setup_gcloud: "true"
+        try_cleaning_disk_space: "true"
+        gcp_project_id: ${{ secrets.GCP_PROJECT_ID }}
+        workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
+        gcp_service_account_email: ${{ secrets.GCP_SERVICE_ACCOUNT_EMAIL }}
+        
+    - name: Build and Push CPU Base Image and Docker CPU Image
+      uses: snap-research/gigl/.github/actions/run-command-on-pr@main
+      with:
+        pr_number: ${{ inputs.pr_number }}
+        should_leave_progress_comments: "false"
+        command: |
+          gcloud auth configure-docker us-central1-docker.pkg.dev
 
-        - name: Setup Machine for building Docker images
-          uses: ./.github/actions/setup-python-tools
-          with:
-            setup_gcloud: "true"
-            try_cleaning_disk_space: "true"
-            gcp_project_id: ${{ secrets.GCP_PROJECT_ID }}
-            workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
-            gcp_service_account_email: ${{ secrets.GCP_SERVICE_ACCOUNT_EMAIL }}
-            
+          docker build -f ./containers/Dockerfile.cpu.base -t ${GIGL_BASE_CPU_IMAGE} .
+          docker push ${GIGL_BASE_CPU_IMAGE}
+          echo "Pushed CPU base image to ${GIGL_BASE_CPU_IMAGE}"
 
-        - name: Build and Push CPU Base Image and Docker CPU Image
-          run: |
-            gcloud auth configure-docker us-central1-docker.pkg.dev
-
-            docker build -f ./containers/Dockerfile.cpu.base -t ${GIGL_BASE_CPU_IMAGE} .
-            docker push ${GIGL_BASE_CPU_IMAGE}
-            echo "Pushed CPU base image to ${GIGL_BASE_CPU_IMAGE}"
-
-            echo "Will use CPU image ${GIGL_BASE_CPU_IMAGE} as base image for Dataflow image."
-            docker build -f ./containers/Dockerfile.dataflow.base --build-arg BASE_IMAGE=${GIGL_BASE_CPU_IMAGE} -t ${GIGL_BASE_DATAFLOW_IMAGE} .
-            docker push ${GIGL_BASE_DATAFLOW_IMAGE}
-            echo "Pushed Dataflow base image to ${GIGL_BASE_DATAFLOW_IMAGE}"
+          echo "Will use CPU image ${GIGL_BASE_CPU_IMAGE} as base image for Dataflow image."
+          docker build -f ./containers/Dockerfile.dataflow.base --build-arg BASE_IMAGE=${GIGL_BASE_CPU_IMAGE} -t ${GIGL_BASE_DATAFLOW_IMAGE} .
+          docker push ${GIGL_BASE_DATAFLOW_IMAGE}
+          echo "Pushed Dataflow base image to ${GIGL_BASE_DATAFLOW_IMAGE}"
 
   build-and-commit-base-images:
-    if: ${{ github.event.issue.pull_request }} && contains(github.event.comment.body, '/build_base_docker_images')
+    permissions: # https://docs.github.com/en/rest/issues/comments?apiVersion=2022-11-28#create-an-issue-comment
+      contents: 'read'
+      issues: 'write'
+      pull-requests: 'write'
     needs:
       - build-cuda-base-image
       - build-cpu-base-images
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
 
     - name: Commit and Push Base Images
-      run: |
-        echo "Writing new image names to dep_vars.env:"
-        echo "  DOCKER_LATEST_BASE_CUDA_IMAGE_NAME_WITH_TAG=${GIGL_BASE_CUDA_IMAGE}"
-        echo "  DOCKER_LATEST_BASE_CPU_IMAGE_NAME_WITH_TAG=${GIGL_BASE_CPU_IMAGE}"
-        echo "  DOCKER_LATEST_BASE_DATAFLOW_IMAGE_NAME_WITH_TAG=${GIGL_BASE_DATAFLOW_IMAGE}"
-        sed -i "s|^DOCKER_LATEST_BASE_CUDA_IMAGE_NAME_WITH_TAG=.*|DOCKER_LATEST_BASE_CUDA_IMAGE_NAME_WITH_TAG=${GIGL_BASE_CUDA_IMAGE}|" dep_vars.env
-        sed -i "s|^DOCKER_LATEST_BASE_CPU_IMAGE_NAME_WITH_TAG=.*|DOCKER_LATEST_BASE_CPU_IMAGE_NAME_WITH_TAG=${GIGL_BASE_CPU_IMAGE}|" dep_vars.env
-        sed -i "s|^DOCKER_LATEST_BASE_DATAFLOW_IMAGE_NAME_WITH_TAG=.*|DOCKER_LATEST_BASE_DATAFLOW_IMAGE_NAME_WITH_TAG=${GIGL_BASE_DATAFLOW_IMAGE}|" dep_vars.env
+      uses: snap-research/gigl/.github/actions/run-command-on-pr@main
+      with:
+        pr_number: ${{ inputs.pr_number }}
+        should_leave_progress_comments: "false"
+        command: |
+          echo "Writing new image names to dep_vars.env:"
+          echo "  DOCKER_LATEST_BASE_CUDA_IMAGE_NAME_WITH_TAG=${GIGL_BASE_CUDA_IMAGE}"
+          echo "  DOCKER_LATEST_BASE_CPU_IMAGE_NAME_WITH_TAG=${GIGL_BASE_CPU_IMAGE}"
+          echo "  DOCKER_LATEST_BASE_DATAFLOW_IMAGE_NAME_WITH_TAG=${GIGL_BASE_DATAFLOW_IMAGE}"
+          sed -i "s|^DOCKER_LATEST_BASE_CUDA_IMAGE_NAME_WITH_TAG=.*|DOCKER_LATEST_BASE_CUDA_IMAGE_NAME_WITH_TAG=${GIGL_BASE_CUDA_IMAGE}|" dep_vars.env
+          sed -i "s|^DOCKER_LATEST_BASE_CPU_IMAGE_NAME_WITH_TAG=.*|DOCKER_LATEST_BASE_CPU_IMAGE_NAME_WITH_TAG=${GIGL_BASE_CPU_IMAGE}|" dep_vars.env
+          sed -i "s|^DOCKER_LATEST_BASE_DATAFLOW_IMAGE_NAME_WITH_TAG=.*|DOCKER_LATEST_BASE_DATAFLOW_IMAGE_NAME_WITH_TAG=${GIGL_BASE_DATAFLOW_IMAGE}|" dep_vars.env
     
     - name: Commit and Push Dep Vars
-      uses: ./.github/actions/commit-and-push
+      uses: snap-research/gigl/.github/actions/commit-and-push
       with:
         commit_message: "[AUTOMATED] Update dep.vars with new image names"
         github_token: ${{ secrets.GITHUB_TOKEN }}
+
+    - uses: snap-research/gigl/.github/actions/comment-on-pr@main
+      with:
+        pr_number: ${{ inputs.pr_number }}
+        message: |
+          [BOT] Built and pushed new base images:
+          ✅ CUDA base image: `${{ env.GIGL_BASE_CUDA_IMAGE }}`
+          ✅ CPU base image: `${{ env.GIGL_BASE_CPU_IMAGE }}`
+          ✅ Dataflow base image: `${{ env.GIGL_BASE_DATAFLOW_IMAGE }}`
+          ✅ Updated dep_vars.env with new image names.

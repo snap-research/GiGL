@@ -1,0 +1,33 @@
+name: Get PR Source Branch
+description: Outputs the source branch name of a given pull request number
+
+inputs:
+  pr_number:
+    description: 'Pull request number'
+    required: true
+
+outputs:
+  branch_name:
+    description: 'The source branch name of the PR'
+    value: ${{steps.get_branch_name.outputs.result}}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Get PR source branch
+      id: get_branch_name
+      uses: actions/github-script@v7
+      env:
+        PR_NUMBER: ${{ inputs.pr_number }}
+      with:
+        result-encoding: string
+        script: |
+          const pr_number = process.env.PR_NUMBER;
+          const pr = await github.rest.pulls.get({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            pull_number: pr_number,
+          });
+          const branch_name = pr.data.head.ref;
+          console.log("Branch name is:", branch_name);
+          return branch_name;

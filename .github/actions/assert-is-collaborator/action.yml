@@ -1,0 +1,51 @@
+name: Check Collaborator
+description: Fails if the specified user is not a collaborator on the repo
+inputs:
+  username:
+    description: The GitHub username to check
+    required: true
+  initiating-pr-number:
+    description: The PR number that the check may be associated with, if provided will comment on the PR incase of failures 
+    required: false
+runs:
+  using: "composite"
+  steps:
+    - name: Check if user is a collaborator
+      id: assert-is-collaborator
+      # For API Docs, See: https://octokit.github.io/rest.js/v21/
+      # github --> maps to an octokit instance in the script
+      uses: actions/github-script@v7
+      env:
+        GITHUB_TOKEN: ${{ inputs.github-token }}
+      with:
+        # https://docs.github.com/en/rest/collaborators/collaborators?apiVersion=2022-11-28#check-if-a-user-is-a-repository-collaborator
+        script: |
+          try {
+            const username = "${{ inputs.username }}";
+            const result = await github.rest.repos.checkCollaborator({ 
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              username: username
+            });
+            if (result.status === 204) {
+              console.log(`${username} is a collaborator.`);
+            } else {
+              throw new Error(`${username} is NOT a collaborator.`);
+            }
+          } catch (error) {
+            if (error.status === 404) {
+              throw new Error(`${username} is NOT a collaborator.`);
+            } else if (error.status === 403) {
+              console.log(`User is not a collaborator: ${error.message}`);
+            } else {
+              console.log(`Error checking collaborator status: ${error.message}`);
+            }
+          }
+          
+    - name: Comment workflow permissions
+      if: ${{ failure() && steps.assert-is-collaborator.conclusion == 'failure' && inputs.initiating-pr-number != '' }}
+      uses: snap-research/gigl/.github/actions/comment-on-pr
+      with:
+        pr_number: ${{ inputs.initiating-pr-number }}
+        message: "🔒 User ${{ inputs.username }} does not have permissions to run this workflow"
+            
