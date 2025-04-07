@@ -20,9 +20,10 @@ jobs:
       with:
         pr_number: ${{ inputs.pr_number }}
         message: |
-          [BOT] [Starting to generate](${{env.WORKFLOW_URL}}) hashed requirements from pyproject.toml.
+          # GiGL Automation
+          Starting to [generate](${{env.WORKFLOW_URL}}) hashed requirements from `pyproject.toml`.
           This may take a while, please be patient.
-          Once done, the workflow will update the relevant requirements/*.txt files.
+          Once done, the workflow will update the relevant `requirements/*.txt` files.
 
   compute-linux-hashed-requirements:
     runs-on: ubuntu-latest
@@ -109,4 +110,5 @@ jobs:
         with:
           pr_number: ${{ inputs.pr_number }}
           message: |
-            [BOT] Built and pushed updated requirements files.
+            # GiGL Automation
+            Built and pushed updated requirements files.

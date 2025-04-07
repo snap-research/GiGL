@@ -22,7 +22,8 @@ jobs:
       with:
         pr_number: ${{ inputs.pr_number }}
         message: |
-          [BOT] [Starting to build](${{env.WORKFLOW_URL}}) base images for CUDA and CPU.
+          # GiGL Automation
+          Starting to [build](${{env.WORKFLOW_URL}}) base images for CUDA and CPU.
           This may take a while, please be patient.
           The images will be pushed to the GCP Artifact Registry.
           Once done, the workflow will update the `dep_vars.env` file with the new image names.
@@ -117,8 +118,11 @@ jobs:
       with:
         pr_number: ${{ inputs.pr_number }}
         message: |
-          [BOT] Built and pushed new base images:
-          ✅ CUDA base image: `${{ env.GIGL_BASE_CUDA_IMAGE }}`
-          ✅ CPU base image: `${{ env.GIGL_BASE_CPU_IMAGE }}`
-          ✅ Dataflow base image: `${{ env.GIGL_BASE_DATAFLOW_IMAGE }}`
-          ✅ Updated dep_vars.env with new image names.
+          # GiGL Automation
+          Built and pushed new base images:
+          * CUDA base image: `${{ env.GIGL_BASE_CUDA_IMAGE }}`
+          * CPU base image: `${{ env.GIGL_BASE_CPU_IMAGE }}`
+          * Dataflow base image: `${{ env.GIGL_BASE_DATAFLOW_IMAGE }}`
+
+          Updated `dep_vars.env` with new image names.
+        
