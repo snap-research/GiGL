@@ -27,7 +27,7 @@ jobs:
       # Step 1: Check out the repository code.
       - uses: actions/checkout@v3
       # Step 2: Check out the repository code and set up the Python environment.
-      - uses: snap-research/gigl/.github/actions/setup-python-tools 
+      - uses: snap-research/gigl/.github/actions/setup-python-tools@main 
       # Step 3: Generate a hashed requirements file from pyproject.toml using pip-compile.
       - name: Generate all hashed requirements for Linux Platform
         uses: snap-research/gigl/.github/actions/run-command-on-pr@main
@@ -54,7 +54,7 @@ jobs:
     runs-on: macos-14 # macOS-based runner (macOS 14) - Arm64 (Apple Silicon) runner.
     steps:
       - uses: actions/checkout@v3
-      - uses: snap-research/gigl/.github/actions/setup-python-tools 
+      - uses: snap-research/gigl/.github/actions/setup-python-tools@main 
       - name: Generate hashed requirements for MACOS (Silicon) platform
         uses: snap-research/gigl/.github/actions/run-command-on-pr@main
         with:
@@ -97,7 +97,7 @@ jobs:
       # - name: Remove torch dependency using Python
       #   run: python .github/scripts/remove_torch_hashed_deps.py
       - name: Commit and Push Hashed Requirement updates
-        uses: snap-research/gigl/.github/actions/commit-and-push
+        uses: snap-research/gigl/.github/actions/commit-and-push@main
         with:
           commit_message: "[AUTOMATED] Update all hashed requirements files"
           github_token: ${{ secrets.GITHUB_TOKEN }}
