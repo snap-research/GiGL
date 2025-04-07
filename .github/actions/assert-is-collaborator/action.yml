@@ -44,7 +44,7 @@ runs:
           
     - name: Comment workflow permissions
       if: ${{ failure() && steps.assert-is-collaborator.conclusion == 'failure' && inputs.initiating-pr-number != '' }}
-      uses: snap-research/gigl/.github/actions/comment-on-pr
+      uses: snap-research/gigl/.github/actions/comment-on-pr@main
       with:
         pr_number: ${{ inputs.initiating-pr-number }}
         message: "🔒 User ${{ inputs.username }} does not have permissions to run this workflow"

@@ -11,6 +11,7 @@ env:
   GIGL_BASE_CUDA_IMAGE: us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/gigl-base-images/gigl-cuda-base:${{ github.sha }}.${{ github.run_number }}.${{ github.run_attempt }}
   GIGL_BASE_CPU_IMAGE: us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/gigl-base-images/gigl-cpu-base:${{ github.sha }}.${{ github.run_number }}.${{ github.run_attempt }}
   GIGL_BASE_DATAFLOW_IMAGE: us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/gigl-base-images/gigl-dataflow-base:${{ github.sha }}.${{ github.run_number }}.${{ github.run_attempt }}
+  WORKFLOW_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
 
 jobs:
   comment-workflow-started:
@@ -21,10 +22,10 @@ jobs:
       with:
         pr_number: ${{ inputs.pr_number }}
         message: |
-          [BOT] Starting to build base images for CUDA and CPU.
+          [BOT] [Starting to build](${{env.WORKFLOW_URL}}) base images for CUDA and CPU.
           This may take a while, please be patient.
           The images will be pushed to the GCP Artifact Registry.
-          One done, the workflow will update the `dep_vars.env` file with the new image names.
+          Once done, the workflow will update the `dep_vars.env` file with the new image names.
 
   build-cuda-base-image:
     runs-on: gigl-large-instances # x64 Ubuntu:latest w/ 4 cores, 16GB RAM, 150 GB SSD
@@ -57,7 +58,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Setup Machine for building Docker images
-      uses: snap-research/gigl/.github/actions/setup-python-tools
+      uses: snap-research/gigl/.github/actions/setup-python-tools@main
       with:
         setup_gcloud: "true"
         try_cleaning_disk_space: "true"
@@ -108,7 +109,7 @@ jobs:
           sed -i "s|^DOCKER_LATEST_BASE_DATAFLOW_IMAGE_NAME_WITH_TAG=.*|DOCKER_LATEST_BASE_DATAFLOW_IMAGE_NAME_WITH_TAG=${GIGL_BASE_DATAFLOW_IMAGE}|" dep_vars.env
     
     - name: Commit and Push Dep Vars
-      uses: snap-research/gigl/.github/actions/commit-and-push
+      uses: snap-research/gigl/.github/actions/commit-and-push@main
       with:
         commit_message: "[AUTOMATED] Update dep.vars with new image names"
         github_token: ${{ secrets.GITHUB_TOKEN }}
