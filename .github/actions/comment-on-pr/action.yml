@@ -19,8 +19,9 @@ runs:
         MESSAGE: ${{ inputs.message }}
       with:
         script: |
+          const message_prefix = "# GiGL Automation\n\n";
           const pr_number = process.env.PR_NUMBER;
-          const message = process.env.MESSAGE;
+          const message = message_prefix + process.env.MESSAGE;
           await github.rest.issues.createComment({
             issue_number: pr_number,
             owner: context.repo.owner,

@@ -20,7 +20,6 @@ jobs:
       with:
         pr_number: ${{ inputs.pr_number }}
         message: |
-          # GiGL Automation
           Starting to [generate](${{env.WORKFLOW_URL}}) hashed requirements from `pyproject.toml`.
           This may take a while, please be patient.
           Once done, the workflow will update the relevant `requirements/*.txt` files.
@@ -110,5 +109,4 @@ jobs:
         with:
           pr_number: ${{ inputs.pr_number }}
           message: |
-            # GiGL Automation
             Built and pushed updated requirements files.
