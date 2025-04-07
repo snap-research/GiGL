@@ -13,14 +13,6 @@ env:
   GIGL_BASE_DATAFLOW_IMAGE: us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/gigl-base-images/gigl-dataflow-base:${{ github.sha }}.${{ github.run_number }}.${{ github.run_attempt }}
   WORKFLOW_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
 
-permissions:
-  contents: 'read'
-  # Needed for gcloud auth: https://github.com/google-github-actions/auth
-  id-token: 'write'
-  # Needed for commenting: https://docs.github.com/en/rest/issues/comments?apiVersion=2022-11-28#create-an-issue-comment  
-  issues: 'write'
-  pull-requests: 'write'
-
 jobs:
   comment-workflow-started:
     runs-on: ubuntu-latest
@@ -37,6 +29,10 @@ jobs:
 
   build-cuda-base-image:
     runs-on: gigl-large-instances # x64 Ubuntu:latest w/ 4 cores, 16GB RAM, 150 GB SSD
+    permissions:
+      # Needed for gcloud auth: https://github.com/google-github-actions/auth
+      contents: 'read'
+      id-token: 'write'
     steps:
     - name: Checkout PR Branch
       uses: snap-research/gigl/.github/actions/checkout-pr-branch@main
@@ -60,6 +56,10 @@ jobs:
 
   build-cpu-base-images:
     runs-on: ubuntu-latest
+    permissions:
+      # Needed for gcloud auth: https://github.com/google-github-actions/auth
+      contents: 'read'
+      id-token: 'write'
     steps:
     - name: Checkout PR Branch
       uses: snap-research/gigl/.github/actions/checkout-pr-branch@main
