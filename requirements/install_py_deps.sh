@@ -93,6 +93,10 @@ then
     echo "Installing GraphLearn-Torch"
     # Occasionally, there is an existing GLT folder, delete it so we can clone.
     rm -rf graphlearn-for-pytorch
+    # We upstream some bug fixes recently to GLT which have not been released yet.
+    # * https://github.com/alibaba/graphlearn-for-pytorch/pull/153
+    # * https://github.com/alibaba/graphlearn-for-pytorch/pull/151
+    # Thus, checking out a specific commit instead of a tagged version.
     git clone https://github.com/alibaba/graphlearn-for-pytorch.git \
         && cd graphlearn-for-pytorch \
         && git checkout cb61c2734cf43d9b353c30755ccb8bdd678519c1 \
