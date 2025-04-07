@@ -88,8 +88,8 @@ torch25-cpu = [
     # "torch==2.5.1",
     # "torchvision==0.20.0",
     # "torchaudio==2.5.1",
-    "torch @ https://download.pytorch.org/whl/cpu/torch-2.5.0%2Bcpu-cp39-cp39-linux_x86_64.whl#sha256=06ff0ded3faa274a808e50baf509724843c606f2b004520d9106e952532bf455 ; platform_system=='Linux' and python_version=='3.9'",
-    "torch @ https://download.pytorch.org/whl/cpu/torch-2.5.0-cp39-none-macosx_11_0_arm64.whl#sha256=ed849c2d1158f8591f94c14478ee1c3deabc1f438a003d55c0574624c01627f1 ; platform_system=='Darwin' and python_version=='3.9' and platform_machine=='arm64'",
+    "torch @ https://files.pythonhosted.org/packages/b0/58/a948b83de013d896852aebb98da952917325d8f7d65442fe39a185e2e37b/torch-2.5.0-cp39-cp39-manylinux1_x86_64.whl ; platform_system=='Linux' and python_version=='3.9'",
+    "torch @ https://files.pythonhosted.org/packages/56/03/963696bcb9263fdc93faca428a5494c59a17b51644ab7d62320f002a5a2a/torch-2.5.0-cp39-none-macosx_11_0_arm64.whl ; platform_system=='Darwin' and python_version=='3.9' and platform_machine=='arm64'",
     # ===================================== Deps for PyG =====================================
     # https://data.pyg.org/whl/torch-2.5.0+cpu
     # https://data.pyg.org/whl/torch-2.5.0+cpu/pyg_lib-0.4.0+pt25cpu-cp39-cp39-linux_x86_64.whl
