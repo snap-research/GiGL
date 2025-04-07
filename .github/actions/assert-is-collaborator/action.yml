@@ -47,5 +47,7 @@ runs:
       uses: snap-research/gigl/.github/actions/comment-on-pr@main
       with:
         pr_number: ${{ inputs.initiating-pr-number }}
-        message: "🔒 User ${{ inputs.username }} does not have permissions to run this workflow"
+        message: |
+          # GiGL Automation
+          🔒 User ${{ inputs.username }} does not have permissions to run this workflow
             

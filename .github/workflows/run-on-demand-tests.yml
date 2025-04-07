@@ -1,4 +1,4 @@
-name: pr-comment-workflow
+name: on-demand-tests
 
 on:
   issue_comment:
@@ -14,6 +14,7 @@ jobs:
       with:
         pr_number: ${{ github.event.issue.number }}
         should_leave_progress_comments: "true"
+        descriptive_workflow_name: "Unit Test"
         command: |
           make unit_test
   integration-test:
@@ -27,6 +28,7 @@ jobs:
       with:
           pr_number: ${{ github.event.issue.number }}
           should_leave_progress_comments: "true"
+          descriptive_workflow_name: "Integration Test"
           command: |
               GOOGLE_CLOUD_PROJECT=$GOOGLE_CLOUD_PROJECT make integration_test
   integration-e2e-test:
@@ -40,5 +42,6 @@ jobs:
       with:
           pr_number: ${{ github.event.issue.number }}
           should_leave_progress_comments: "true"
+          descriptive_workflow_name: "Integration E2E Test"
           command: |
             GOOGLE_CLOUD_PROJECT=$GOOGLE_CLOUD_PROJECT make run_all_e2e_tests

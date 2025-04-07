@@ -11,6 +11,10 @@ inputs:
     description: 'Whether to leave comments to track the progress of the workflow'
     required: false
     default: 'false'
+  descriptive_workflow_name:
+    description: 'A descriptive name for the workflow used for tracking in comments'
+    required: false
+    default: 'Workflow'
 runs:
   using: "composite"
   steps:
@@ -29,7 +33,9 @@ runs:
       uses: 'snap-research/gigl/.github/actions/comment-on-pr@main'
       with:
         pr_number: ${{ inputs.pr_number }}
-        message: "[BOT] 🔄 [Workflow](${{ env.WORKFLOW_URL }}) started."
+        message: |
+          # GiGL Automation
+          🔄 `${{ inputs.descriptive_workflow_name }}` [started](${{ env.WORKFLOW_URL }}).
 
     - name: Checkout branch
       uses: snap-research/gigl/.github/actions/checkout-pr-branch@main
@@ -45,14 +51,20 @@ runs:
       uses: 'snap-research/gigl/.github/actions/comment-on-pr@main'
       with:
         pr_number: ${{ inputs.pr_number }}
-        message: "[BOT] ✅ [Workflow](${{ env.WORKFLOW_URL }}) completed successfully!"
+        message: |
+          # GiGL Automation
+          ✅ `${{ inputs.descriptive_workflow_name }}` [completed successfully](${{ env.WORKFLOW_URL }})!"
 
     # Failure handling step
     - name: Comment workflow failed
-      # If assert_collaborator_ran_workflow step failed we can skip commenting, as that is handled inside that step
+      # If assert_collaborator_ran_workflow step failed we can skip commenting, as that is handled already in the assertion step
       if: ${{ inputs.should_leave_progress_comments == 'true' && failure() && steps.assert_collaborator_ran_workflow.outcome != 'failure' }}
       uses: 'snap-research/gigl/.github/actions/comment-on-pr@main'
       with:
         pr_number: ${{ inputs.pr_number }}
-        message: "[BOT] ❌ [Workflow](${{ env.WORKFLOW_URL }}) failed. Please check the logs for more details."
+        message: |
+          # GiGL Automation
+          ❌ `${{ inputs.descriptive_workflow_name }}` [failed](${{ env.WORKFLOW_URL }}).
+          Please check the logs for more details.
+
 
