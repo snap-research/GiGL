@@ -2240,8 +2240,8 @@ threadpoolctl==3.6.0 \
     --hash=sha256:43a0b8fd5a2928500110039e43a5eed8480b918967083ea48dc3ab9f13c4a7fb \
     --hash=sha256:8ab8b4aa3491d812b623328249fab5302a68d2d71745c8a4c719a2fcaba9f44e
     # via scikit-learn
-torch @ https://download.pytorch.org/whl/cpu/torch-2.5.0-cp39-none-macosx_11_0_arm64.whl#sha256=ed849c2d1158f8591f94c14478ee1c3deabc1f438a003d55c0574624c01627f1 ; platform_system == "Darwin" and python_version == "3.9" and platform_machine == "arm64" \
-    --hash=sha256:ed849c2d1158f8591f94c14478ee1c3deabc1f438a003d55c0574624c01627f1
+torch @ https://files.pythonhosted.org/packages/56/03/963696bcb9263fdc93faca428a5494c59a17b51644ab7d62320f002a5a2a/torch-2.5.0-cp39-none-macosx_11_0_arm64.whl ; platform_system == "Darwin" and python_version == "3.9" and platform_machine == "arm64" \
+    --hash=sha256:03e53f577a96e4d41aca472da8faa40e55df89d2273664af390ce1f570e885bd
     # via
     #   gigl (python/pyproject.toml)
     #   torchmetrics
