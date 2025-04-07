@@ -84,12 +84,7 @@ torch25-cpu = [
     # We currently don't suppoer MAC environment as a result.
     
     # ===================================== Deps for PyTorch =====================================
-    # torch is currently installed via conda 
-    # "torch==2.5.1",
-    # "torchvision==0.20.0",
-    # "torchaudio==2.5.1",
-    "torch @ https://files.pythonhosted.org/packages/b0/58/a948b83de013d896852aebb98da952917325d8f7d65442fe39a185e2e37b/torch-2.5.0-cp39-cp39-manylinux1_x86_64.whl ; platform_system=='Linux' and python_version=='3.9'",
-    "torch @ https://files.pythonhosted.org/packages/56/03/963696bcb9263fdc93faca428a5494c59a17b51644ab7d62320f002a5a2a/torch-2.5.0-cp39-none-macosx_11_0_arm64.whl ; platform_system=='Darwin' and python_version=='3.9' and platform_machine=='arm64'",
+    "torch==2.5.1",
     # ===================================== Deps for PyG =====================================
     # https://data.pyg.org/whl/torch-2.5.0+cpu
     # https://data.pyg.org/whl/torch-2.5.0+cpu/pyg_lib-0.4.0+pt25cpu-cp39-cp39-linux_x86_64.whl
