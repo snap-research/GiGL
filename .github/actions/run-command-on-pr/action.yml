@@ -34,7 +34,6 @@ runs:
       with:
         pr_number: ${{ inputs.pr_number }}
         message: |
-          # GiGL Automation
           🔄 `${{ inputs.descriptive_workflow_name }}` [started](${{ env.WORKFLOW_URL }}).
 
     - name: Checkout branch
@@ -52,7 +51,6 @@ runs:
       with:
         pr_number: ${{ inputs.pr_number }}
         message: |
-          # GiGL Automation
           ✅ `${{ inputs.descriptive_workflow_name }}` [completed successfully](${{ env.WORKFLOW_URL }})!"
 
     # Failure handling step
@@ -63,7 +61,6 @@ runs:
       with:
         pr_number: ${{ inputs.pr_number }}
         message: |
-          # GiGL Automation
           ❌ `${{ inputs.descriptive_workflow_name }}` [failed](${{ env.WORKFLOW_URL }}).
           Please check the logs for more details.
 

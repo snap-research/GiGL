@@ -48,6 +48,5 @@ runs:
       with:
         pr_number: ${{ inputs.initiating-pr-number }}
         message: |
-          # GiGL Automation
           🔒 User ${{ inputs.username }} does not have permissions to run this workflow
             

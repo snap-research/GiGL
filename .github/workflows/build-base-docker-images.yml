@@ -22,7 +22,6 @@ jobs:
       with:
         pr_number: ${{ inputs.pr_number }}
         message: |
-          # GiGL Automation
           Starting to [build](${{env.WORKFLOW_URL}}) base images for CUDA and CPU.
           This may take a while, please be patient.
           The images will be pushed to the GCP Artifact Registry.
@@ -118,7 +117,6 @@ jobs:
       with:
         pr_number: ${{ inputs.pr_number }}
         message: |
-          # GiGL Automation
           Built and pushed new base images:
           * CUDA base image: `${{ env.GIGL_BASE_CUDA_IMAGE }}`
           * CPU base image: `${{ env.GIGL_BASE_CPU_IMAGE }}`
