@@ -1,4 +1,4 @@
-name: generate-hashed-requirements
+name: generate-hashed-reqs
 
 on:
   workflow_dispatch:
