@@ -13,6 +13,14 @@ env:
   GIGL_BASE_DATAFLOW_IMAGE: us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/gigl-base-images/gigl-dataflow-base:${{ github.sha }}.${{ github.run_number }}.${{ github.run_attempt }}
   WORKFLOW_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
 
+permissions:
+  contents: 'read'
+  # Needed for gcloud auth: https://github.com/google-github-actions/auth
+  id-token: 'write'
+  # Needed for commenting: https://docs.github.com/en/rest/issues/comments?apiVersion=2022-11-28#create-an-issue-comment  
+  issues: 'write'
+  pull-requests: 'write'
+
 jobs:
   comment-workflow-started:
     runs-on: ubuntu-latest
@@ -51,10 +59,6 @@ jobs:
               echo "Pushed CUDA base image to ${GIGL_BASE_CUDA_IMAGE}"
 
   build-cpu-base-images:
-    permissions: # https://docs.github.com/en/rest/issues/comments?apiVersion=2022-11-28#create-an-issue-comment
-      contents: 'read'
-      issues: 'write'
-      pull-requests: 'write'
     runs-on: ubuntu-latest
     steps:
     - name: Setup Machine for building Docker images
@@ -84,10 +88,6 @@ jobs:
           echo "Pushed Dataflow base image to ${GIGL_BASE_DATAFLOW_IMAGE}"
 
   build-and-commit-base-images:
-    permissions: # https://docs.github.com/en/rest/issues/comments?apiVersion=2022-11-28#create-an-issue-comment
-      contents: 'read'
-      issues: 'write'
-      pull-requests: 'write'
     needs:
       - build-cuda-base-image
       - build-cpu-base-images
