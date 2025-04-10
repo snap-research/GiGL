@@ -7,13 +7,32 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Get PRs source branch name
-      id: get_src_branch
-      uses: 'snap-research/gigl/.github/actions/get-pr-src-branch@main'
-      with:
-        pr_number: ${{ inputs.pr_number }}
+  #   - name: Get PRs source branch name
+  #     id: get_src_branch
+  #     uses: 'snap-research/gigl/.github/actions/get-pr-src-branch@main'
+  #     with:
+  #       pr_number: ${{ inputs.pr_number }}
 
-    - name: Checkout branch
-      uses: actions/checkout@v4
-      with:
-        ref: ${{ steps.get_src_branch.outputs.branch_name }}
+  #   - name: Checkout branch
+  #     uses: actions/checkout@v4
+  #     with:
+  #       ref: ${{ steps.get_src_branch.outputs.branch_name }}
+  - name: Get PR details via GitHub Script
+    id: pr
+    uses: actions/github-script@v7
+    with:
+      script: |
+        const prNumber = ${{ github.event.inputs.pr_number }};
+        const { data: pr } = await github.rest.pulls.get({
+          owner: context.repo.owner,
+          repo: context.repo.repo,
+          pull_number: prNumber
+        });
+        core.setOutput('repository', pr.head.repo.full_name);
+        core.setOutput('ref', pr.head.ref);
+
+  - name: Checkout PR source branch
+    uses: actions/checkout@v4
+    with:
+      repository: ${{ steps.pr.outputs.repository }}
+      ref: ${{ steps.pr.outputs.ref }}
