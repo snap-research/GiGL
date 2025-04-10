@@ -12,6 +12,7 @@ jobs:
     - name: Run Unit Tests
       uses: snap-research/gigl/.github/actions/run-command-on-pr@main
       with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
         pr_number: ${{ github.event.issue.number }}
         install_dev_deps: "true"
         should_leave_progress_comments: "true"
@@ -27,6 +28,7 @@ jobs:
       env:
         GOOGLE_CLOUD_PROJECT: ${{ secrets.GCP_PROJECT_ID }}
       with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
         pr_number: ${{ github.event.issue.number }}
         should_leave_progress_comments: "true"
         descriptive_workflow_name: "Integration Test"
@@ -46,6 +48,7 @@ jobs:
       env:
         GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
       with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
         pr_number: ${{ github.event.issue.number }}
         should_leave_progress_comments: "true"
         descriptive_workflow_name: "Integration Test"

@@ -1,6 +1,9 @@
 name: 'Run Command on a Specified PR'
 description: 'Runs a command and posts comments on a PR based on workflow progress'
 inputs:
+  github-token: 
+    description: 'GitHub token for authentication'
+    required: true
   pr_number:
     description: 'The pull request number'
     required: true
@@ -64,8 +67,10 @@ runs:
 
     - name: Checkout PR
       shell: bash
+      env:
+        GH_TOKEN: ${{ inputs.github-token }}
       run: gh pr checkout ${{ inputs.pr_number }}
-
+      
     - name: debug
       shell: bash
       run: |
