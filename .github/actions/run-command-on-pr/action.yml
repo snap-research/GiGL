@@ -62,10 +62,9 @@ runs:
         message: |
           🔄 `${{ inputs.descriptive_workflow_name }}` [started](${{ env.WORKFLOW_URL }}).
 
-    - name: Checkout branch
-      uses: snap-research/gigl/.github/actions/checkout-pr-branch@main
-      with:
-        pr_number: ${{ inputs.pr_number }}
+    - name: Checkout PR
+      shell: bash
+      run: gh pr checkout ${{ inputs.pr_number }}
 
     - name: debug
       shell: bash
