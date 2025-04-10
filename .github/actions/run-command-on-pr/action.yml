@@ -71,11 +71,6 @@ runs:
       with:
         pr_number: ${{ inputs.pr_number }}
         github-token: ${{ inputs.github-token }}
-      
-    - name: debug
-      shell: bash
-      run: |
-        echo "DEBUG: inputs"
 
     - name: Setup development environment
       if: ${{ inputs.install_dev_deps == 'true' }}
@@ -87,13 +82,17 @@ runs:
         workload_identity_provider: ${{ inputs.workload_identity_provider }}
         gcp_service_account_email: ${{ inputs.gcp_service_account_email }}
 
+    - name: Run specified command on the PR branch
+      shell: bash
+      run: ${{ inputs.command }}
+
     - name: Commment workflow succeeded
       if: ${{ inputs.should_leave_progress_comments == 'true' }}
       uses: 'snap-research/gigl/.github/actions/comment-on-pr@main'
       with:
         pr_number: ${{ inputs.pr_number }}
         message: |
-          ✅ `${{ inputs.descriptive_workflow_name }}` [completed successfully](${{ env.WORKFLOW_URL }})!"
+          ✅ Workflow completed successfully.
         comment_id: ${{ steps.comment_workflow_started.outputs.comment_id }} # Append to the previous comment
 
     # Failure handling step
@@ -104,7 +103,7 @@ runs:
       with:
         pr_number: ${{ inputs.pr_number }}
         message: |
-          ❌ `${{ inputs.descriptive_workflow_name }}` [failed](${{ env.WORKFLOW_URL }}).
+          ❌ Workflow failed.
           Please check the logs for more details.
         comment_id: ${{ steps.comment_workflow_started.outputs.comment_id }} # Append to the previous comment
 
