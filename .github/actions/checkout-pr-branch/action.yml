@@ -4,9 +4,21 @@ inputs:
   pr_number:
     description: 'The pull request number'
     required: true
+  github-token:
+    description: 'GitHub token to use for authentication'
+    required: true
 runs:
   using: "composite"
   steps:
+  # First checkout the default code
+  - uses: actions/checkout@v4
+  # Next checkout to the specific PR
+  - name: Checkout PR
+    shell: bash
+    env:
+      GH_TOKEN: ${{ inputs.github-token }}
+    run: gh pr checkout ${{ inputs.pr_number }}
+
   #   - name: Get PRs source branch name
   #     id: get_src_branch
   #     uses: 'snap-research/gigl/.github/actions/get-pr-src-branch@main'
@@ -17,22 +29,22 @@ runs:
   #     uses: actions/checkout@v4
   #     with:
   #       ref: ${{ steps.get_src_branch.outputs.branch_name }}
-  - name: Get PR details via GitHub Script
-    id: pr
-    uses: actions/github-script@v7
-    with:
-      script: |
-        const prNumber = ${{ github.event.inputs.pr_number }};
-        const { data: pr } = await github.rest.pulls.get({
-          owner: context.repo.owner,
-          repo: context.repo.repo,
-          pull_number: prNumber
-        });
-        core.setOutput('repository', pr.head.repo.full_name);
-        core.setOutput('ref', pr.head.ref);
+  # - name: Get PR details via GitHub Script
+  #   id: pr
+  #   uses: actions/github-script@v7
+  #   with:
+  #     script: |
+  #       const prNumber = ${{ github.event.inputs.pr_number }};
+  #       const { data: pr } = await github.rest.pulls.get({
+  #         owner: context.repo.owner,
+  #         repo: context.repo.repo,
+  #         pull_number: prNumber
+  #       });
+  #       core.setOutput('repository', pr.head.repo.full_name);
+  #       core.setOutput('ref', pr.head.ref);
 
-  - name: Checkout PR source branch
-    uses: actions/checkout@v4
-    with:
-      repository: ${{ steps.pr.outputs.repository }}
-      ref: ${{ steps.pr.outputs.ref }}
+  # - name: Checkout PR source branch
+  #   uses: actions/checkout@v4
+  #   with:
+  #     repository: ${{ steps.pr.outputs.repository }}
+  #     ref: ${{ steps.pr.outputs.ref }}

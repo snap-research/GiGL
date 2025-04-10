@@ -66,10 +66,10 @@ runs:
           🔄 `${{ inputs.descriptive_workflow_name }}` [started](${{ env.WORKFLOW_URL }}).
 
     - name: Checkout PR
-      shell: bash
-      env:
-        GH_TOKEN: ${{ inputs.github-token }}
-      run: gh pr checkout ${{ inputs.pr_number }}
+      uses: snap-research/gigl/.github/actions/checkout-pr-branch@main
+      with:
+        pr_number: ${{ inputs.pr_number }}
+        github-token: ${{ inputs.github-token }}
       
     - name: debug
       shell: bash
