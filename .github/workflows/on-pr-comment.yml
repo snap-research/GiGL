@@ -7,6 +7,11 @@ on:
 permissions:
   # Needed for gcloud auth: https://github.com/google-github-actions/auth
   id-token: 'write'
+  contents: 'read'
+  # Needed for commenting on PRs
+  pull-requests: 'write'
+  issues: 'write'
+  
 
 jobs:
   unit-test:
