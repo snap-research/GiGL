@@ -75,7 +75,7 @@ runs:
         run: rm -rf /opt/hostedtoolcache
 
       - name: Set up dev environment
-        if: inputs.install_dev_deps == 'true'
+        if: ${{ inputs.install_dev_deps == 'true' }}
         shell: bash
         run: |
           make install_dev_deps

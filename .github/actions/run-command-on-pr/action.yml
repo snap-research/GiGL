@@ -67,6 +67,11 @@ runs:
       with:
         pr_number: ${{ inputs.pr_number }}
 
+    - name: debug
+      shell: bash
+      run: |
+        echo "DEBUG: inputs"
+
     - name: Setup development environment
       if: ${{ inputs.install_dev_deps == 'true' }}
       uses: snap-research/gigl/.github/actions/setup-python-tools@main
