@@ -13,6 +13,11 @@ inputs:
     required: false
     default: "false"
 
+  install_dev_deps:
+    description: "Set up the development environment that can allow for building/testing/releasing"
+    required: false
+    default: "false"
+
   gcp_project_id:
     description: "Google Cloud Project ID"
     required: false
@@ -68,3 +73,9 @@ runs:
         if: inputs.try_cleaning_disk_space == 'true'
         shell: bash
         run: rm -rf /opt/hostedtoolcache
+
+      - name: Set up dev environment
+        if: inputs.install_dev_deps == 'true'
+        shell: bash
+        run: |
+          make install_dev_deps

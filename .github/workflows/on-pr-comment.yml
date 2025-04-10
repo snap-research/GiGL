@@ -1,4 +1,4 @@
-name: on-demand-tests
+name: On Demand Pr Comment Workflows
 
 on:
   issue_comment:
@@ -13,6 +13,7 @@ jobs:
       uses: snap-research/gigl/.github/actions/run-command-on-pr@main
       with:
         pr_number: ${{ github.event.issue.number }}
+        install_dev_deps: "true"
         should_leave_progress_comments: "true"
         descriptive_workflow_name: "Unit Test"
         command: |
@@ -26,11 +27,16 @@ jobs:
       env:
         GOOGLE_CLOUD_PROJECT: ${{ secrets.GCP_PROJECT_ID }}
       with:
-          pr_number: ${{ github.event.issue.number }}
-          should_leave_progress_comments: "true"
-          descriptive_workflow_name: "Integration Test"
-          command: |
-              GOOGLE_CLOUD_PROJECT=$GOOGLE_CLOUD_PROJECT make integration_test
+        pr_number: ${{ github.event.issue.number }}
+        should_leave_progress_comments: "true"
+        descriptive_workflow_name: "Integration Test"
+        install_dev_deps: "true"
+        setup_gcloud: "true"
+        gcp_project_id: ${{ secrets.GCP_PROJECT_ID }}
+        workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
+        gcp_service_account_email: ${{ secrets.GCP_SERVICE_ACCOUNT_EMAIL }}
+        command: |
+            GOOGLE_CLOUD_PROJECT=$GOOGLE_CLOUD_PROJECT make integration_test
   integration-e2e-test:
     if: ${{ github.event.issue.pull_request && contains(github.event.comment.body, '/integration_end2end_test') }} 
     runs-on: ubuntu-latest
@@ -40,8 +46,13 @@ jobs:
       env:
         GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
       with:
-          pr_number: ${{ github.event.issue.number }}
-          should_leave_progress_comments: "true"
-          descriptive_workflow_name: "Integration E2E Test"
-          command: |
-            GOOGLE_CLOUD_PROJECT=$GOOGLE_CLOUD_PROJECT make run_all_e2e_tests
+        pr_number: ${{ github.event.issue.number }}
+        should_leave_progress_comments: "true"
+        descriptive_workflow_name: "Integration Test"
+        install_dev_deps: "true"
+        setup_gcloud: "true"
+        gcp_project_id: ${{ secrets.GCP_PROJECT_ID }}
+        workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
+        gcp_service_account_email: ${{ secrets.GCP_SERVICE_ACCOUNT_EMAIL }}
+        command: |
+          GOOGLE_CLOUD_PROJECT=$GOOGLE_CLOUD_PROJECT make run_all_e2e_tests
