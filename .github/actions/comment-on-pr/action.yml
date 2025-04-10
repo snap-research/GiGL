@@ -35,7 +35,7 @@ runs:
           const comment_id = process.env.COMMENT_ID;
           const message_prefix = "# GiGL Automation\n\n";
           const formattedTime = new Date().toLocaleTimeString('en-US', { hour12: false });
-          const datetimePrefix = "@ _" + formattedDateTime + "_ : "
+          const datetimePrefix = "@ _" + formattedTime + "_ : "
 
           if (comment_id) {
             // Fetch existing comment
