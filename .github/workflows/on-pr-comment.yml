@@ -14,9 +14,13 @@ jobs:
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         pr_number: ${{ github.event.issue.number }}
-        install_dev_deps: "true"
         should_leave_progress_comments: "true"
         descriptive_workflow_name: "Unit Test"
+        install_dev_deps: "true"
+        setup_gcloud: "true"
+        gcp_project_id: ${{ secrets.GCP_PROJECT_ID }}
+        workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
+        gcp_service_account_email: ${{ secrets.GCP_SERVICE_ACCOUNT_EMAIL }}
         command: |
           make unit_test
   integration-test:
