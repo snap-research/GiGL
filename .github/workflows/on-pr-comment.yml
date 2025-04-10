@@ -4,6 +4,11 @@ on:
   issue_comment:
     types: [created]
 
+permissions:
+  # Needed for gcloud auth: https://github.com/google-github-actions/auth
+  contents: 'read'
+  id-token: 'write'
+
 jobs:
   unit-test:
     if: ${{ github.event.issue.pull_request && contains(github.event.comment.body, '/unit_test') }} 
