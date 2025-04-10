@@ -59,6 +59,7 @@ runs:
 
     - name: Commment workflow started
       if: ${{ inputs.should_leave_progress_comments == 'true' }}
+      id: comment_workflow_started
       uses: 'snap-research/gigl/.github/actions/comment-on-pr@main'
       with:
         pr_number: ${{ inputs.pr_number }}
@@ -86,10 +87,6 @@ runs:
         workload_identity_provider: ${{ inputs.workload_identity_provider }}
         gcp_service_account_email: ${{ inputs.gcp_service_account_email }}
 
-    - name: Run specified command on the PR branch
-      shell: bash
-      run: ${{ inputs.command }}
-
     - name: Commment workflow succeeded
       if: ${{ inputs.should_leave_progress_comments == 'true' }}
       uses: 'snap-research/gigl/.github/actions/comment-on-pr@main'
@@ -97,6 +94,7 @@ runs:
         pr_number: ${{ inputs.pr_number }}
         message: |
           ✅ `${{ inputs.descriptive_workflow_name }}` [completed successfully](${{ env.WORKFLOW_URL }})!"
+        comment_id: ${{ steps.comment_workflow_started.outputs.comment_id }} # Append to the previous comment
 
     # Failure handling step
     - name: Comment workflow failed
@@ -108,5 +106,6 @@ runs:
         message: |
           ❌ `${{ inputs.descriptive_workflow_name }}` [failed](${{ env.WORKFLOW_URL }}).
           Please check the logs for more details.
+        comment_id: ${{ steps.comment_workflow_started.outputs.comment_id }} # Append to the previous comment
 
 

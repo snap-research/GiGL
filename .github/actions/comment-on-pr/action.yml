@@ -8,23 +8,61 @@ inputs:
   message:
     description: 'Comment message to post on the PR'
     required: true
+  comment_id:
+    description: 'If provided appends to comment instead of creating new comment'
+    required: false
+
+outputs:
+  comment_id:
+    description: 'The ID of the created or updated comment'
+    value: ${{steps.comment.outputs.result}}
+    
 
 runs:
   using: 'composite'
   steps:
-    - name: Create Comment on Issue
+    - name: Create or Update Comment
+      id: comment
       uses: actions/github-script@v7
       env:
         PR_NUMBER: ${{ inputs.pr_number }}
         MESSAGE: ${{ inputs.message }}
+        COMMENT_ID: ${{ inputs.comment_id }}
       with:
         script: |
-          const message_prefix = "# GiGL Automation\n\n";
           const pr_number = process.env.PR_NUMBER;
-          const message = message_prefix + process.env.MESSAGE;
-          await github.rest.issues.createComment({
-            issue_number: pr_number,
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            body: message
-          });
+          const message = process.env.MESSAGE;
+          const comment_id = process.env.COMMENT_ID;
+          const message_prefix = "# GiGL Automation\n\n";
+
+          if (comment_id) {
+            // Fetch existing comment
+            const existingComment = await github.rest.issues.getComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              comment_id: comment_id,
+            });
+
+            const updatedBody = existingComment.data.body + '\n' + message;
+
+            // Update the comment
+            await github.rest.issues.updateComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              comment_id: comment_id,
+              body: updatedBody,
+            });
+
+            // Return the same comment ID
+            return comment_id;
+          } else {
+            // Create a new comment
+            const response = await github.rest.issues.createComment({
+              issue_number: pr_number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: message_prefix + message,
+            });
+
+            return response.data.id;
+          }
