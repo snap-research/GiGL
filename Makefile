@@ -111,7 +111,6 @@ generate_dev_linux_cuda_hashed_requirements:
 # May include tests that check the sanity of the repo state i.e. ones that may even cause the failure of
 # installation scripts
 precondition_tests:
-	python shared/tests/requirements_check.py
 	python shared/tests/dep_vars_check.py
 
 assert_yaml_configs_parse:

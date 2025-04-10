@@ -1,0 +1,19 @@
+name: 'Checkout PR Branch'
+description: 'Checkout the PR branch associated with the PR comment'
+inputs:
+  pr_number:
+    description: 'The pull request number'
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - name: Get PRs source branch name
+      id: get_src_branch
+      uses: 'snap-research/gigl/.github/actions/get-pr-src-branch@main'
+      with:
+        pr_number: ${{ inputs.pr_number }}
+
+    - name: Checkout branch
+      uses: actions/checkout@v4
+      with:
+        ref: ${{ steps.get_src_branch.outputs.branch_name }}
