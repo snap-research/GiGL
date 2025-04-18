@@ -2,7 +2,6 @@ name: On-Demand PR Merge Queue Workflows
 
 on:
   # Run whenever GitHub’s merge queue asks for required checks
-  pull_request:
   merge_group:
 
 permissions:
@@ -15,7 +14,6 @@ permissions:
 
 jobs:
   ci-unit-test:
-    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
@@ -31,7 +29,6 @@ jobs:
       run: |
         make unit_test
   ci-integration-test:
-    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
@@ -47,7 +44,6 @@ jobs:
       run: |
         GOOGLE_CLOUD_PROJECT=$GOOGLE_CLOUD_PROJECT make integration_test
   ci-integration-e2e-test:
-    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
