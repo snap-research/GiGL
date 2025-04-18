@@ -14,7 +14,7 @@ permissions:
   issues: 'write'
 
 jobs:
-  unit-test:
+  ci-unit-test:
     if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     steps:
@@ -30,7 +30,7 @@ jobs:
     - name: Run Unit Tests
       run: |
         make unit_test
-  integration-test:
+  ci-integration-test:
     if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     steps:
@@ -46,7 +46,7 @@ jobs:
     - name: Run Unit Tests
       run: |
         GOOGLE_CLOUD_PROJECT=$GOOGLE_CLOUD_PROJECT make integration_test
-  integration-e2e-test:
+  ci-integration-e2e-test:
     if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     steps:
