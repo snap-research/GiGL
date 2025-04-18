@@ -1,0 +1,64 @@
+name: On-Demand PR Merge Queue Workflows
+
+on:
+  # Run whenever GitHub’s merge queue asks for required checks
+  merge_group:
+    types: [checks_requested]
+    branches:
+      - main
+
+permissions:
+  # Needed for gcloud auth: https://github.com/google-github-actions/auth
+  id-token: 'write'
+  contents: 'read'
+  # Needed for commenting on PRs
+  pull-requests: 'write'
+  issues: 'write'
+
+jobs:
+  unit-test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Setup development environment
+      uses: snap-research/gigl/.github/actions/setup-python-tools@main
+      with:
+          install_dev_deps: 'true'
+          setup_gcloud: 'true'
+          gcp_project_id: ${{ secrets.gcp_project_id }}
+          workload_identity_provider: ${{ secrets.workload_identity_provider }}
+          gcp_service_account_email: ${{ secrets.gcp_service_account_email }}
+    - name: Run Unit Tests
+      run: |
+        make unit_test
+  integration-test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Setup development environment
+      uses: snap-research/gigl/.github/actions/setup-python-tools@main
+      with:
+          install_dev_deps: 'true'
+          setup_gcloud: 'true'
+          gcp_project_id: ${{ secrets.gcp_project_id }}
+          workload_identity_provider: ${{ secrets.workload_identity_provider }}
+          gcp_service_account_email: ${{ secrets.gcp_service_account_email }}
+    - name: Run Unit Tests
+      run: |
+        GOOGLE_CLOUD_PROJECT=$GOOGLE_CLOUD_PROJECT make integration_test
+  integration-e2e-test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Setup development environment
+      uses: snap-research/gigl/.github/actions/setup-python-tools@main
+      with:
+          install_dev_deps: 'true'
+          setup_gcloud: 'true'
+          gcp_project_id: ${{ secrets.gcp_project_id }}
+          workload_identity_provider: ${{ secrets.workload_identity_provider }}
+          gcp_service_account_email: ${{ secrets.gcp_service_account_email }}
+    - name: Run Unit Tests
+      run: |
+        GOOGLE_CLOUD_PROJECT=$GOOGLE_CLOUD_PROJECT make run_all_e2e_tests
+  
