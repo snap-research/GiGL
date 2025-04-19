@@ -71,3 +71,21 @@ jobs:
         gcp_service_account_email: ${{ secrets.GCP_SERVICE_ACCOUNT_EMAIL }}
         command: |
           GOOGLE_CLOUD_PROJECT=$GOOGLE_CLOUD_PROJECT make run_all_e2e_tests
+  test:
+    if: ${{ github.event.issue.pull_request && contains(github.event.comment.body, '/info') }} 
+    runs-on: ubuntu-latest
+    steps:
+    - name: Run Tests
+      uses: snap-research/gigl/.github/actions/run-command-on-pr@main
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        pr_number: ${{ github.event.issue.number }}
+        should_leave_progress_comments: "true"
+        descriptive_workflow_name: "Info Test"
+        install_dev_deps: "true"
+        setup_gcloud: "true"
+        gcp_project_id: ${{ secrets.GCP_PROJECT_ID }}
+        workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
+        gcp_service_account_email: ${{ secrets.GCP_SERVICE_ACCOUNT_EMAIL }}
+        command: |
+          gcloud info
