@@ -7,7 +7,7 @@ from tensorflow_metadata.proto.v0.schema_pb2 import Schema
 from tensorflow_transform.tf_metadata import schema_utils
 from tensorflow_metadata.proto.v0 import schema_pb2
 from google.protobuf import text_format
-import gigl.common.utils.gcs as GcsUtils
+from gigl.common.utils.gcs import GcsUtils
 from gigl.common import GcsUri, LocalUri, Uri
 from gigl.src.data_preprocessor.lib.types import FeatureIndexDict, FeatureSpecDict
 
@@ -34,7 +34,7 @@ def load_tf_schema_uri_str_to_feature_spec(uri: Uri) -> Tuple[Schema, FeatureSpe
     print("SV DEBUG: schema_text:", schema_text)
     print("SV DEBUG: schema:", schema)
 
-    schema = load_schema_text(uri.uri)
+    # schema = load_schema_text(uri.uri)
     feature_spec = schema_utils.schema_as_feature_spec(schema).feature_spec
     return schema, feature_spec
 
