@@ -37,6 +37,7 @@ jobs:
     - name: Checkout PR Branch
       uses: snap-research/gigl/.github/actions/checkout-pr-branch@main
       with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
         pr_number: ${{ inputs.pr_number }}
     - name: Setup Machine for building Docker images
       uses: snap-research/gigl/.github/actions/setup-python-tools@main
@@ -64,6 +65,7 @@ jobs:
     - name: Checkout PR Branch
       uses: snap-research/gigl/.github/actions/checkout-pr-branch@main
       with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
         pr_number: ${{ inputs.pr_number }}
     - name: Setup Machine for building Docker images
       uses: snap-research/gigl/.github/actions/setup-python-tools@main
@@ -96,6 +98,7 @@ jobs:
     - name: Commit and Push Base Images
       uses: snap-research/gigl/.github/actions/run-command-on-pr@main
       with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
         pr_number: ${{ inputs.pr_number }}
         should_leave_progress_comments: "false"
         command: |
