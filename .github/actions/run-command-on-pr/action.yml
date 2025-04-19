@@ -73,7 +73,7 @@ runs:
         github-token: ${{ inputs.github-token }}
 
     - name: Setup development environment
-      if: ${{ inputs.install_dev_deps == 'true' }}
+      if: ${{ inputs.install_dev_deps == 'true' || inputs.setup_gcloud == 'true' }}
       uses: snap-research/gigl/.github/actions/setup-python-tools@main
       with:
         install_dev_deps: ${{ inputs.install_dev_deps }}
