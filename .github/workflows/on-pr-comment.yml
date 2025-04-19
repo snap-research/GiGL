@@ -89,3 +89,4 @@ jobs:
         gcp_service_account_email: ${{ secrets.GCP_SERVICE_ACCOUNT_EMAIL }}
         command: |
           gcloud info
+          gsutil cat gs://public-gigl/mocked_assets/2024-07-15--21-30-07-UTC/cora_homogeneous_node_anchor_edge_features/frozen_gbml_config.yaml
