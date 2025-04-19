@@ -5,20 +5,35 @@ import tensorflow as tf
 from tensorflow_data_validation import load_schema_text
 from tensorflow_metadata.proto.v0.schema_pb2 import Schema
 from tensorflow_transform.tf_metadata import schema_utils
-
+from tensorflow_metadata.proto.v0 import schema_pb2
+from google.protobuf import text_format
+import gigl.common.utils.gcs as GcsUtils
 from gigl.common import GcsUri, LocalUri, Uri
 from gigl.src.data_preprocessor.lib.types import FeatureIndexDict, FeatureSpecDict
 
 # We suppress noisy tensorflow logs to minimize unintentional clutter in logging:
 # https://stackoverflow.com/questions/69485127/disabling-useless-logs-ouputs-from-tfx-setuptools
-absl.logging.set_verbosity(absl.logging.FATAL)
-
+# absl.logging.set_verbosity(absl.logging.FATAL)
+import os
+from google.auth import default
 
 def load_tf_schema_uri_str_to_feature_spec(uri: Uri) -> Tuple[Schema, FeatureSpecDict]:
+    print("SV DEBUG: GOOGLE_APPLICATION_CREDENTIALS:", os.getenv("GOOGLE_APPLICATION_CREDENTIALS"))
+    creds, project = default()
+    print("Credentials loaded for project:", project)
+
     if not (GcsUri.is_valid(uri) or LocalUri.is_valid(uri)):
         raise ValueError(
             f"Invalid uri: {uri}. Uri has to either be a GCS or local uri string."
         )
+    schema = schema_pb2.Schema()
+    utils = GcsUtils()
+    schema_text = utils.read_from_gcs(uri)
+    text_format.Parse(schema_text, schema)
+
+    print("SV DEBUG: schema_text:", schema_text)
+    print("SV DEBUG: schema:", schema)
+
     schema = load_schema_text(uri.uri)
     feature_spec = schema_utils.schema_as_feature_spec(schema).feature_spec
     return schema, feature_spec
