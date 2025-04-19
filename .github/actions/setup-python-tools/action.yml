@@ -66,6 +66,7 @@ runs:
         if: inputs.setup_gcloud == 'true'
         shell: bash
         run: |
+          mkdir -p $HOME/.config/gcloud
           ln -s $GOOGLE_APPLICATION_CREDENTIALS $HOME/.config/gcloud/application_default_credentials.json
 
       # Step 4: Install gcloud tooling
