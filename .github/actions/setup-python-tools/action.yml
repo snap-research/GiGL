@@ -59,6 +59,8 @@ runs:
           project_id: ${{ inputs.gcp_project_id }}
           workload_identity_provider: ${{ inputs.workload_identity_provider }}
           service_account: ${{ inputs.gcp_service_account_email }}
+          create_credentials_file: true
+          export_environment_variables: true
 
       # Step 4: Install gcloud tooling
       - name: Set Up Cloud SDK
