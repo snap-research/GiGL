@@ -67,25 +67,3 @@ jobs:
         gcp_service_account_email: ${{ secrets.GCP_SERVICE_ACCOUNT_EMAIL }}
         command: |
           make run_all_e2e_tests
-  test:
-    if: ${{ github.event.issue.pull_request && contains(github.event.comment.body, '/info') }} 
-    runs-on: ubuntu-latest
-    steps:
-    - name: Run Tests
-      uses: snap-research/gigl/.github/actions/run-command-on-pr@main
-      with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        pr_number: ${{ github.event.issue.number }}
-        should_leave_progress_comments: "true"
-        descriptive_workflow_name: "Info Test"
-        setup_gcloud: "true"
-        gcp_project_id: ${{ secrets.GCP_PROJECT_ID }}
-        workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
-        gcp_service_account_email: ${{ secrets.GCP_SERVICE_ACCOUNT_EMAIL }}
-        command: |
-          echo "auth list"
-          gcloud auth list
-          echo "config list"
-          gcloud config list
-          cat $HOME/.config/gcloud/application_default_credentials.json
-          gsutil cat gs://public-gigl/mocked_assets/2024-08-01--17-11-27-UTC/dblp_node_anchor_edge_features_lp/data_preprocess/node_features_dir/term/schema.pbtxt
