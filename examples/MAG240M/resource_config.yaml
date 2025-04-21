@@ -2,13 +2,14 @@ shared_resource_config:
   resource_labels:
   # These are compute labels that we will try to attach to the resources created by GiGL components.
   # More information: https://cloud.google.com/compute/docs/labeling-resources.
-  # These can be mostly used to get finer gained cost reporting through GCP billing on individual component
+  # These can be mostly used to get finer grained cost reporting through GCP billing on individual component
   # and pipeline costs.
 
-  # If COMPONENT is provided in cost_resource_group_tag, it will be automatically be replaced with one of 
-  # {pre|sgs|spl|tra|inf|pos} standing for: {Preprocessor | Subgraph Sampler | Split Generator | Trainer 
-  #   | Inference | Post  Processor} so we can get more accurate cost measurements 
-  #   of each component.
+  # If COMPONENT is provided in cost_resource_group_tag, it will be automatically be replaced with one of
+  # {pre|sgs|spl|tra|inf|pos} standing for: {Preprocessor | Subgraph Sampler | Split Generator | Trainer
+  # | Inference | Post  Processor} so we can get more accurate cost measurements of each component.
+  # See implementation:
+  # `python/gigl/src/common/types/pb_wrappers/gigl_resource_config.py#GiglResourceConfigWrapper.get_resource_labels`
 
     cost_resource_group_tag: dev_experiments_COMPONENT
     cost_resource_group: gigl_platform

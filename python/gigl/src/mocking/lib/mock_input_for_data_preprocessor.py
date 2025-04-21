@@ -7,12 +7,12 @@ from google.cloud import bigquery
 
 from gigl.common import UriFactory
 from gigl.common.logger import Logger
-from gigl.src.common.constants.test_assets import (
+from gigl.src.common.types.graph_data import EdgeType, EdgeUsageType, NodeType
+from gigl.src.common.utils.bq import BqUtils
+from gigl.src.mocking.lib.constants import (
     get_example_task_edges_bq_table_path,
     get_example_task_nodes_bq_table_path,
 )
-from gigl.src.common.types.graph_data import EdgeType, EdgeUsageType, NodeType
-from gigl.src.common.utils.bq import BqUtils
 from gigl.src.mocking.lib.feature_handling import get_feature_field_name
 from gigl.src.mocking.lib.mocked_dataset_resources import MockedDatasetInfo
 

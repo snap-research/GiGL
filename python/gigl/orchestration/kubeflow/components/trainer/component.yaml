@@ -1,5 +1,5 @@
 name: Trainer
-description: Executes training job based on selected configuration in resource_config 
+description: Executes training job based on selected configuration in resource_config
 inputs:
 - {name: config_uri, type: String, description: 'URI to Task Config'}
 - {name: job_name, type: String, description: 'Unique name to identify the job'}
@@ -9,7 +9,7 @@ inputs:
 
 implementation:
   container:
-    image: gcr.io/external-snap-ci-github-gigl/gbml:latest # Dummy value
+    image: us-central1-docker.pkg.dev/external-snap-ci-github-gigl/gigl-base-images/src-cpu:latest # Dummy value
     command: [
       python, -m, gigl.src.training.trainer,
       --task_config_uri, {inputValue: config_uri},

@@ -210,7 +210,32 @@ class SGSPureSparkV1TaskTest extends AnyFunSuite with BeforeAndAfterAll with Sha
       .getSeq[Integer](0)
     nodeList should contain allElementsOf randomSamplesList
     assert(randomSamplesList.length == numNeighborsToSample)
+  }
 
+  test("Onehop samples with replacement are valid.") {
+    val uniqueTestViewSuffix = "_" + randomUUID.toString.replace("-", "_")
+    val unhydratedEdgeDF     = mockUnhydratedEdgeForCurrentTest
+    val unhydratedEdgeVIEW   = "unhydratedEdgeDF" + uniqueTestViewSuffix
+    unhydratedEdgeDF.createOrReplaceTempView(unhydratedEdgeVIEW)
+    var numNeighborsToSample = 10
+    val sampledOnehopVIEW =
+      sgsTask.sampleOnehopSrcNodesUniformly(
+        numNeighborsToSample = numNeighborsToSample,
+        unhydratedEdgeVIEW = unhydratedEdgeVIEW,
+        permutationStrategy = "non-deterministic",
+        sampleWithReplacement = true,
+      )
+    val sampledOnehopDF = sparkTest.table(sampledOnehopVIEW)
+    // must choose a nodeId st number of its in-edges is > numNeighborsToSample [to test randomness]
+    var nodeId   = 0
+    val nodeList = Seq(1, 2, 3, 4, 5, 6, 7, 8)
+    val randomSamplesList = sampledOnehopDF
+      .filter(F.col("_0_hop") === nodeId)
+      .select("_sampled_1_hop_arr")
+      .first
+      .getSeq[Integer](0)
+    nodeList should contain allElementsOf randomSamplesList
+    assert(randomSamplesList.length == numNeighborsToSample)
   }
 
   test("Twohop samples are valid.") {
@@ -229,6 +254,39 @@ class SGSPureSparkV1TaskTest extends AnyFunSuite with BeforeAndAfterAll with Sha
       unhydratedEdgeVIEW = unhydratedEdgeVIEW,
       sampledOnehopVIEW = sampledOnehopVIEW,
       permutationStrategy = "non-deterministic",
+    )
+    val sampledTwohopDF = sparkTest.table(sampledTwohopVIEW)
+    // must choose a nodeId st number of its in-edges is <= numNeighborsToSample [no randomness]
+    var zerohopId = 1
+    // must choose a nodeId st number of its in-edges is > numNeighborsToSample [to test randomness]
+    var onehopId   = 0
+    var twohopList = Seq(1, 2, 3, 4, 5, 6, 7, 8)
+    val randomTwohopSamplesList = sampledTwohopDF
+      .filter(F.col("_0_hop") === zerohopId && F.col("_1_hop") === onehopId)
+      .select("_sampled_2_hop_arr")
+      .first
+      .getSeq[Integer](0)
+    twohopList should contain allElementsOf randomTwohopSamplesList
+    assert(randomTwohopSamplesList.length == numNeighborsToSample)
+  }
+
+  test("Twohop samples with replacement are valid.") {
+    val uniqueTestViewSuffix = "_" + randomUUID.toString.replace("-", "_")
+    val unhydratedEdgeDF     = mockUnhydratedEdgeForCurrentTest
+    val unhydratedEdgeVIEW   = "unhydratedEdgeDF" + uniqueTestViewSuffix
+    unhydratedEdgeDF.createOrReplaceTempView(unhydratedEdgeVIEW)
+    val onehopData = Seq((1, Seq(3, 0, 2)), (3, Seq(0, 1, 1)), (2, Seq(0, 1, 0)), (0, Seq(1, 3, 2)))
+    val sampledOnehopDF   = onehopData.toDF("_0_hop", "_sampled_1_hop_arr")
+    val sampledOnehopVIEW = "sampledOnehopDF" + uniqueTestViewSuffix
+    sampledOnehopDF.createOrReplaceTempView(sampledOnehopVIEW)
+    var numNeighborsToSample = 10
+
+    val sampledTwohopVIEW = sgsTask.sampleTwohopSrcNodesUniformly(
+      numNeighborsToSample = numNeighborsToSample,
+      unhydratedEdgeVIEW = unhydratedEdgeVIEW,
+      sampledOnehopVIEW = sampledOnehopVIEW,
+      permutationStrategy = "non-deterministic",
+      sampleWithReplacement = true,
     )
     val sampledTwohopDF = sparkTest.table(sampledTwohopVIEW)
     // must choose a nodeId st number of its in-edges is <= numNeighborsToSample [no randomness]
@@ -519,6 +577,32 @@ class SGSPureSparkV1TaskTest extends AnyFunSuite with BeforeAndAfterAll with Sha
       .map(_(0))
       .toList
     expectedIsolatedNodeList should contain allElementsOf curIsolatedNodesList
+  }
+
+  test("sampleWithReplacementUDF returns correct number of samples") {
+    // Use the already registered UDF from SGSPureSparkV1Task
+    val sampleWithReplacementUDF = sgsTask.sampleWithReplacementUDF
+
+    // Create a DataFrame with sample data
+    val data = Seq(
+      (Seq(1, 2, 3, 4, 5), 10),
+      (Seq(6, 7, 8, 9, 10), 2),
+      (Seq.empty[Int], 3),
+      (null, 3),
+    ).toDF("array", "numSamples")
+
+    // Apply the UDF
+    val resultDF =
+      data.withColumn("samples", sampleWithReplacementUDF(F.col("array"), F.col("numSamples")))
+
+    // Collect the results
+    val results = resultDF.collect()
+
+    // Write assertions
+    assert(results(0).getAs[Seq[Int]]("samples").length == 10)
+    assert(results(1).getAs[Seq[Int]]("samples").length == 2)
+    assert(results(2).getAs[Seq[Int]]("samples").isEmpty)
+    assert(results(3).getAs[Seq[Int]]("samples").isEmpty)
   }
 
 }

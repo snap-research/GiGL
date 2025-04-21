@@ -16,6 +16,7 @@ from gigl.src.common.constants.metrics import TIMER_CONFIG_POPULATOR_S
 from gigl.src.common.types import AppliedTaskIdentifier
 from gigl.src.common.types.dataset_split import DatasetSplit
 from gigl.src.common.types.graph_data import EdgeType, NodeType, Relation
+from gigl.src.common.types.pb_wrappers.gbml_config import GbmlConfigPbWrapper
 from gigl.src.common.types.pb_wrappers.task_metadata import TaskMetadataPbWrapper
 from gigl.src.common.types.task_metadata import TaskMetadataType
 from gigl.src.common.utils.metrics_service_provider import (
@@ -331,6 +332,9 @@ class ConfigPopulator:
             str, inference_metadata_pb2.InferenceOutput
         ] = {}
         inferencer_node_types = self.task_metadata_pb_wrapper.get_task_root_node_types()
+        template_gbml_config_pb_wrapper = GbmlConfigPbWrapper(
+            gbml_config_pb=self.template_gbml_config
+        )
         for node_type in inferencer_node_types:
             embeddings_path = bq_constants.get_embeddings_table(
                 applied_task_identifier=self.applied_task_identifier,
@@ -341,7 +345,10 @@ class ConfigPopulator:
             if (
                 self.task_metadata_pb_wrapper.task_metadata_type
                 == TaskMetadataType.NODE_BASED_TASK
+                or template_gbml_config_pb_wrapper.should_populate_predictions_path
             ):
+                # TODO: currently, we are overloading the predictions path to store extra embeddings.
+                # consider extending InferenceOutput's definition for this purpose.
                 predictions_path = bq_constants.get_predictions_table(
                     applied_task_identifier=self.applied_task_identifier,
                     node_type=node_type,

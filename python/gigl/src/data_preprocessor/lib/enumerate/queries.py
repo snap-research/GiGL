@@ -3,7 +3,7 @@ DEFAULT_ENUMERATED_NODE_ID_FIELD = "int_id"
 
 UNIQUE_NODE_ENUMERATION_QUERY = """
 WITH
-  unique_nodes AS ( 
+  unique_nodes AS (
     SELECT DISTINCT {bq_source_table_node_id_col_name} as {original_node_id_field} FROM `{bq_source_table_name}`
   )
 SELECT
@@ -49,23 +49,22 @@ NO_EDGE_FEATURES_GRAPH_EDGELIST_ENUMERATION_QUERY = """
 WITH
   unmapped_graph AS
   (
-    SELECT DISTINCT {src_node_id_col}, {dst_node_id_col} FROM `{bq_graph}`
+    SELECT {src_node_id_col}, {dst_node_id_col} FROM `{bq_graph}`
   )
-SELECT 
+SELECT
   (
-    SELECT {enumerated_int_id_field} 
-    FROM `{src_enumerated_node_ids}` 
+    SELECT {enumerated_int_id_field}
+    FROM `{src_enumerated_node_ids}`
     WHERE {original_node_id_field} = unmapped_graph.{src_node_id_col}
   ) as {src_node_id_col},
   (
-    SELECT {enumerated_int_id_field} 
-    FROM `{dst_enumerated_node_ids}` 
+    SELECT {enumerated_int_id_field}
+    FROM `{dst_enumerated_node_ids}`
     WHERE {original_node_id_field} = unmapped_graph.{dst_node_id_col}
   ) as {dst_node_id_col},
 FROM unmapped_graph
 """
 
-# TODO: (svij-sc) This query should have DISTINCT clause like NO_EDGE_FEATURES_GRAPH_EDGELIST_ENUMERATION_QUERY
 EDGE_FEATURES_GRAPH_EDGELIST_ENUMERATION_QUERY = """
 WITH
   unmapped_graph AS
@@ -77,14 +76,14 @@ WITH
     FROM
       `{bq_graph}`
   )
-SELECT 
+SELECT
   (
-    SELECT {enumerated_int_id_field} 
-    FROM `{src_enumerated_node_ids}` 
+    SELECT {enumerated_int_id_field}
+    FROM `{src_enumerated_node_ids}`
     WHERE {original_node_id_field} = unmapped_graph.{src_node_id_col}
   ) as {src_node_id_col},
   (
-    SELECT {enumerated_int_id_field} 
+    SELECT {enumerated_int_id_field}
     FROM `{dst_enumerated_node_ids}`
     WHERE {original_node_id_field} = unmapped_graph.{dst_node_id_col}
   ) as {dst_node_id_col},

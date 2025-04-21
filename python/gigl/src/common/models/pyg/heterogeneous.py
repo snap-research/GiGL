@@ -1,4 +1,4 @@
-from typing import Dict, List
+from typing import Dict, List, Optional
 
 import torch
 import torch_geometric.data
@@ -9,6 +9,7 @@ from torch_geometric.nn import Linear
 from gigl.src.common.models.layers.normalization import l2_normalize_embeddings
 from gigl.src.common.models.pyg.nn.conv.hgt_conv import HGTConv
 from gigl.src.common.models.pyg.nn.conv.simplehgn_conv import SimpleHGNConv
+from gigl.src.common.models.pyg.nn.models.feature_embedding import FeatureEmbeddingLayer
 from gigl.src.common.models.utils.torch import to_hetero_feat
 from gigl.src.common.types.graph_data import EdgeType, NodeType
 
@@ -37,6 +38,9 @@ class HGT(nn.Module):
         num_layers: int = 2,
         num_heads: int = 2,
         should_l2_normalize_embedding_layer_output: bool = False,
+        feature_embedding_layers: Optional[
+            Dict[NodeType, FeatureEmbeddingLayer]
+        ] = None,
         **kwargs,
     ):
         super().__init__()
@@ -62,6 +66,8 @@ class HGT(nn.Module):
             should_l2_normalize_embedding_layer_output
         )
 
+        self.feature_embedding_layers = feature_embedding_layers
+
     def forward(
         self,
         data: torch_geometric.data.hetero_data.HeteroData,
@@ -76,23 +82,40 @@ class HGT(nn.Module):
         Returns:
             Dict[NodeType, torch.Tensor]: Dictionary with node types as keys and output tensors as values.
         """
-        x_dict = {
+        node_type_to_features_dict = data.x_dict
+
+        if self.feature_embedding_layers:
+            node_type_to_features_dict = {
+                node_type: self.feature_embedding_layers[node_type](x)
+                if node_type in self.feature_embedding_layers
+                else x
+                for node_type, x in node_type_to_features_dict.items()
+            }
+
+        node_type_to_features_dict = {
             node_type: self.lin_dict[node_type](x).relu_()
-            for node_type, x in data.x_dict.items()
+            for node_type, x in node_type_to_features_dict.items()
         }
+
         for conv in self.convs:
-            x_dict = conv(x_dict, data.edge_index_dict)
+            node_type_to_features_dict = conv(
+                node_type_to_features_dict, data.edge_index_dict
+            )
+
         node_typed_embeddings: Dict[NodeType, torch.Tensor] = {}
+
         for node_type in output_node_types:
             node_typed_embeddings[node_type] = (
-                self.lin(x_dict[node_type])
-                if node_type in x_dict
+                self.lin(node_type_to_features_dict[node_type])
+                if node_type in node_type_to_features_dict
                 else torch.FloatTensor([]).to(device=device)
             )
+
         if self.should_l2_normalize_embedding_layer_output:
             node_typed_embeddings = l2_normalize_embeddings(  # type: ignore
                 node_typed_embeddings=node_typed_embeddings
             )
+
         return node_typed_embeddings
 
 

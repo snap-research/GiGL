@@ -119,9 +119,9 @@ def infer_task_inputs(
     _pos_embeddings: Dict[CondensedEdgeType, List[torch.FloatTensor]] = defaultdict(
         list
     )
-    _hard_neg_embeddings: Dict[CondensedEdgeType, List[torch.FloatTensor]] = (
-        defaultdict(list)
-    )
+    _hard_neg_embeddings: Dict[
+        CondensedEdgeType, List[torch.FloatTensor]
+    ] = defaultdict(list)
 
     _positive_ids: Dict[CondensedEdgeType, List[torch.LongTensor]] = defaultdict(list)
     _hard_neg_ids: Dict[CondensedEdgeType, List[torch.LongTensor]] = defaultdict(list)
@@ -174,9 +174,9 @@ def infer_task_inputs(
         device=device,
     )
 
-    main_batch_node_id_mapping: Dict[CondensedNodeType, Dict[NodeId, NodeId]] = (
-        main_batch.condensed_node_type_to_subgraph_id_to_global_node_id
-    )
+    main_batch_node_id_mapping: Dict[
+        CondensedNodeType, Dict[NodeId, NodeId]
+    ] = main_batch.condensed_node_type_to_subgraph_id_to_global_node_id
     random_negative_batch_node_id_mapping: Dict[
         CondensedNodeType, Dict[NodeId, NodeId]
     ] = random_neg_batch.condensed_node_type_to_subgraph_id_to_global_node_id
@@ -430,15 +430,15 @@ def infer_task_inputs(
                 else torch.tensor([])
             )
 
-            batch_combined_scores[condensed_supervision_edge_type] = (
-                BatchCombinedScores(
-                    repeated_candidate_scores=repeated_candidate_scores,
-                    positive_ids=global_positive_ids,  # type: ignore
-                    hard_neg_ids=global_hard_neg_ids,  # type: ignore
-                    random_neg_ids=global_random_neg_ids,  # type: ignore
-                    repeated_query_ids=repeated_global_query_ids,  # type: ignore
-                    num_unique_query_ids=main_batch_root_node_indices.shape[0],
-                )
+            batch_combined_scores[
+                condensed_supervision_edge_type
+            ] = BatchCombinedScores(
+                repeated_candidate_scores=repeated_candidate_scores,
+                positive_ids=global_positive_ids,  # type: ignore
+                hard_neg_ids=global_hard_neg_ids,  # type: ignore
+                random_neg_ids=global_random_neg_ids,  # type: ignore
+                repeated_query_ids=repeated_global_query_ids,  # type: ignore
+                num_unique_query_ids=main_batch_root_node_indices.shape[0],
             )
 
     # Populate all computed embeddings for task input

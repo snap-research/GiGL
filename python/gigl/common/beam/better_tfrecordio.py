@@ -19,7 +19,7 @@ from apache_beam.io.iobase import Write
 from apache_beam.io.tfrecordio import _TFRecordUtil
 from apache_beam.transforms import PTransform
 
-from gigl.common.beam.coders import PassthroughCoder, RuntimeTFExampleProtoCoderFn
+from gigl.common.beam.coders import PassthroughCoder, RecordBatchToTFExampleCoderFn
 from gigl.common.logger import Logger
 
 logger = Logger()
@@ -119,9 +119,13 @@ class BetterWriteToTFRecord(PTransform):
     def expand(self, pcoll):
         if self._transformed_metadata:
             logger.info("Using transformed_metadata to encode samples.")
-            pcoll = pcoll | "Runtime Encode TfExamples" >> beam.ParDo(
-                RuntimeTFExampleProtoCoderFn(),
-                transformed_metadata=self._transformed_metadata,
+            pcoll = (
+                pcoll
+                | "Encode pyarrow.RecordBatch as serialized tf.train.Example"
+                >> beam.ParDo(
+                    RecordBatchToTFExampleCoderFn(),
+                    transformed_metadata=self._transformed_metadata,
+                )
             )
         else:
             logger.info("Using default proto serialization to encode samples.")

@@ -18,7 +18,7 @@ import snapchat.research.gbml.graph_schema.Graph
 import snapchat.research.gbml.graph_schema.Node
 import snapchat.research.gbml.training_samples_schema.RootedNodeNeighborhood
 
-object SGSTaskTest extends AnyFunSuite with BeforeAndAfterAll with SharedSparkSession {
+class SGSTaskTest extends AnyFunSuite with BeforeAndAfterAll with SharedSparkSession {
   var gbmlConfigWrapper: GbmlConfigPbWrapper         = _
   var graphMetadataPbWrapper: GraphMetadataPbWrapper = _
 

@@ -54,6 +54,7 @@ lazy val dependencies =
     // Testing
     val scalatest = "org.scalatest" %% "scalatest" % "3.2.11" % Test
     // Not included in fat jar during compile time due to dependency issues; injected through spark-submit at runtime
+    // TODO: (svij-sc) Find a common place to pull this jar uri from
     // The jar file is built using Snap's fork of the Linkedin TfRecord Spark Connector.
     val tfRecordConnector =
       "com.linkedin.sparktfrecord" % "spark-tfrecord_2.12" % "0.6.1" % Test from SPARK_35_TFRECORD_JAR_GCS_PATH

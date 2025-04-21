@@ -65,6 +65,14 @@ class Uri(object):
             f" for implementing custom is_valid logic."
         )
 
+    def get_basename(self) -> str:
+        """
+        The base name is the final component of the path, effectively extracting the file or directory name from a full path string.
+        i.e. get_basename("/foo/bar.txt") -> bar.txt
+        get_basename("gs://bucket/foo") -> foo
+        """
+        return self.uri.split("/")[-1]
+
     def __repr__(self) -> str:
         return self.uri
 

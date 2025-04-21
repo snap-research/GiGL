@@ -4,7 +4,7 @@ import snapchat.research.gbml.graph_schema.Graph
 import snapchat.research.gbml.training_samples_schema.NodeAnchorBasedLinkPredictionSample
 import snapchat.research.gbml.training_samples_schema.RootedNodeNeighborhood
 
-object NodeAnchorBasedLinkpredictionSamplePbWrapperTest
+class NodeAnchorBasedLinkpredictionSamplePbWrapperTest
     extends AnyFunSuite
     with PbWrappersTestGraphSetup {
   test(

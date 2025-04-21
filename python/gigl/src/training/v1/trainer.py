@@ -75,7 +75,7 @@ class Trainer:
                 staging_bucket=resource_config.temp_assets_regional_bucket_path.uri,
             )
 
-            vertex_ai_service.run(job_config=job_config)
+            vertex_ai_service.launch_job(job_config=job_config)
 
         elif isinstance(trainer_config, LocalResourceConfig):
             training_process = GnnTrainingProcess()

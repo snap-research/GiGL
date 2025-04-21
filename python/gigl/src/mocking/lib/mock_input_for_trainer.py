@@ -30,12 +30,12 @@ def split_and_write_supervised_node_classification_subgraph_samples_from_mocked_
     split_data: HeteroData = transductive_split_cls(hetero_data)
 
     # Build all SNC samples from dataset.
-    samples: List[training_samples_schema_pb2.SupervisedNodeClassificationSample] = (
-        pyg_to_training_samples.build_supervised_node_classification_samples_from_pyg_heterodata(
-            hetero_data=split_data,
-            root_node_type=root_node_type,
-            graph_metadata_pb_wrapper=mocked_dataset_info.graph_metadata_pb_wrapper,
-        )
+    samples: List[
+        training_samples_schema_pb2.SupervisedNodeClassificationSample
+    ] = pyg_to_training_samples.build_supervised_node_classification_samples_from_pyg_heterodata(
+        hetero_data=split_data,
+        root_node_type=root_node_type,
+        graph_metadata_pb_wrapper=mocked_dataset_info.graph_metadata_pb_wrapper,
     )
 
     # Separate into train / val / test sets according to mask.

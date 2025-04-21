@@ -8,7 +8,7 @@ PIP_CREDENTIALS_MOUNTED=0  # When running this script in Docker environments, we
 
 for arg in "$@"
 do
-    case $arg in 
+    case $arg in
     --dev)
         DEV=1
         shift
@@ -83,17 +83,24 @@ fi
 echo "Installing from ${req_file}"
 pip install -r $req_file $PIP_ARGS
 
-# Only install GLT if not running on Mac. 
+# Only install GLT if not running on Mac.
 if ! is_running_on_mac;
 then
     # Without Ninja, we build sequentially which is very slow.
     echo "Installing Ninja as a build backend..."
-    sudo apt-get update -y
-    sudo apt-get install -y ninja-build
+    # Environments with sudo may require sudo to install ninja-build i.e. certain CI/CD environments.
+    # Whereas our docker images do not require sudo neither have it; thus this needs to be conditional.
+    if command -v sudo &> /dev/null; then
+        sudo apt-get update -y
+        sudo apt install ninja-build
+    else
+        apt-get update -y
+        apt install ninja-build
+    fi
     echo "Installing GraphLearn-Torch"
     # Occasionally, there is an existing GLT folder, delete it so we can clone.
     rm -rf graphlearn-for-pytorch
-    # We upstream some bug fixes recently to GLT which have not been released yet.
+    # We upstreamed some bug fixes recently to GLT which have not been released yet.
     # * https://github.com/alibaba/graphlearn-for-pytorch/pull/153
     # * https://github.com/alibaba/graphlearn-for-pytorch/pull/151
     # Thus, checking out a specific commit instead of a tagged version.
@@ -116,8 +123,6 @@ then
 else
     echo "Skipping install of GraphLearn-Torch on Mac"
 fi
-
-
 
 
 conda install -c conda-forge gperftools # tcmalloc, ref: https://google.github.io/tcmalloc/overview.html

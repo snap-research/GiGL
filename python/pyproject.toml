@@ -61,7 +61,7 @@ torch25-cuda-121 = [ # Torch 2.5.1 w/ Cuda 12.1
 
     # ===================================== Deps for PyTorch =====================================
     "torch @ https://download.pytorch.org/whl/cu121/torch-2.5.1%2Bcu121-cp39-cp39-linux_x86_64.whl#sha256=3c96b2ec4723e7d97259964ee73e2d6a2bace42511a49005b083ea7be1a0b0ac ; platform_system=='Linux' and python_version=='3.9'",
- 
+
     # ===================================== Deps for PyTorch Geometric =====================================
     "pyg-lib @ https://data.pyg.org/whl/torch-2.5.0+cu121/pyg_lib-0.4.0+pt25cu121-cp39-cp39-linux_x86_64.whl ; platform_system=='Linux' and python_version=='3.9'",
     "torch-cluster @ https://data.pyg.org/whl/torch-2.5.0+cu121/torch_cluster-1.6.3+pt25cu121-cp39-cp39-linux_x86_64.whl ; platform_system=='Linux' and python_version=='3.9'",
@@ -79,10 +79,10 @@ torch25-cuda-121 = [ # Torch 2.5.1 w/ Cuda 12.1
 ]
 
 torch25-cpu = [
-    # PYG has not prebuild wheels for arm64 MACS i.e. (M1,M2,M3 chips), they need to be built from scratch
-    # Neither has some tensorflow-transform, and graphlearn-tprch.
-    # We currently don't suppoer MAC environment as a result.
-    
+    # PYG, tensorflow-transform, and graphlearn-torch do not have prebuilt wheels for arm64 MACS
+    # i.e. (M1,M2,M3 chips), they need to be built from scratch
+    # We currently don't support MAC environment as a result.
+
     # ===================================== Deps for PyTorch =====================================
     "torch==2.5.1",
     # ===================================== Deps for PyG =====================================
@@ -108,14 +108,13 @@ torch25-cpu = [
 transform = [
     "apache-beam[gcp]==2.56.0",
     "pyarrow==10.0.1",
-    # Tensorflow-transform natively doesnt provide wheels for arm64 Macs.   
 
-    "tfx-bsl~=1.14.0 ; platform_machine!='arm64'",
-    
-    "tensorflow_data_validation==1.14.0 ; platform_machine!='arm64'",
-    "tensorflow-transform~=1.14.0 ; platform_machine!='arm64'",
-    "tensorflow-metadata==1.14.0 ; platform_machine!='arm64'",
-    "tensorflow-serving-api==2.15.1 ; platform_machine!='arm64'"
+    # Tensorflow-transform natively doesnt provide wheels for arm64 Macs.
+    "tfx-bsl~=1.14.0 ; platform_system!='Darwin'",
+    "tensorflow_data_validation==1.14.0 ; platform_system!='Darwin'",
+    "tensorflow-transform~=1.14.0 ; platform_system!='Darwin'",
+    "tensorflow-metadata==1.14.0 ; platform_system!='Darwin'",
+    "tensorflow-serving-api==2.15.1 ; platform_system!='Darwin'"
 ]
 
 dev = [
@@ -151,7 +150,7 @@ docs = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/snap-research/GiGL"
+Homepage = "https://github.com/research/GiGL"
 
 [tool.setuptools.packages.find]
 where = ["."]  # list of folders that contain the packages (["."] by default)

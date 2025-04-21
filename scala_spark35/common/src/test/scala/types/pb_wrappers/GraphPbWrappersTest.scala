@@ -2,7 +2,7 @@ import common.types.pb_wrappers.GraphPbWrappers
 import org.scalatest.funsuite.AnyFunSuite
 import snapchat.research.gbml.graph_schema.Graph
 
-object GraphPbWrappersTest extends AnyFunSuite with PbWrappersTestGraphSetup {
+class GraphPbWrappersTest extends AnyFunSuite with PbWrappersTestGraphSetup {
   test(
     "mergeGraphs - test Graph protos merged as expected with mergeGraphs",
   ) {

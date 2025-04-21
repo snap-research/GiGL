@@ -68,7 +68,7 @@ class NebulaQueryResponseTranslator(
         LIMIT [${numNodesToSample}]
         """
       }
-      // TODO: (svij-sc) This is not TRUE RandomWeighted sampling.
+      // TODO: (svij) This is not TRUE RandomWeighted sampling.
       // Consider this a placeholder that tries to do a "similar computation"
       // Work needs to be done to implement true RandomWeighted sampling.
       case SamplingOp.SamplingMethod.RandomWeighted(value) => {

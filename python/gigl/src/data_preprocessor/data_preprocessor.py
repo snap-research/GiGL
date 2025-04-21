@@ -4,8 +4,9 @@ import sys
 import threading
 from collections import defaultdict
 from itertools import chain, repeat
-from typing import Dict, Iterable, List, NamedTuple, Optional, Tuple, Union
+from typing import Callable, Dict, Iterable, List, NamedTuple, Optional, Tuple, Union
 
+import tensorflow as tf
 import tensorflow_data_validation as tfdv
 import tensorflow_transform as tft
 from apache_beam.runners.dataflow.dataflow_runner import DataflowPipelineResult
@@ -48,6 +49,10 @@ from gigl.src.data_preprocessor.lib.enumerate.utils import (
     EnumeratorEdgeTypeMetadata,
     EnumeratorNodeTypeMetadata,
 )
+from gigl.src.data_preprocessor.lib.ingest.bigquery import (
+    BigqueryEdgeDataReference,
+    BigqueryNodeDataReference,
+)
 from gigl.src.data_preprocessor.lib.ingest.reference import (
     DataReference,
     EdgeDataReference,
@@ -57,8 +62,10 @@ from gigl.src.data_preprocessor.lib.transform.transformed_features_info import (
     TransformedFeaturesInfo,
 )
 from gigl.src.data_preprocessor.lib.types import (
+    DEFAULT_TF_INT_DTYPE,
     EdgeDataPreprocessingSpec,
     EdgeOutputIdentifier,
+    FeatureSpecDict,
     NodeDataPreprocessingSpec,
     NodeOutputIdentifier,
 )
@@ -375,9 +382,9 @@ class DataPreprocessor:
             for data_ref_and_prep_spec, feature_type in zip(
                 data_ref_and_prep_specs, feature_types
             ):
-                data_ref: Union[NodeDataReference, EdgeDataReference] = (
-                    data_ref_and_prep_spec[0]
-                )
+                data_ref: Union[
+                    NodeDataReference, EdgeDataReference
+                ] = data_ref_and_prep_spec[0]
                 prep_spec: Union[
                     NodeDataPreprocessingSpec, EdgeDataPreprocessingSpec
                 ] = data_ref_and_prep_spec[1]
@@ -456,11 +463,9 @@ class DataPreprocessor:
                 f"Adding to preprocessed metadata pb: [{node_data_ref}: {node_transformed_features_info}]"
             )
 
-            condensed_node_type: CondensedNodeType = (
-                self.gbml_config_pb_wrapper.graph_metadata_pb_wrapper.node_type_to_condensed_node_type_map[
-                    node_type
-                ]
-            )
+            condensed_node_type: CondensedNodeType = self.gbml_config_pb_wrapper.graph_metadata_pb_wrapper.node_type_to_condensed_node_type_map[
+                node_type
+            ]
             node_identifier_output = node_transformed_features_info.identifier_output
             assert isinstance(
                 node_identifier_output, NodeOutputIdentifier
@@ -516,25 +521,25 @@ class DataPreprocessor:
             edge_type,
             edge_transformed_features_info_map,
         ) in preprocessed_metadata_references_map.items():
-            positive_transformed_features_info: Optional[TransformedFeaturesInfo] = (
-                edge_transformed_features_info_map.get(EdgeUsageType.POSITIVE, None)
-            )
-            negative_transformed_features_info: Optional[TransformedFeaturesInfo] = (
-                edge_transformed_features_info_map.get(EdgeUsageType.NEGATIVE, None)
-            )
-            main_transformed_features_info: Optional[TransformedFeaturesInfo] = (
-                edge_transformed_features_info_map.get(EdgeUsageType.MAIN, None)
-            )
+            positive_transformed_features_info: Optional[
+                TransformedFeaturesInfo
+            ] = edge_transformed_features_info_map.get(EdgeUsageType.POSITIVE, None)
+            negative_transformed_features_info: Optional[
+                TransformedFeaturesInfo
+            ] = edge_transformed_features_info_map.get(EdgeUsageType.NEGATIVE, None)
+            main_transformed_features_info: Optional[
+                TransformedFeaturesInfo
+            ] = edge_transformed_features_info_map.get(EdgeUsageType.MAIN, None)
             assert (
                 main_transformed_features_info is not None
             ), f"Main edge data must be present for edge type {edge_type}."
 
-            positive_enumerated_edge_metadata: Optional[EnumeratorEdgeTypeMetadata] = (
-                None
-            )
-            negative_enumerated_edge_metadata: Optional[EnumeratorEdgeTypeMetadata] = (
-                None
-            )
+            positive_enumerated_edge_metadata: Optional[
+                EnumeratorEdgeTypeMetadata
+            ] = None
+            negative_enumerated_edge_metadata: Optional[
+                EnumeratorEdgeTypeMetadata
+            ] = None
             main_enumerated_edge_metadata: Optional[EnumeratorEdgeTypeMetadata] = None
             if positive_transformed_features_info:
                 positive_enumerated_edge_metadata = enumerator_edge_type_metadata_map[
@@ -548,11 +553,9 @@ class DataPreprocessor:
                 edge_type
             ][EdgeUsageType.MAIN]
 
-            condensed_edge_type: CondensedEdgeType = (
-                self.gbml_config_pb_wrapper.graph_metadata_pb_wrapper.edge_type_to_condensed_edge_type_map[
-                    edge_type
-                ]
-            )
+            condensed_edge_type: CondensedEdgeType = self.gbml_config_pb_wrapper.graph_metadata_pb_wrapper.edge_type_to_condensed_edge_type_map[
+                edge_type
+            ]
             assert isinstance(
                 main_transformed_features_info.identifier_output, EdgeOutputIdentifier
             ), f"Identifier output should be of class {EdgeOutputIdentifier.__name__}."
@@ -637,6 +640,120 @@ class DataPreprocessor:
                     f"Edge type {edge_data_ref.edge_type} from {edge_data_ref} not found in graph metadata."
                 )
 
+    def __patch_preprocessing_specs(
+        self,
+        node_data_reference_to_preprocessing_spec: Dict[
+            NodeDataReference, NodeDataPreprocessingSpec
+        ],
+        edge_data_reference_to_preprocessing_spec: Dict[
+            EdgeDataReference, EdgeDataPreprocessingSpec
+        ],
+        enumerator_node_type_metadata: List[EnumeratorNodeTypeMetadata],
+        enumerator_edge_type_metadata: List[EnumeratorEdgeTypeMetadata],
+    ) -> Tuple[
+        Dict[NodeDataReference, NodeDataPreprocessingSpec],
+        Dict[EdgeDataReference, EdgeDataPreprocessingSpec],
+    ]:
+        """
+        Patches the preprocessing specs for enumerated node and edge data references.
+        This is necessary because the enumerated node and edge data references have different identifiers than the original
+        node and edge data references.  We need to update the preprocessing specs to use the enumerated identifiers.
+
+        Args:
+            enumerator_node_type_metadata: List of enumerated node type metadata.
+            enumerator_edge_type_metadata: List of enumerated edge type metadata.
+        Returns:
+            Tuple of dictionaries mapping enumerated node and edge data references to their preprocessing specs.
+        """
+
+        # First, we patch the node data references.
+        enumerated_node_refs_to_preprocessing_specs: Dict[
+            NodeDataReference, NodeDataPreprocessingSpec
+        ] = {}
+
+        def feature_spec_fn(
+            feature_spec: FeatureSpecDict,
+        ) -> Callable[[], FeatureSpecDict]:
+            # We do this in order to bind the value of feature_spec to the returned function.
+            # This is a common pattern in Python to create a closure.
+            def inner() -> FeatureSpecDict:
+                return feature_spec
+
+            return inner
+
+        for enumerated_node_metadata in enumerator_node_type_metadata:
+            input_node_preprocessing_spec = node_data_reference_to_preprocessing_spec[
+                enumerated_node_metadata.input_node_data_reference
+            ]
+
+            feature_spec = input_node_preprocessing_spec.feature_spec_fn()
+            assert (
+                input_node_preprocessing_spec.identifier_output in feature_spec
+            ), f"identifier_output: {input_node_preprocessing_spec.identifier_output} must be in feature_spec: {feature_spec}"
+
+            # We expect the user to give us the actual feature spec for the node id; i.e. it might be string.
+            # By the end of this function, we will finish enumerated the node id to an integer; thus we update
+            # the feature spec respectively.
+            feature_spec[
+                input_node_preprocessing_spec.identifier_output
+            ] = tf.io.FixedLenFeature(shape=[], dtype=DEFAULT_TF_INT_DTYPE)
+
+            enumerated_node_data_preprocessing_spec = NodeDataPreprocessingSpec(
+                feature_spec_fn=feature_spec_fn(feature_spec),
+                preprocessing_fn=input_node_preprocessing_spec.preprocessing_fn,
+                identifier_output=input_node_preprocessing_spec.identifier_output,
+                pretrained_tft_model_uri=input_node_preprocessing_spec.pretrained_tft_model_uri,
+                features_outputs=input_node_preprocessing_spec.features_outputs,
+                labels_outputs=input_node_preprocessing_spec.labels_outputs,
+            )
+            enumerated_node_refs_to_preprocessing_specs[
+                enumerated_node_metadata.enumerated_node_data_reference
+            ] = enumerated_node_data_preprocessing_spec
+
+        # Now we do the same for edges.
+        enumerated_edge_refs_to_preprocessing_specs: Dict[
+            EdgeDataReference, EdgeDataPreprocessingSpec
+        ] = {}
+        for enumerated_edge_metadata in enumerator_edge_type_metadata:
+            input_edge_preprocessing_spec = edge_data_reference_to_preprocessing_spec[
+                enumerated_edge_metadata.input_edge_data_reference
+            ]
+
+            feature_spec = input_edge_preprocessing_spec.feature_spec_fn()
+            assert (
+                input_edge_preprocessing_spec.identifier_output.src_node in feature_spec
+            ), f"identifier_output: {input_edge_preprocessing_spec.identifier_output.src_node} must be in feature_spec: {feature_spec}"
+            assert (
+                input_edge_preprocessing_spec.identifier_output.dst_node in feature_spec
+            ), f"identifier_output: {input_edge_preprocessing_spec.identifier_output.dst_node} must be in feature_spec: {feature_spec}"
+
+            # We expect the user to give us the actual feature spec for the node id; i.e. it might be string.
+            # By the end of this function, we will finish enumerated the node id to an integer; thus we update
+            # the feature spec respectively.
+            feature_spec[
+                input_edge_preprocessing_spec.identifier_output.src_node
+            ] = tf.io.FixedLenFeature(shape=[], dtype=DEFAULT_TF_INT_DTYPE)
+            feature_spec[
+                input_edge_preprocessing_spec.identifier_output.dst_node
+            ] = tf.io.FixedLenFeature(shape=[], dtype=DEFAULT_TF_INT_DTYPE)
+
+            enumerated_edge_data_preprocessing_spec = EdgeDataPreprocessingSpec(
+                feature_spec_fn=feature_spec_fn(feature_spec),
+                preprocessing_fn=input_edge_preprocessing_spec.preprocessing_fn,
+                identifier_output=input_edge_preprocessing_spec.identifier_output,
+                pretrained_tft_model_uri=input_edge_preprocessing_spec.pretrained_tft_model_uri,
+                features_outputs=input_edge_preprocessing_spec.features_outputs,
+                labels_outputs=input_edge_preprocessing_spec.labels_outputs,
+            )
+            enumerated_edge_refs_to_preprocessing_specs[
+                enumerated_edge_metadata.enumerated_edge_data_reference
+            ] = enumerated_edge_data_preprocessing_spec
+
+        return (
+            enumerated_node_refs_to_preprocessing_specs,
+            enumerated_edge_refs_to_preprocessing_specs,
+        )
+
     def __run(
         self,
         applied_task_identifier: AppliedTaskIdentifier,
@@ -661,32 +778,71 @@ class DataPreprocessor:
         bq_gcp_project = get_resource_config().project
         logger.info(f"Using implicit GCP project {bq_gcp_project} for BigQuery.")
 
+        # Update the node and edge data references to include identifiers. In current configuration setup,
+        # these identifiers are piped in from the DataPreprocessorConfig.
+        node_refs_to_specs: Dict[NodeDataReference, NodeDataPreprocessingSpec] = {}
+        for (
+            node_data_reference,
+            node_data_preprocessing_spec,
+        ) in self.data_preprocessor_config.get_nodes_preprocessing_spec().items():
+            assert isinstance(
+                node_data_reference, BigqueryNodeDataReference
+            ), f"Only {BigqueryNodeDataReference.__name__} references are currently supported."
+            node_data_ref_with_identifier = BigqueryNodeDataReference(
+                reference_uri=node_data_reference.reference_uri,
+                node_type=node_data_reference.node_type,
+                identifier=node_data_preprocessing_spec.identifier_output,
+            )
+            node_refs_to_specs[
+                node_data_ref_with_identifier
+            ] = node_data_preprocessing_spec
+
+        edge_refs_to_specs: Dict[EdgeDataReference, EdgeDataPreprocessingSpec] = {}
+        for (
+            edge_data_reference,
+            edge_data_preprocessing_spec,
+        ) in self.data_preprocessor_config.get_edges_preprocessing_spec().items():
+            assert isinstance(
+                edge_data_reference, BigqueryEdgeDataReference
+            ), f"Only {BigqueryEdgeDataReference.__name__} references are currently supported."
+            edge_data_ref_with_identifier = BigqueryEdgeDataReference(
+                reference_uri=edge_data_reference.reference_uri,
+                edge_type=edge_data_reference.edge_type,
+                edge_usage_type=edge_data_reference.edge_usage_type,
+                src_identifier=edge_data_preprocessing_spec.identifier_output.src_node,
+                dst_identifier=edge_data_preprocessing_spec.identifier_output.dst_node,
+            )
+            edge_refs_to_specs[
+                edge_data_ref_with_identifier
+            ] = edge_data_preprocessing_spec
+
         # Enumerate all graph data.
         enumerator = Enumerator()
         enumerator_results: Tuple[
             List[EnumeratorNodeTypeMetadata], List[EnumeratorEdgeTypeMetadata]
         ] = enumerator.run(
             applied_task_identifier=self.applied_task_identifier,
-            node_preprocessing_specs=self.data_preprocessor_config.get_nodes_preprocessing_spec(),
-            edge_preprocessing_specs=self.data_preprocessor_config.get_edges_preprocessing_spec(),
+            node_data_references=list(node_refs_to_specs.keys()),
+            edge_data_references=list(edge_refs_to_specs.keys()),
             gcp_project=bq_gcp_project,
         )
+
         (
             enumerator_node_type_metadata,
             enumerator_edge_type_metadata,
         ) = enumerator_results
-        enumerated_node_refs_to_preprocessing_specs: Dict[
-            NodeDataReference, NodeDataPreprocessingSpec
-        ] = {
-            metadata.enumerated_node_data_reference: metadata.enumerated_node_data_preprocessing_spec
-            for metadata in enumerator_node_type_metadata
-        }
-        enumerated_edge_refs_to_preprocessing_specs: Dict[
-            EdgeDataReference, EdgeDataPreprocessingSpec
-        ] = {
-            metadata.enumerated_edge_data_reference: metadata.enumerated_edge_data_preprocessing_spec
-            for metadata in enumerator_edge_type_metadata
-        }
+
+        # Now that we've enumerated all the node and edge data, we need to update
+        # the preprocessing specs to use the enumerated node and edge data references.
+        (
+            enumerated_node_refs_to_preprocessing_specs,
+            enumerated_edge_refs_to_preprocessing_specs,
+        ) = self.__patch_preprocessing_specs(
+            node_data_reference_to_preprocessing_spec=node_refs_to_specs,
+            edge_data_reference_to_preprocessing_spec=edge_refs_to_specs,
+            enumerator_node_type_metadata=enumerator_node_type_metadata,
+            enumerator_edge_type_metadata=enumerator_edge_type_metadata,
+        )
 
         # Validating Enumerated Edge Tables that were generated
         # We perform this check on the enumerated table, meaning that for nodes that exist in the
@@ -701,11 +857,15 @@ class DataPreprocessor:
             component=GiGLComponents.DataPreprocessor
         )
         for enumerated_edge_metadata in enumerator_edge_type_metadata:
-            edge_preprocessing_spec = (
-                enumerated_edge_metadata.enumerated_edge_data_preprocessing_spec
+            src_node_column_name = (
+                enumerated_edge_metadata.enumerated_edge_data_reference.src_identifier
             )
-            src_node_column_name = edge_preprocessing_spec.identifier_output.src_node
-            dst_node_column_name = edge_preprocessing_spec.identifier_output.dst_node
+            dst_node_column_name = (
+                enumerated_edge_metadata.enumerated_edge_data_reference.dst_identifier
+            )
+            assert (src_node_column_name is not None) and (
+                dst_node_column_name is not None
+            ), f"Missing src/dst dentifiers in enumerated edge data reference: {enumerated_edge_metadata.enumerated_edge_data_reference}"
             edge_table = (
                 enumerated_edge_metadata.enumerated_edge_data_reference.reference_uri
             )
@@ -720,20 +880,18 @@ class DataPreprocessor:
             if has_dangling_edges:
                 raise ValueError(
                     f"""
-                    ERROR: The enumerated edge table {edge_table} has dangling edges. Meaning that at least one 
-                    edge exists where either src_node ({src_node_column_name}) and/or 
+                    ERROR: The enumerated edge table {edge_table} has dangling edges. Meaning that at least one
+                    edge exists where either src_node ({src_node_column_name}) and/or
                     dst_node ({dst_node_column_name}) is null. This is usually because of input data having
-                    edges containig nodes which are not present in the input node data. Please look into the 
+                    edges containing nodes which are not present in the input node data. Please look into the
                     input data and fix the issue.
                 """
                 )
 
         # Run Dataflow jobs to transform data references as per DataPreprocessorConfig.
-        preprocessed_metadata_references: PreprocessedMetadataReferences = (
-            self.__preprocess_all_data_references(
-                node_ref_to_preprocessing_spec=enumerated_node_refs_to_preprocessing_specs,
-                edge_ref_to_preprocessing_spec=enumerated_edge_refs_to_preprocessing_specs,
-            )
+        preprocessed_metadata_references: PreprocessedMetadataReferences = self.__preprocess_all_data_references(
+            node_ref_to_preprocessing_spec=enumerated_node_refs_to_preprocessing_specs,
+            edge_ref_to_preprocessing_spec=enumerated_edge_refs_to_preprocessing_specs,
         )
 
         logger.info("All preprocessed NODE results:\n")
@@ -839,7 +997,6 @@ if __name__ == "__main__":
         help="Docker image to use for the worker harness in dataflow",
         required=False,
     )
-
     args = parser.parse_args()
 
     ati = AppliedTaskIdentifier(args.job_name)

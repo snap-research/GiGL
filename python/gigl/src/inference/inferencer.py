@@ -56,11 +56,10 @@ class Inferencer:
                 cuda_docker_uri=cuda_docker_uri,
             )
         else:
-            inferencer_v1 = InferencerV1()
+            inferencer_v1 = InferencerV1(bq_gcp_project=resource_config_wrapper.project)
             inferencer_v1.run(
                 applied_task_identifier=applied_task_identifier,
                 task_config_uri=task_config_uri,
-                resource_config_uri=resource_config_uri,
                 custom_worker_image_uri=custom_worker_image_uri,
             )
 
@@ -71,16 +70,19 @@ if __name__ == "__main__":
         "--job_name",
         type=str,
         help="Unique identifier for the job name",
+        required=True,
     )
     parser.add_argument(
         "--task_config_uri",
         type=str,
         help="Gbml config uri",
+        required=True,
     )
     parser.add_argument(
         "--resource_config_uri",
         type=str,
         help="Runtime argument for resource and env specifications of each component",
+        required=True,
     )
     parser.add_argument(
         "--custom_worker_image_uri",
@@ -101,7 +103,6 @@ if __name__ == "__main__":
         help="User Specified or KFP compiled Docker Image for GPU inference",
         required=False,
     )
-
     args = parser.parse_args()
 
     task_config_uri = UriFactory.create_uri(args.task_config_uri)

@@ -53,7 +53,7 @@ html_theme_options = {
     "icon_links": [
         {
             "name": "GitHub",
-            "url": "https://github.com/snap-research/GiGL",
+            "url": "https://github.com/Snapchat/GiGL",
             "icon": "fa-brands fa-github",
         },
         {
@@ -82,4 +82,3 @@ html_theme_options = {
     #    "examples/no-sidebar": [],
     #},
 }
-

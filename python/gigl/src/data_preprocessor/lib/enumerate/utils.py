@@ -2,10 +2,9 @@ import concurrent.futures
 import sys
 import traceback
 from dataclasses import dataclass
-from typing import Dict, List, Tuple
+from typing import Dict, List, Sequence, Tuple
 
 import google.cloud.bigquery as bigquery
-import tensorflow as tf
 
 from gigl.common.env_config import get_available_cpus
 from gigl.common.logger import Logger
@@ -23,12 +22,6 @@ from gigl.src.data_preprocessor.lib.ingest.bigquery import (
 from gigl.src.data_preprocessor.lib.ingest.reference import (
     EdgeDataReference,
     NodeDataReference,
-)
-from gigl.src.data_preprocessor.lib.types import (
-    DEFAULT_TF_INT_DTYPE,
-    EdgeDataPreprocessingSpec,
-    FeatureSpecDict,
-    NodeDataPreprocessingSpec,
 )
 
 logger = Logger()
@@ -82,33 +75,30 @@ def get_resource_labels() -> Dict[str, str]:
 @dataclass
 class EnumeratorNodeTypeMetadata:
     input_node_data_reference: NodeDataReference
-    input_node_data_preprocessing_spec: NodeDataPreprocessingSpec
     enumerated_node_data_reference: BigqueryNodeDataReference
-    enumerated_node_data_preprocessing_spec: NodeDataPreprocessingSpec
     bq_unique_node_ids_enumerated_table_name: str
+    num_nodes: int
 
     def __repr__(self) -> str:
         return f"""EnumeratorNodeTypeMetadata(
             input_node_data_reference={self.input_node_data_reference},
-            input_node_data_preprocessing_spec={self.input_node_data_preprocessing_spec},
             enumerated_node_data_reference={self.enumerated_node_data_reference},
-            enumerated_node_data_preprocessing_spec={self.enumerated_node_data_preprocessing_spec}, bq_unique_node_ids_enumerated_table_name={self.bq_unique_node_ids_enumerated_table_name})
+            bq_unique_node_ids_enumerated_table_name={self.bq_unique_node_ids_enumerated_table_name},
+            num_nodes={self.num_nodes})
             """
 
 
 @dataclass
 class EnumeratorEdgeTypeMetadata:
     input_edge_data_reference: EdgeDataReference
-    input_edge_data_preprocessing_spec: EdgeDataPreprocessingSpec
     enumerated_edge_data_reference: BigqueryEdgeDataReference
-    enumerated_edge_data_preprocessing_spec: EdgeDataPreprocessingSpec
+    num_edges: int
 
     def __repr__(self) -> str:
         return f"""EnumeratorEdgeTypeMetadata(
             input_edge_data_reference={self.input_edge_data_reference},
-            input_edge_data_preprocessing_spec={self.input_edge_data_preprocessing_spec},
             enumerated_edge_data_reference={self.enumerated_edge_data_reference},
-            enumerated_edge_data_preprocessing_spec={self.enumerated_edge_data_preprocessing_spec})
+            num_edges={self.num_edges}
             """
 
 
@@ -121,7 +111,7 @@ class Enumerator:
         bq_source_table_name: str,
         bq_source_table_node_id_col_name: str,
         node_type: NodeType,
-    ) -> str:
+    ) -> Tuple[str, int]:
         num_nodes_in_source_table = self.__bq_utils.count_number_of_rows_in_bq_table(
             bq_table=bq_source_table_name, labels=get_resource_labels()
         )
@@ -158,12 +148,13 @@ class Enumerator:
         # If they are not, it suggests the input table has multiple rows for same node id.
         assert num_nodes_in_source_table == num_enumerated_nodes, (
             f"Number of input nodes not equal to number of enumerated nodes: ({num_nodes_in_source_table} != {num_enumerated_nodes}).  "
-            f"Check the input table in case of duplicates."
+            f"This suggests the input table {bq_source_table_name} has multiple rows for the same node, which have been uniquified in "
+            f"the enumerated node id table {bq_enumerated_node_id_map_table_name}."
         )
         logger.info(
             f"[Node Type: {node_type}] Finished generating enumerated ids for {num_enumerated_nodes} nodes; mapping written to {bq_enumerated_node_id_map_table_name}."
         )
-        return bq_enumerated_node_id_map_table_name
+        return bq_enumerated_node_id_map_table_name, num_enumerated_nodes
 
     def __generate_enumerated_node_feat_table_using_node_id_map_table(
         self,
@@ -208,95 +199,61 @@ class Enumerator:
     def __enumerate_node_reference(
         self,
         node_data_ref: NodeDataReference,
-        node_data_preprocessing_spec: NodeDataPreprocessingSpec,
     ) -> EnumeratorNodeTypeMetadata:
-        feature_spec: FeatureSpecDict = node_data_preprocessing_spec.feature_spec_fn()
-        assert (
-            node_data_preprocessing_spec.identifier_output in feature_spec
-        ), f"identifier_output: {node_data_preprocessing_spec.identifier_output} must be in feature_spec: {feature_spec}"
-
-        logger.info(f"Read the following feature spec: {feature_spec}")
-
         if not isinstance(node_data_ref, BigqueryNodeDataReference):
             raise NotImplementedError(
                 f"Enumeration currently only supported for {BigqueryNodeDataReference.__name__}"
             )
-            # raw_identifier_tf_feature_type: tf.DType = raw_feature_spec[
-            #     node_data_preprocessing_spec.identifier_output
-            # ].dtype  # Will be used in the future; see coment below
-            # TODO: (svij-sc) Support this use case by dumping data to BQ using a beam pipeline
-            # Will follow up in PR
-
-        # We expect the user to give us the actual feature spec for the node id; i.e. it might be string.
-        # By the end of this function, we will finish enumerated the node id to an integer; thus we update
-        # the feature spec respectively.
-        feature_spec[node_data_preprocessing_spec.identifier_output] = (
-            tf.io.FixedLenFeature(shape=[], dtype=DEFAULT_TF_INT_DTYPE)
-        )
 
         bq_source_table_name: str = BqUtils.format_bq_path(
             bq_path=node_data_ref.reference_uri,
         )
         logger.info(
-            f"[Node Type: {node_data_ref.node_type}]: starting to enumerate node ids from source node table {bq_source_table_name}. The generated table will have the following feature spec: {feature_spec}"
+            f"[Node Type: {node_data_ref.node_type}]: starting to enumerate node ids from source node table {bq_source_table_name}."
         )
-        bq_source_table_node_id_col_name: str = str(
-            node_data_preprocessing_spec.identifier_output
-        )
-        node_type: NodeType = node_data_ref.node_type
-        bq_unique_node_ids_enumerated_table_name: str = (
-            self.__generate_enumerated_node_id_table_from_src_node_feature_table(
-                bq_source_table_name=bq_source_table_name,
-                bq_source_table_node_id_col_name=bq_source_table_node_id_col_name,
-                node_type=node_type,
-            )
-        )
-        bq_destination_enumerated_node_features_table_name: str = (
-            self.__generate_enumerated_node_feat_table_using_node_id_map_table(
-                bq_source_table_name=bq_source_table_name,
-                bq_source_table_node_id_col_name=bq_source_table_node_id_col_name,
-                bq_enumerated_node_id_map_table_name=bq_unique_node_ids_enumerated_table_name,
-                node_type=node_type,
-            )
-        )
+        assert (
+            node_data_ref.identifier is not None
+        ), f"Missing identifier for node data reference: {node_data_ref}. "
 
-        enumerated_node_data_preprocessing_spec = NodeDataPreprocessingSpec(
-            feature_spec_fn=lambda: feature_spec,
-            preprocessing_fn=node_data_preprocessing_spec.preprocessing_fn,
-            identifier_output=node_data_preprocessing_spec.identifier_output,
-            pretrained_tft_model_uri=node_data_preprocessing_spec.pretrained_tft_model_uri,
-            features_outputs=node_data_preprocessing_spec.features_outputs,
-            labels_outputs=node_data_preprocessing_spec.labels_outputs,
+        (
+            bq_unique_node_ids_enumerated_table_name,
+            num_enumerated_nodes,
+        ) = self.__generate_enumerated_node_id_table_from_src_node_feature_table(
+            bq_source_table_name=bq_source_table_name,
+            bq_source_table_node_id_col_name=node_data_ref.identifier,
+            node_type=node_data_ref.node_type,
+        )
+        bq_destination_enumerated_node_features_table_name: str = self.__generate_enumerated_node_feat_table_using_node_id_map_table(
+            bq_source_table_name=bq_source_table_name,
+            bq_source_table_node_id_col_name=node_data_ref.identifier,
+            bq_enumerated_node_id_map_table_name=bq_unique_node_ids_enumerated_table_name,
+            node_type=node_data_ref.node_type,
         )
 
         return EnumeratorNodeTypeMetadata(
             input_node_data_reference=node_data_ref,
-            input_node_data_preprocessing_spec=node_data_preprocessing_spec,
             enumerated_node_data_reference=BigqueryNodeDataReference(
                 reference_uri=bq_destination_enumerated_node_features_table_name,
-                node_type=node_type,
+                node_type=node_data_ref.node_type,
+                identifier=node_data_ref.identifier,
             ),
-            enumerated_node_data_preprocessing_spec=enumerated_node_data_preprocessing_spec,
             bq_unique_node_ids_enumerated_table_name=bq_unique_node_ids_enumerated_table_name,
+            num_nodes=num_enumerated_nodes,
         )
 
     def __enumerate_all_node_references(
         self,
-        node_preprocessing_specs: Dict[NodeDataReference, NodeDataPreprocessingSpec],
+        node_data_references: Sequence[NodeDataReference],
     ) -> List[EnumeratorNodeTypeMetadata]:
         results: List[EnumeratorNodeTypeMetadata] = []
         with concurrent.futures.ThreadPoolExecutor(
             max_workers=get_available_cpus()
         ) as executor:
             futures: List[concurrent.futures.Future] = list()
-            for (
-                node_data_ref,
-                node_data_preprocessing_spec,
-            ) in node_preprocessing_specs.items():
+            for node_data_ref in node_data_references:
                 future = executor.submit(
                     self.__enumerate_node_reference,
                     node_data_ref=node_data_ref,
-                    node_data_preprocessing_spec=node_data_preprocessing_spec,
                 )
                 futures.append(future)
 
@@ -308,7 +265,7 @@ class Enumerator:
 
     def __enumerate_all_edge_references(
         self,
-        edge_preprocessing_specs: Dict[EdgeDataReference, EdgeDataPreprocessingSpec],
+        edge_data_references: Sequence[EdgeDataReference],
         map_enumerator_node_type_metadata: Dict[NodeType, EnumeratorNodeTypeMetadata],
     ) -> List[EnumeratorEdgeTypeMetadata]:
         results: List[EnumeratorEdgeTypeMetadata] = []
@@ -316,14 +273,10 @@ class Enumerator:
             max_workers=get_available_cpus()
         ) as executor:
             futures: List[concurrent.futures.Future] = list()
-            for (
-                edge_data_ref,
-                edge_preprocessing_spec,
-            ) in edge_preprocessing_specs.items():
+            for edge_data_ref in edge_data_references:
                 future = executor.submit(
                     self.__enumerate_edge_reference,
                     edge_data_ref=edge_data_ref,
-                    edge_preprocessing_spec=edge_preprocessing_spec,
                     map_enumerator_node_type_metadata=map_enumerator_node_type_metadata,
                 )
                 futures.append(future)
@@ -343,8 +296,7 @@ class Enumerator:
         bq_source_table_dst_node_id_col_name: str,
         bq_enumerated_src_node_id_map_table_name: str,
         bq_enumerated_dst_node_id_map_table_name: str,
-        has_edge_features: bool,
-    ) -> str:
+    ) -> Tuple[str, int]:
         dst_enumerated_edge_features_table_name: str = (
             get_enumerated_edge_features_bq_table_name(
                 applied_task_identifier=self.__applied_task_identifier,
@@ -352,6 +304,18 @@ class Enumerator:
                 edge_usage_type=edge_usage_type,
             )
         )
+
+        num_edges_in_source_table = self.__bq_utils.count_number_of_rows_in_bq_table(
+            bq_table=bq_source_table_name, labels=get_resource_labels()
+        )
+
+        has_edge_features = (
+            self.__bq_utils.count_number_of_columns_in_bq_table(
+                bq_table=bq_source_table_name,
+            )
+            > 2
+        )
+
         graph_edges_enumeration_query = (
             enumeration_queries.EDGE_FEATURES_GRAPH_EDGELIST_ENUMERATION_QUERY
             if has_edge_features
@@ -374,23 +338,30 @@ class Enumerator:
             destination=dst_enumerated_edge_features_table_name,
             write_disposition=bigquery.job.WriteDisposition.WRITE_TRUNCATE,
         )
-        return dst_enumerated_edge_features_table_name
+
+        num_edges_in_enumerated_table = (
+            self.__bq_utils.count_number_of_rows_in_bq_table(
+                bq_table=dst_enumerated_edge_features_table_name,
+                labels=get_resource_labels(),
+            )
+        )
+
+        # Make sure the number of input edges and output edges are equivalent.
+        # If they are not, it suggests there were edges which referenced src or dst nodes
+        # that were not in the source or dest node tables.
+        assert num_edges_in_source_table == num_edges_in_enumerated_table, (
+            f"Number of input edges not equal to number of enumerated edges: ({num_edges_in_source_table} != {num_edges_in_enumerated_table}).  "
+            f"This suggests there were edges in {bq_source_table_name} which referenced src nodes not found in {bq_enumerated_src_node_id_map_table_name} "
+            f"or dst nodes not found in {bq_enumerated_dst_node_id_map_table_name}."
+        )
+
+        return dst_enumerated_edge_features_table_name, num_edges_in_enumerated_table
 
     def __enumerate_edge_reference(
         self,
         edge_data_ref: EdgeDataReference,
-        edge_preprocessing_spec: EdgeDataPreprocessingSpec,
         map_enumerator_node_type_metadata: Dict[NodeType, EnumeratorNodeTypeMetadata],
     ) -> EnumeratorEdgeTypeMetadata:
-        feature_spec: FeatureSpecDict = edge_preprocessing_spec.feature_spec_fn()
-        assert (
-            edge_preprocessing_spec.identifier_output.src_node in feature_spec
-        ), f"identifier_output: {edge_preprocessing_spec.identifier_output.src_node} must be in feature_spec: {feature_spec}"
-        assert (
-            edge_preprocessing_spec.identifier_output.dst_node in feature_spec
-        ), f"identifier_output: {edge_preprocessing_spec.identifier_output.dst_node} must be in feature_spec: {feature_spec}"
-        logger.info(f"Read the following feature spec: {feature_spec}")
-
         if not isinstance(edge_data_ref, BigqueryEdgeDataReference):
             raise NotImplementedError(
                 f"Enumeration currently only supported for {BigqueryEdgeDataReference.__name__}"
@@ -398,40 +369,20 @@ class Enumerator:
             # TODO: (svij-sc) Support this use case by dumping data to BQ using a beam pipeline
             # Will follow up in PR
 
-        # We expect the user to give us the actual feature spec for the node id; i.e. it might be string.
-        # By the end of this function, we will finish enumerated the node ids for edges to integers;
-        # thus we update the feature spec respectively.
-        feature_spec[edge_preprocessing_spec.identifier_output.src_node] = (
-            tf.io.FixedLenFeature(shape=[], dtype=DEFAULT_TF_INT_DTYPE)
-        )
-        feature_spec[edge_preprocessing_spec.identifier_output.dst_node] = (
-            tf.io.FixedLenFeature(shape=[], dtype=DEFAULT_TF_INT_DTYPE)
-        )
-
         bq_source_table_name: str = BqUtils.format_bq_path(
             bq_path=edge_data_ref.reference_uri,
         )
-        bq_source_table_src_node_id_col_name: str = str(
-            edge_preprocessing_spec.identifier_output.src_node
-        )
-        bq_source_table_dst_node_id_col_name: str = str(
-            edge_preprocessing_spec.identifier_output.dst_node
-        )
 
         logger.info(
-            f"[Edge Type: {edge_data_ref.edge_type} ; Edge Classification: {edge_data_ref.edge_usage_type}]: starting to enumerate node ids from source edge table {bq_source_table_name}. The generated table will have the following feature spec: {feature_spec}"
+            f"[Edge Type: {edge_data_ref.edge_type} ; Edge Classification: {edge_data_ref.edge_usage_type}]: starting to enumerate node ids from source edge table {bq_source_table_name}."
         )
 
         # Get source and destination metadata.
-        src_node_type, dst_node_type = (
-            edge_data_ref.edge_type.src_node_type,
-            edge_data_ref.edge_type.dst_node_type,
-        )
         src_enumerated_node_type_metadata = map_enumerator_node_type_metadata[
-            src_node_type
+            edge_data_ref.edge_type.src_node_type
         ]
         dst_enumerated_node_type_metadata = map_enumerator_node_type_metadata[
-            dst_node_type
+            edge_data_ref.edge_type.dst_node_type
         ]
 
         src_enumerated_node_ids = BqUtils.format_bq_path(
@@ -441,67 +392,56 @@ class Enumerator:
             bq_path=dst_enumerated_node_type_metadata.bq_unique_node_ids_enumerated_table_name
         )
 
-        has_edge_features: bool = (
-            edge_preprocessing_spec.features_outputs is not None
-            and len(edge_preprocessing_spec.features_outputs) > 0
-        ) or (
-            edge_preprocessing_spec.labels_outputs is not None
-            and len(edge_preprocessing_spec.labels_outputs) > 0
-        )
-
         logger.info(
             f"[Edge Type: {edge_data_ref.edge_type} ; Edge Classification: {edge_data_ref.edge_usage_type}]: Started writing enumerated edges (and features)."
         )
 
-        bq_enumerated_edge_features_table_name = self.__generate_enumerated_edge_feat_table_using_node_id_map_tables(
+        assert (edge_data_ref.src_identifier is not None) and (
+            edge_data_ref.dst_identifier is not None
+        ), f"Missing identifiers for edge data reference: {edge_data_ref}. "
+        (
+            bq_enumerated_edge_features_table_name,
+            num_enumerated_edges,
+        ) = self.__generate_enumerated_edge_feat_table_using_node_id_map_tables(
             edge_type=edge_data_ref.edge_type,
             edge_usage_type=edge_data_ref.edge_usage_type,
             bq_source_table_name=bq_source_table_name,
-            bq_source_table_src_node_id_col_name=bq_source_table_src_node_id_col_name,
-            bq_source_table_dst_node_id_col_name=bq_source_table_dst_node_id_col_name,
+            bq_source_table_src_node_id_col_name=edge_data_ref.src_identifier,
+            bq_source_table_dst_node_id_col_name=edge_data_ref.dst_identifier,
             bq_enumerated_src_node_id_map_table_name=src_enumerated_node_ids,
             bq_enumerated_dst_node_id_map_table_name=dst_enumerated_node_ids,
-            has_edge_features=has_edge_features,
         )
 
         logger.info(
             f"[Edge Type: {edge_data_ref.edge_type} ; Edge Classification: {edge_data_ref.edge_usage_type}]: Finished writing enumerated edges (and features) to {bq_enumerated_edge_features_table_name}."
         )
 
-        enumerated_edge_data_preprocessing_spec = EdgeDataPreprocessingSpec(
-            feature_spec_fn=lambda: feature_spec,
-            preprocessing_fn=edge_preprocessing_spec.preprocessing_fn,
-            identifier_output=edge_preprocessing_spec.identifier_output,
-            pretrained_tft_model_uri=edge_preprocessing_spec.pretrained_tft_model_uri,
-            features_outputs=edge_preprocessing_spec.features_outputs,
-            labels_outputs=edge_preprocessing_spec.labels_outputs,
-        )
-
         return EnumeratorEdgeTypeMetadata(
             input_edge_data_reference=edge_data_ref,
-            input_edge_data_preprocessing_spec=edge_preprocessing_spec,
             enumerated_edge_data_reference=BigqueryEdgeDataReference(
                 reference_uri=bq_enumerated_edge_features_table_name,
                 edge_type=edge_data_ref.edge_type,
                 edge_usage_type=edge_data_ref.edge_usage_type,
+                src_identifier=edge_data_ref.src_identifier,
+                dst_identifier=edge_data_ref.dst_identifier,
             ),
-            enumerated_edge_data_preprocessing_spec=enumerated_edge_data_preprocessing_spec,
+            num_edges=num_enumerated_edges,
         )
 
     def __run(
         self,
         applied_task_identifier: AppliedTaskIdentifier,
-        node_preprocessing_specs: Dict[NodeDataReference, NodeDataPreprocessingSpec],
-        edge_preprocessing_specs: Dict[EdgeDataReference, EdgeDataPreprocessingSpec],
+        node_data_references: Sequence[NodeDataReference],
+        edge_data_references: Sequence[EdgeDataReference],
         gcp_project: str,
     ) -> Tuple[List[EnumeratorNodeTypeMetadata], List[EnumeratorEdgeTypeMetadata]]:
         self.__bq_utils = BqUtils(project=gcp_project)
         self.__applied_task_identifier = applied_task_identifier
 
-        enumerated_node_metadata: List[EnumeratorNodeTypeMetadata] = (
-            self.__enumerate_all_node_references(
-                node_preprocessing_specs=node_preprocessing_specs
-            )
+        enumerated_node_metadata: List[
+            EnumeratorNodeTypeMetadata
+        ] = self.__enumerate_all_node_references(
+            node_data_references=node_data_references
         )
         map_enumerator_node_type_metadata: Dict[
             NodeType, EnumeratorNodeTypeMetadata
@@ -509,11 +449,11 @@ class Enumerator:
             node_metadata.input_node_data_reference.node_type: node_metadata
             for node_metadata in enumerated_node_metadata
         }
-        enumerated_edge_metadata: List[EnumeratorEdgeTypeMetadata] = (
-            self.__enumerate_all_edge_references(
-                edge_preprocessing_specs=edge_preprocessing_specs,
-                map_enumerator_node_type_metadata=map_enumerator_node_type_metadata,
-            )
+        enumerated_edge_metadata: List[
+            EnumeratorEdgeTypeMetadata
+        ] = self.__enumerate_all_edge_references(
+            edge_data_references=edge_data_references,
+            map_enumerator_node_type_metadata=map_enumerator_node_type_metadata,
         )
 
         logger.info("Finished enumerating all node and edge references.")
@@ -529,15 +469,15 @@ class Enumerator:
     def run(
         self,
         applied_task_identifier: AppliedTaskIdentifier,
-        node_preprocessing_specs: Dict[NodeDataReference, NodeDataPreprocessingSpec],
-        edge_preprocessing_specs: Dict[EdgeDataReference, EdgeDataPreprocessingSpec],
+        node_data_references: Sequence[NodeDataReference],
+        edge_data_references: Sequence[EdgeDataReference],
         gcp_project: str,
     ) -> Tuple[List[EnumeratorNodeTypeMetadata], List[EnumeratorEdgeTypeMetadata]]:
         try:
             return self.__run(
                 applied_task_identifier=applied_task_identifier,
-                node_preprocessing_specs=node_preprocessing_specs,
-                edge_preprocessing_specs=edge_preprocessing_specs,
+                node_data_references=node_data_references,
+                edge_data_references=edge_data_references,
                 gcp_project=gcp_project,
             )
         except Exception as e:

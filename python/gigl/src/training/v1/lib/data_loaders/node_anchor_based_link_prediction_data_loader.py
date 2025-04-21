@@ -128,9 +128,9 @@ class NodeAnchorBasedLinkPredictionBatch:
         condensed_node_type_to_subgraph_id_to_global_node_id: Dict[
             CondensedNodeType, Dict[NodeId, NodeId]
         ] = defaultdict(dict)
-        node_mapping: Dict[Node, Node] = (
-            batch_graph_data.global_node_to_subgraph_node_mapping
-        )
+        node_mapping: Dict[
+            Node, Node
+        ] = batch_graph_data.global_node_to_subgraph_node_mapping
         for node_with_global_id, node_with_subgraph_id in node_mapping.items():
             condensed_node_type: CondensedNodeType = (
                 graph_metadata_pb_wrapper.node_type_to_condensed_node_type_map[

@@ -5,8 +5,8 @@ from gigl.src.common.types.graph_data import EdgeType, EdgeUsageType, NodeType
 from gigl.src.common.utils.bq import BqUtils
 
 MOCK_DATA_GCS_BUCKET = GcsUri(f"gs://{dep_constants.GIGL_PUBLIC_BUCKET_NAME}/")
+MOCK_DATA_BQ_DATASET_NAME = dep_constants.GIGL_PUBLIC_DATASET_NAME
 EXAMPLE_TASK_ASSETS_GCS_PATH = GcsUri.join(MOCK_DATA_GCS_BUCKET, "mocked_assets")
-EXAMPLE_TASK_ASSETS_BQ_PATH = "external-snap-ci-github-gigl.gbml_mocked_assets"
 MOCKED_DATASET_ARTIFACT_METADATA_LOCAL_PATH = LocalUri.join(
     get_gigl_root_directory(),
     "src",
@@ -35,7 +35,7 @@ def update_gcs_uri_with_test_assets_and_version(uri_str: str, version: str) -> s
 def update_bq_table_with_test_assets_and_version(bq_table: str, version: str) -> str:
     table_name = bq_table.split(".")[-1]
     replaced_table_name = f"{table_name}_{version}"
-    replaced_bq_table = f"{EXAMPLE_TASK_ASSETS_BQ_PATH}.{replaced_table_name}"
+    replaced_bq_table = f"{MOCK_DATA_BQ_DATASET_NAME}.{replaced_table_name}"
     return replaced_bq_table
 
 
@@ -44,7 +44,7 @@ def get_example_task_nodes_bq_table_path(
     task_name: str, version: str, node_type: NodeType
 ) -> str:
     table_path = BqUtils.join_path(
-        EXAMPLE_TASK_ASSETS_BQ_PATH, f"{task_name}_{str(node_type)}_nodes_{version}"
+        MOCK_DATA_BQ_DATASET_NAME, f"{task_name}_{str(node_type)}_nodes_{version}"
     )
     return table_path
 
@@ -56,7 +56,7 @@ def get_example_task_edges_bq_table_path(
     edge_usage_type: EdgeUsageType,
 ) -> str:
     table_path = BqUtils.join_path(
-        EXAMPLE_TASK_ASSETS_BQ_PATH,
+        MOCK_DATA_BQ_DATASET_NAME,
         f"{task_name}_{str(edge_type)}_edges_{str(edge_usage_type)}_{version}",
     )
     return table_path

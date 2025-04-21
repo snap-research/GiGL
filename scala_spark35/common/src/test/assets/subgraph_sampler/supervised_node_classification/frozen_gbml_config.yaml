@@ -12,8 +12,8 @@ taskMetadata:
 datasetConfig:
   dataPreprocessorConfig:
     dataPreprocessorArgs:
-      bq_edges_table_name: external-snap-ci-github-gigl.gbml_mocked_assets.toy_graph_homogeneous_supervised_node_classification_user_friend_user_edges
-      bq_nodes_table_name: external-snap-ci-github-gigl.gbml_mocked_assets.toy_graph_homogeneous_supervised_node_classification_user_nodes
+      bq_edges_table_name: external-snap-ci-github-gigl.public_gigl.toy_graph_homogeneous_supervised_node_classification_user_friend_user_edges
+      bq_nodes_table_name: external-snap-ci-github-gigl.public_gigl.toy_graph_homogeneous_supervised_node_classification_user_nodes
     dataPreprocessorConfigClsPath: this.is.non.existent.test.path.1
   subgraphSamplerConfig:
     numHops: 2

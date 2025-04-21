@@ -2,27 +2,27 @@ from typing import Tuple
 
 import absl
 import tensorflow as tf
-from tensorflow_data_validation import load_schema_text
+from google.protobuf import text_format
 from tensorflow_metadata.proto.v0.schema_pb2 import Schema
 from tensorflow_transform.tf_metadata import schema_utils
-from tensorflow_metadata.proto.v0 import schema_pb2
-from google.protobuf import text_format
-from gigl.common.utils.gcs import GcsUtils
+
 from gigl.common import GcsUri, LocalUri, Uri
+from gigl.src.common.utils.file_loader import FileLoader
 from gigl.src.data_preprocessor.lib.types import FeatureIndexDict, FeatureSpecDict
 
 # We suppress noisy tensorflow logs to minimize unintentional clutter in logging:
 # https://stackoverflow.com/questions/69485127/disabling-useless-logs-ouputs-from-tfx-setuptools
 absl.logging.set_verbosity(absl.logging.FATAL)
 
+
 def load_tf_schema_uri_str_to_feature_spec(uri: Uri) -> Tuple[Schema, FeatureSpecDict]:
     if not (GcsUri.is_valid(uri) or LocalUri.is_valid(uri)):
         raise ValueError(
             f"Invalid uri: {uri}. Uri has to either be a GCS or local uri string."
         )
-    utils = GcsUtils()
-    schema = schema_pb2.Schema()
-    schema_text = utils.read_from_gcs(uri)
+    file_loader = FileLoader()
+    schema = Schema()
+    schema_text: str = file_loader.read_file(uri)
     text_format.Parse(schema_text, schema)
 
     feature_spec = schema_utils.schema_as_feature_spec(schema).feature_spec

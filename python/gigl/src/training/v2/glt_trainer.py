@@ -113,11 +113,9 @@ class GLTTrainer:
             labels=resource_config.get_resource_labels(
                 component=GiGLComponents.Inferencer
             ),
-            timeout_s=(
-                trainer_resource_config.timeout
-                if trainer_resource_config.timeout
-                else None
-            ),
+            timeout_s=trainer_resource_config.timeout
+            if trainer_resource_config.timeout
+            else None,
         )
         vertex_ai_service = VertexAIService(
             project=resource_config.project,
@@ -125,7 +123,7 @@ class GLTTrainer:
             service_account=resource_config.service_account_email,
             staging_bucket=resource_config.temp_assets_regional_bucket_path.uri,
         )
-        vertex_ai_service.run(job_config=job_config)
+        vertex_ai_service.launch_job(job_config=job_config)
 
     def run(
         self,

@@ -17,7 +17,7 @@ Latest Release: 0.0.6
 ### Changed
 
 - Config Validation now also checks GiglResourceConfig and PreprocessedMetadata (#123)(#125)
-- Simplified Dockerfiles to be 40-50\% smaller (#198)
+- Simplified Dockerfiles to be 40-50% smaller (#198)
 
 ### Deprecated
 
@@ -25,7 +25,7 @@ Latest Release: 0.0.6
 
 ### Fixed
 
-- Corrected invalid transductive node classification test (#128) 
+- Corrected invalid transductive node classification test (#128)
 - Corrected some inconsistencies in component cleanup logic (#196)
 
 ## [0.0.6] - 2024-05-16
@@ -62,6 +62,7 @@ Latest Release: 0.0.6
 - Deprecate cora_assets.py and toy_graph.py in favour of `PassthroughPreprocessorConfigForMockedAssets` (#25)
 
 ### Fixed
+
 - Make feature order determinisitc in FeatureEmbeddingLayer (#23)
 
 ## [0.0.5] - 2024
@@ -72,7 +73,6 @@ Latest Release: 0.0.6
 - Enable CPU training
 - Cost Tooling Script
 - Torch, TFT, TF, PyG upgrades + mac arm64 support (#807)
-
 
 ### Fixes
 

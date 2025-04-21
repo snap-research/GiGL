@@ -18,6 +18,7 @@ from gigl.common.env_config import get_available_cpus
 from gigl.common.logger import Logger
 from gigl.common.metrics.decorators import flushes_metrics, profileit
 from gigl.common.utils import os_utils
+from gigl.env.pipelines_config import get_resource_config
 from gigl.src.common.constants.metrics import TIMER_INFERENCER_S
 from gigl.src.common.graph_builder.graph_builder_factory import GraphBuilderFactory
 from gigl.src.common.types import AppliedTaskIdentifier
@@ -180,19 +181,17 @@ class InferencerV1:
         temp_predictions_gcs_path: Optional[GcsUri]
         temp_embeddings_gcs_path: Optional[GcsUri]
         if should_persist_predictions:
-            temp_predictions_gcs_path = (
-                InferenceAssets._get_gcs_asset_write_path_prefix(
-                    applied_task_identifier=applied_task_identifier,
-                    bq_table_path=node_type_to_inferencer_output_info_map[
-                        node_type
-                    ].predictions_path,
-                )
+            temp_predictions_gcs_path = InferenceAssets.get_gcs_asset_write_path_prefix(
+                applied_task_identifier=applied_task_identifier,
+                bq_table_path=node_type_to_inferencer_output_info_map[
+                    node_type
+                ].predictions_path,
             )
         else:
             temp_predictions_gcs_path = None
 
         if should_persist_embeddings:
-            temp_embeddings_gcs_path = InferenceAssets._get_gcs_asset_write_path_prefix(
+            temp_embeddings_gcs_path = InferenceAssets.get_gcs_asset_write_path_prefix(
                 applied_task_identifier=applied_task_identifier,
                 bq_table_path=node_type_to_inferencer_output_info_map[
                     node_type
@@ -295,9 +294,9 @@ class InferencerV1:
                 node_type = futures[future]
                 try:
                     inferencer_output_paths: InferencerOutputPaths = future.result()
-                    node_type_to_inferencer_output_paths_map[node_type] = (
-                        inferencer_output_paths
-                    )
+                    node_type_to_inferencer_output_paths_map[
+                        node_type
+                    ] = inferencer_output_paths
                 except Exception as e:
                     logger.exception(
                         f"{node_type} inferencer job failed due to a raised exception: {e}"
@@ -346,7 +345,6 @@ class InferencerV1:
         self,
         applied_task_identifier: AppliedTaskIdentifier,
         task_config_uri: Uri,
-        resource_config_uri: Uri,
         custom_worker_image_uri: Optional[str] = None,
     ):
         try:
@@ -364,8 +362,8 @@ class InferencerV1:
             logger.error(traceback.format_exc())
             sys.exit(f"System will now exit: {e}")
 
-    def __init__(self):
-        self.__bq_utils = BqUtils()
+    def __init__(self, bq_gcp_project: str):
+        self.__bq_utils = BqUtils(project=bq_gcp_project if bq_gcp_project else None)
 
 
 if __name__ == "__main__":
@@ -374,16 +372,19 @@ if __name__ == "__main__":
         "--job_name",
         type=str,
         help="Unique identifier for the job name",
+        required=True,
     )
     parser.add_argument(
         "--task_config_uri",
         type=str,
         help="Gbml config uri",
+        required=True,
     )
     parser.add_argument(
         "--resource_config_uri",
         type=str,
         help="Runtime argument for resource and env specifications of each component",
+        required=True,
     )
     parser.add_argument(
         "--custom_worker_image_uri",
@@ -404,7 +405,6 @@ if __name__ == "__main__":
         help="User Specified or KFP compiled Docker Image for GPU inference",
         required=False,
     )
-
     args = parser.parse_args()
 
     task_config_uri = UriFactory.create_uri(args.task_config_uri)
@@ -414,10 +414,9 @@ if __name__ == "__main__":
     initialize_metrics(task_config_uri=task_config_uri, service_name=args.job_name)
 
     applied_task_identifier = AppliedTaskIdentifier(args.job_name)
-    inferencer = InferencerV1()
+    inferencer = InferencerV1(bq_gcp_project=get_resource_config().project)
     inferencer.run(
         applied_task_identifier=applied_task_identifier,
         task_config_uri=task_config_uri,
-        resource_config_uri=resource_config_uri,
         custom_worker_image_uri=custom_worker_image_uri,
     )

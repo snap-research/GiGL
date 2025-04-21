@@ -15,7 +15,7 @@ from google.cloud.dataproc_v1.types import (
 )
 from google.protobuf.duration_pb2 import Duration
 
-from gigl.common import Uri, GcsUri
+from gigl.common import GcsUri, Uri
 from gigl.common.logger import Logger
 from gigl.common.services.dataproc import DataprocService
 
@@ -54,6 +54,9 @@ class SparkJobManager:
         metadata = {}
 
         if cluster_init_data.init_script_uri is not None:
+            logger.info(
+                f"Adding node init action to run following executable on every node: {cluster_init_data.init_script_uri}"
+            )
             init_action = NodeInitializationAction(
                 executable_file=cluster_init_data.init_script_uri,
                 execution_timeout=Duration(seconds=300),  # 5 mins

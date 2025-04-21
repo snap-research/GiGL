@@ -1,6 +1,6 @@
 from examples.MAG240M.common import NUM_PAPER_FEATURES
 
-QUERY_TEMPLATE_REINDEX_AUTHOR_WRITES_PAPER_TABLE = """
+query_template_reindex_author_writes_paper_table = """
 -- Firstly, we reindex the author to the same node space as papers
 -- TOTAL_NUM_PAPERS as defined in https://ogb.stanford.edu/docs/lsc/mag240m/
 -- The paper node ids are thus: 0 to 121751665; and the author node ids will now start from 121751666
@@ -11,7 +11,7 @@ FROM
     `{author_writes_paper_table}`
 """
 
-QUERY_TEMPLATE_CAST_TO_HOMOGENEOUS_EDGE_TABLE = """
+query_template_cast_to_homogeneous_edge_table = """
 -- Combine the paper cites paper, and the re-indexed author writes paper tables into a single edge table
 SELECT
   src,
@@ -26,7 +26,7 @@ FROM
   `{paper_cites_paper_table}`
 """
 
-QUERY_TEMPLATE_COMPUTED_NODE_DEGREE_TABLE = """
+query_template_computed_node_degree_table = """
 SELECT
   node_id,
   COUNT(*) AS degree
@@ -45,7 +45,7 @@ GROUP BY
   node_id
 """
 
-QUERY_TEMPLATE_CAST_TO_INTERMEDIARY_HOMOGENEOUS_NODE_TABLE = (
+query_template_cast_to_intermediary_homogeneous_node_table = (
     """
 WITH authors AS (
     SELECT 
@@ -71,7 +71,7 @@ FROM
 )
 
 
-QUERY_TEMPLATE_GENERATE_HOMOGENEOUS_NODE_TABLE = (
+query_template_generate_homogeneous_node_table = (
     """
 SELECT
     interim_node_table.node_id as node_id,

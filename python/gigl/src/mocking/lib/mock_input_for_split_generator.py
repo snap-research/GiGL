@@ -22,12 +22,12 @@ def build_and_write_supervised_node_classification_subgraph_samples_from_mocked_
         mocked_dataset_info=mocked_dataset_info
     )
 
-    samples: List[training_samples_schema_pb2.SupervisedNodeClassificationSample] = (
-        pyg_to_training_samples.build_supervised_node_classification_samples_from_pyg_heterodata(
-            hetero_data=hetero_data,
-            root_node_type=root_node_type,
-            graph_metadata_pb_wrapper=mocked_dataset_info.graph_metadata_pb_wrapper,
-        )
+    samples: List[
+        training_samples_schema_pb2.SupervisedNodeClassificationSample
+    ] = pyg_to_training_samples.build_supervised_node_classification_samples_from_pyg_heterodata(
+        hetero_data=hetero_data,
+        root_node_type=root_node_type,
+        graph_metadata_pb_wrapper=mocked_dataset_info.graph_metadata_pb_wrapper,
     )
 
     # Write out to GbmlConfig-specified paths

@@ -1,14 +1,16 @@
+from __future__ import annotations
+
 from typing import Callable, Dict
 
 import tensorflow as tf
 import tensorflow_transform as tft
 from examples.MAG240M.common import NUM_PAPER_FEATURES, TOTAL_NUM_PAPERS
 from examples.MAG240M.queries import (
-    QUERY_TEMPLATE_CAST_TO_HOMOGENEOUS_EDGE_TABLE,
-    QUERY_TEMPLATE_CAST_TO_INTERMEDIARY_HOMOGENEOUS_NODE_TABLE,
-    QUERY_TEMPLATE_COMPUTED_NODE_DEGREE_TABLE,
-    QUERY_TEMPLATE_GENERATE_HOMOGENEOUS_NODE_TABLE,
-    QUERY_TEMPLATE_REINDEX_AUTHOR_WRITES_PAPER_TABLE,
+    query_template_cast_to_homogeneous_edge_table,
+    query_template_cast_to_intermediary_homogeneous_node_table,
+    query_template_computed_node_degree_table,
+    query_template_generate_homogeneous_node_table,
+    query_template_reindex_author_writes_paper_table,
 )
 from google.cloud.bigquery.job import WriteDisposition
 
@@ -159,7 +161,7 @@ class Mag240DataPreprocessorConfig(DataPreprocessorConfig):
         )
 
         query_reindex_author_writes_paper_table = (
-            QUERY_TEMPLATE_REINDEX_AUTHOR_WRITES_PAPER_TABLE.format(
+            query_template_reindex_author_writes_paper_table.format(
                 TOTAL_NUM_PAPERS=TOTAL_NUM_PAPERS,
                 author_writes_paper_table=self.author_write_paper_table,
             )
@@ -171,7 +173,7 @@ class Mag240DataPreprocessorConfig(DataPreprocessorConfig):
             write_disposition=WriteDisposition.WRITE_TRUNCATE,
         )
 
-        query_cast_to_homogeneous_edge_table = QUERY_TEMPLATE_CAST_TO_HOMOGENEOUS_EDGE_TABLE.format(
+        query_cast_to_homogeneous_edge_table = query_template_cast_to_homogeneous_edge_table.format(
             reindexed_author_writes_paper_table=dst_reindex_author_writes_paper_table,
             paper_cites_paper_table=self.paper_cite_paper_table,
         )
@@ -183,7 +185,7 @@ class Mag240DataPreprocessorConfig(DataPreprocessorConfig):
         )
 
         query_computed_node_degree_table = (
-            QUERY_TEMPLATE_COMPUTED_NODE_DEGREE_TABLE.format(
+            query_template_computed_node_degree_table.format(
                 homogeneous_edge_table=self.dst_casted_homogeneous_edge_table,
             )
         )
@@ -194,7 +196,7 @@ class Mag240DataPreprocessorConfig(DataPreprocessorConfig):
             write_disposition=WriteDisposition.WRITE_TRUNCATE,
         )
 
-        query_cast_to_intermediary_homogeneous_node_table = QUERY_TEMPLATE_CAST_TO_INTERMEDIARY_HOMOGENEOUS_NODE_TABLE.format(
+        query_cast_to_intermediary_homogeneous_node_table = query_template_cast_to_intermediary_homogeneous_node_table.format(
             reindexed_author_writes_paper_table=dst_reindex_author_writes_paper_table,
             paper_table=self.paper_table,
         )
@@ -206,7 +208,7 @@ class Mag240DataPreprocessorConfig(DataPreprocessorConfig):
         )
 
         query_generate_homogeneous_node_table = (
-            QUERY_TEMPLATE_GENERATE_HOMOGENEOUS_NODE_TABLE.format(
+            query_template_generate_homogeneous_node_table.format(
                 interim_node_table=dst_interim_casted_homogeneous_node_table,
                 node_degree_table=dst_interim_node_degree_table,
             )

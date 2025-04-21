@@ -428,3 +428,21 @@ class GbmlConfigPbWrapper:
                 )
             )
         )
+
+    @property
+    def should_populate_predictions_path(self) -> bool:
+        """
+        Allows access to should_populate_predictions_path under GbmlConfig
+
+        This flag is a temporary workaround to populate the extra embeddings for the same entity type
+
+        Returns:
+            bool: Whether to populate predictions path in the InferenceOutput for each entity type
+        """
+        return bool(
+            strtobool(
+                dict(self.gbml_config_pb.feature_flags).get(
+                    "should_populate_predictions_path", "False"
+                )
+            )
+        )

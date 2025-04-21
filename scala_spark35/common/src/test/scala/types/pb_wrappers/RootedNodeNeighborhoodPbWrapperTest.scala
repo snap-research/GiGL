@@ -3,7 +3,7 @@ import org.scalatest.funsuite.AnyFunSuite
 import snapchat.research.gbml.graph_schema.Graph
 import snapchat.research.gbml.training_samples_schema.RootedNodeNeighborhood
 
-object RootedNodeNeighborhoodPbWrapperTest extends AnyFunSuite with PbWrappersTestGraphSetup {
+class RootedNodeNeighborhoodPbWrapperTest extends AnyFunSuite with PbWrappersTestGraphSetup {
   test(
     "mergeRootedNodeNeighborhoods - test RootedNodeNeighborhood protos merge as expected with mergeRootedNodeNeighborhoods",
   ) {

@@ -96,6 +96,50 @@ class GraphMetadataPbWrapper:
 
         return self.__condensed_edge_type_to_condensed_node_types
 
+    @property
+    def homogeneous_node_type(self) -> NodeType:
+        """
+        Returns the singular node type for a homogeneous graph. This property should only be called if the graph is known to be homogeneous.
+        """
+        if len(self.node_types) != 1:
+            raise ValueError(
+                f"Found node types {self.node_types}, expected one node type for homogeneous use cases"
+            )
+        return self.node_types[0]
+
+    @property
+    def homogeneous_condensed_node_type(self) -> CondensedNodeType:
+        """
+        Returns the singular condensed node type for a homogeneous graph. This property should only be called if the graph is known to be homogeneous.
+        """
+        if len(self.condensed_node_types) != 1:
+            raise ValueError(
+                f"Found condensed node types {self.condensed_node_types}, expected one condensed node type."
+            )
+        return self.condensed_node_types[0]
+
+    @property
+    def homogeneous_edge_type(self) -> EdgeType:
+        """
+        Returns the singular edge type for a homogeneous graph. This property should only be called if the graph is known to be homogeneous.
+        """
+        if len(self.edge_types) != 1:
+            raise ValueError(
+                f"Found edge types {self.edge_types}, expected one edge type for homogeneous use cases"
+            )
+        return self.edge_types[0]
+
+    @property
+    def homogeneous_condensed_edge_type(self) -> CondensedEdgeType:
+        """
+        Returns the singular condensed edge type for a homogeneous graph. This property should only be called if the graph is known to be homogeneous.
+        """
+        if len(self.condensed_edge_types) != 1:
+            raise ValueError(
+                f"Found condensed edge types {self.condensed_edge_types}, expected one condensed edge type for homogeneous use cases"
+            )
+        return self.condensed_edge_types[0]
+
     @property  # type: ignore
     @lru_cache(maxsize=1)
     def condensed_node_type_to_node_type_map(self) -> Dict[CondensedNodeType, NodeType]:

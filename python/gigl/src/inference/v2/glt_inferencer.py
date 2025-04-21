@@ -115,11 +115,9 @@ class GLTInferencer:
             labels=resource_config_wrapper.get_resource_labels(
                 component=GiGLComponents.Inferencer
             ),
-            timeout_s=(
-                inferencer_resource_config.timeout
-                if inferencer_resource_config.timeout
-                else None
-            ),
+            timeout_s=inferencer_resource_config.timeout
+            if inferencer_resource_config.timeout
+            else None,
         )
         vertex_ai_service = VertexAIService(
             project=resource_config_wrapper.project,
@@ -127,7 +125,7 @@ class GLTInferencer:
             service_account=resource_config_wrapper.service_account_email,
             staging_bucket=resource_config_wrapper.temp_assets_regional_bucket_path.uri,
         )
-        vertex_ai_service.run(job_config=job_config)
+        vertex_ai_service.launch_job(job_config=job_config)
 
     def run(
         self,

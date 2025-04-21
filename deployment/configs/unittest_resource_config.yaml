@@ -4,7 +4,7 @@ shared_resource_config:
   # So a practitioner can have a more fine grained understanding of resource utilization and cost of the resources in their GCP billing.
   # Read more here: https://cloud.google.com/compute/docs/labeling-resources#what-are-labels
   resource_labels:
-  # We have a 63 character limit for cost_resource_group_tag. 
+  # We have a 63 character limit for cost_resource_group_tag.
 
   # COMPONENT is one of {pre|sgs|spl|tra|inf|pos} standing for:
   #   {Preprocessor | Subgraph Sampler | Split Generator | Trainer | Inference

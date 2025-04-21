@@ -1,4 +1,17 @@
+from kfp import dsl
+
+
 def check_glt_backend_eligibility_component(
+    task_config_uri: str, base_image: str
+) -> bool:
+    comp = dsl.component(
+        func=_check_glt_backend_eligibility_component, base_image=base_image
+    )
+    comp.description = "Check whether to use GLT Backend"
+    return comp(task_config_uri=task_config_uri).output
+
+
+def _check_glt_backend_eligibility_component(
     task_config_uri: str,
 ) -> bool:
     """

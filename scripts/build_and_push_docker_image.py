@@ -5,13 +5,12 @@ from enum import Enum
 from pathlib import Path
 from typing import Optional
 
-from gigl.common.logger import Logger
-
 from gigl.common.constants import (
     DOCKER_LATEST_BASE_CPU_IMAGE_NAME_WITH_TAG,
     DOCKER_LATEST_BASE_CUDA_IMAGE_NAME_WITH_TAG,
     DOCKER_LATEST_BASE_DATAFLOW_IMAGE_NAME_WITH_TAG,
 )
+from gigl.common.logger import Logger
 
 logger = Logger()
 

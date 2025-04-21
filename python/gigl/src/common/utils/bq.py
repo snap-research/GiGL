@@ -113,6 +113,13 @@ class BqUtils:
             n_rows = row["ct"]
         return n_rows
 
+    def count_number_of_columns_in_bq_table(
+        self,
+        bq_table: str,
+    ) -> int:
+        schema = self.fetch_bq_table_schema(bq_table=bq_table)
+        return len(schema.keys())
+
     def run_query(
         self,
         query,
@@ -173,6 +180,25 @@ class BqUtils:
         joined_path = ".".join([path, *paths])
         assert joined_path.count(".") <= 2, f"Invalid BQ path: {joined_path}"
         return BqUtils.format_bq_path(joined_path)
+
+    @staticmethod
+    def parse_bq_table_path(bq_table_path: str) -> Tuple[str, str, str]:
+        """
+        Parses a joined bq table path into its project, dataset, and table names
+        Args:
+            bq_table_path (str): Joined bq table path of format `project.dataset.table`
+        Returns:
+            bq_project_id (str): Parsed BQ Project ID
+            bq_dataset_id (str): Parsed Dataset ID
+            bq_table_name (str): Parsed Table Name
+        """
+        split_bq_table_path = BqUtils.format_bq_path(bq_table_path).split(".")
+        assert (
+            len(split_bq_table_path) == 3
+        ), "bqtable_path should be in the format project.dataset.table"
+        bq_project_id, bq_dataset_id, bq_table_name = split_bq_table_path
+
+        return bq_project_id, bq_dataset_id, bq_table_name
 
     def update_bq_dataset_retention(
         self,
@@ -407,3 +433,40 @@ class BqUtils:
             raise ValueError(f"Fields {missing_fields} missing from table {bq_table}.")
         else:
             logger.info(f"All requisite fields found in table {bq_table}")
+
+    def export_to_gcs(
+        self,
+        bq_table_path: str,
+        destination_gcs_uri: GcsUri,
+        destination_format: str = "NEWLINE_DELIMITED_JSON",
+    ) -> None:
+        """
+        Export a BigQuery table to Google Cloud Storage.
+
+        Args:
+            bq_table_path (str): The full BigQuery table path to export.
+            destination_gcs_uri (str): The destination GCS URI where the table will be exported.
+                If the gcs uri has * in it, the table will be exported to multiple shards.
+            destination_format (str, optional): The format of the exported data. Defaults to 'NEWLINE_DELIMITED_JSON'.
+                'CSV', 'AVRO', 'PARQUET' also available.
+        """
+        try:
+            job_config = bigquery.job.ExtractJobConfig()
+            job_config.destination_format = destination_format
+
+            extract_job = self.__bq_client.extract_table(
+                source=bigquery.TableReference.from_string(bq_table_path),
+                destination_uris=destination_gcs_uri.uri,
+                job_config=job_config,
+            )
+
+            logger.info(
+                f"Exporting `{bq_table_path}` to {destination_gcs_uri} with format '{destination_format}'..."
+            )
+            extract_job.result()  # Waits for job to complete.
+            logger.info(
+                f"Exported `{bq_table_path}` to {destination_gcs_uri} successfully."
+            )
+        except Exception as e:
+            logger.exception(f"Failed to export table to GCS.")
+            raise e

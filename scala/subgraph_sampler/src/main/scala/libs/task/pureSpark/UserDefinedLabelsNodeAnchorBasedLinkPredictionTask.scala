@@ -63,6 +63,9 @@ class UserDefinedLabelsNodeAnchorBasedLinkPredictionTask(
     val experimentalFlags = gbmlConfigWrapper.subgraphSamplerConfigPb.experimentalFlags
     val permutationStrategy =
       experimentalFlags.getOrElse("permutation_strategy", PermutationStrategy.NonDeterministic)
+    val sampleWithReplacement: Boolean =
+      experimentalFlags.getOrElse("sample_with_replacement", "false").toBoolean
+    println(f"Sample with replacement: ${sampleWithReplacement}")
     val numNeighborsToSample = gbmlConfigWrapper.subgraphSamplerConfigPb.numNeighborsToSample
     val includeIsolatedNodesInTrainingSamples =
       false // must be added to subgraphSamplerConfig in gbml config [As of now, SGS v2 with Spark, isolated nodes are NOT included in training samples ]
@@ -117,6 +120,7 @@ class UserDefinedLabelsNodeAnchorBasedLinkPredictionTask(
       hydratedEdgeVIEW = hydratedEdgeVIEW,
       unhydratedEdgeVIEW = unhydratedEdgeVIEW,
       permutationStrategy = permutationStrategy,
+      sampleWithReplacement = sampleWithReplacement,
     ) // does not include isolated nodes and we must cache this DF
     // @spark: caching the DF associated with subgraphVIEW is CRITICAL, substantially reduces job time. Cache is
     // triggered once the action (i.e. *write* RootedNodeNeighborhoodSample to GCS) is finished.
