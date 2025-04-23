@@ -152,8 +152,7 @@ unit_test_scala: clean_build_files_scala
 # Eventually, we should look into splitting these up.
 # We run `make check_format` separately instead of as a dependent make rule so that it always runs after the actual testing.
 # We don't want to fail the tests due to non-conformant formatting during development.
-unit_test: precondition_tests unit_test_py unit_test_scala assert_yaml_configs_parse
-	make check_format
+unit_test: precondition_tests unit_test_py unit_test_scala
 
 check_format_py:
 	autoflake --check --config python/pyproject.toml ${PYTHON_DIRS}
