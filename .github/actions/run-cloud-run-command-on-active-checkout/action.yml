@@ -24,7 +24,7 @@ runs:
         gcloud builds submit . \
           --config=.github/cloud_builder/run_command_on_active_checkout.yaml \
           --substitutions=_CMD="${{ inputs.cmd }}" \
-          --service-account="${{ inputs.service_account }}" \
+          --service-account="projects/${{ inputs.project }}/serviceAccounts/${{ inputs.service_account }}" \
           --project="${{ inputs.project }}" \
           --machine-type="${{ inputs.machine_type }}"
       shell: bash

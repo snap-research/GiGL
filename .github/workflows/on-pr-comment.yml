@@ -24,7 +24,6 @@ jobs:
         pr_number: ${{ github.event.issue.number }}
         should_leave_progress_comments: "true"
         descriptive_workflow_name: "Unit Test"
-        install_dev_deps: "true"
         setup_gcloud: "true"
         use_cloud_run: "true"
         gcp_project_id: ${{ secrets.GCP_PROJECT_ID }}
@@ -43,7 +42,6 @@ jobs:
         pr_number: ${{ github.event.issue.number }}
         should_leave_progress_comments: "true"
         descriptive_workflow_name: "Integration Test"
-        install_dev_deps: "true"
         setup_gcloud: "true"
         use_cloud_run: "true"
         gcp_project_id: ${{ secrets.GCP_PROJECT_ID }}
@@ -62,7 +60,6 @@ jobs:
         pr_number: ${{ github.event.issue.number }}
         should_leave_progress_comments: "true"
         descriptive_workflow_name: "Integration Test"
-        install_dev_deps: "true"
         setup_gcloud: "true"
         use_cloud_run: "true"
         gcp_project_id: ${{ secrets.GCP_PROJECT_ID }}
