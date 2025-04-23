@@ -28,7 +28,6 @@ jobs:
     - name: Setup development environment
       uses: snap-research/gigl/.github/actions/setup-python-tools@main
       with:
-          install_dev_deps: "true"
           setup_gcloud: "true"
           gcp_project_id: ${{ secrets.gcp_project_id }}
           workload_identity_provider: ${{ secrets.workload_identity_provider }}
@@ -48,7 +47,6 @@ jobs:
     - name: Setup development environment
       uses: snap-research/gigl/.github/actions/setup-python-tools@main
       with:
-          install_dev_deps: "true"
           setup_gcloud: "true"
           gcp_project_id: ${{ secrets.gcp_project_id }}
           workload_identity_provider: ${{ secrets.workload_identity_provider }}
@@ -68,7 +66,6 @@ jobs:
     - name: Setup development environment
       uses: snap-research/gigl/.github/actions/setup-python-tools@main
       with:
-          install_dev_deps: "true"
           setup_gcloud: "true"
           gcp_project_id: ${{ secrets.gcp_project_id }}
           workload_identity_provider: ${{ secrets.workload_identity_provider }}
@@ -79,4 +76,22 @@ jobs:
         cmd: "make run_all_e2e_tests"
         service_account:  ${{ secrets.gcp_service_account_email }}
         project:  ${{ secrets.gcp_project_id }}
+
+  ci-lint-test:
+    if: github.event_name == 'merge_group'
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Setup development environment
+      uses: snap-research/gigl/.github/actions/setup-python-tools@main
+      with:
+          install_dev_deps: "true"
+          setup_gcloud: "true"
+          gcp_project_id: ${{ secrets.gcp_project_id }}
+          workload_identity_provider: ${{ secrets.workload_identity_provider }}
+          gcp_service_account_email: ${{ secrets.gcp_service_account_email }}
+    - name: Run Lint Tests
+      run: |
+        make check_format
+        make assert_yaml_configs_parse
   
