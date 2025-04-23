@@ -57,7 +57,7 @@ jobs:
         echo "Pushed CUDA base image to ${GIGL_BASE_CUDA_IMAGE}"
 
   build-cpu-base-images:
-    runs-on: ubuntu-latest
+    runs-on: gigl-large-instances # x64 Ubuntu:latest w/ 4 cores, 16GB RAM, 150 GB SSD
     permissions:
       # Needed for gcloud auth: https://github.com/google-github-actions/auth
       contents: 'read'
