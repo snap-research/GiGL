@@ -1,0 +1,39 @@
+serviceAccount: projects/external-snap-ci-github-gigl/serviceAccounts/untrusted-external-github-gigl@external-snap-ci-github-gigl.iam.gserviceaccount.com
+substitutions:
+  _CMD: ""
+
+options:
+  logging: CLOUD_LOGGING_ONLY
+steps:
+  - name: us-central1-docker.pkg.dev/external-snap-ci-github-gigl/gigl-base-images/gigl-builder:b47dfe98080036a22a50bf9bce8c75443b60a482.36.1
+    entrypoint: /bin/bash
+    args:
+      - -c
+      - |
+        set -e
+        set -x
+
+        if [[ -z "${_CMD}" ]]; then
+          echo "Error: _CMD is not set."
+          exit 1
+        fi
+
+        echo "Setting up environment..."
+        # gcloud runner will run as a non-root user, but all paths/profiles, etc are set up for root
+        echo "source /root/.bashrc" >> ~/.bashrc
+        echo "source /root/.profile" >> ~/.profile
+              
+        source ~/.bashrc
+        docker buildx create --driver=docker-container --use
+        gcloud auth configure-docker us-central1-docker.pkg.dev --quiet
+
+        # TODO: (svij) Enable install_scala_deps.sh to inside Docker image build
+        bash ./requirements/install_scala_deps.sh
+        pip install -e ./python/
+
+        echo "Finished setting up environment."
+        echo "========================="
+        echo "Running command: ${_CMD}"
+        echo "========================="
+        $_CMD
+        echo "Finished running command"

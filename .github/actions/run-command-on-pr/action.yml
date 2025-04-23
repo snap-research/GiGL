@@ -31,6 +31,10 @@ inputs:
     description: "Set up Google Cloud authentication and tooling"
     required: false
     default: "false"
+  use_cloud_run:
+    description: "Whether or not to use Google Cloud Run to run the command"
+    required: false
+    default: "false"
   gcp_project_id:
     description: "Google Cloud Project ID"
     required: false
@@ -83,9 +87,18 @@ runs:
         gcp_service_account_email: ${{ inputs.gcp_service_account_email }}
 
     - name: Run specified command on the PR branch
+      if: ${{ inputs.use_cloud_run == 'false' }}
       shell: bash
       run: ${{ inputs.command }}
-
+    
+    - name: Run specified command on the PR branch using Cloud Run
+      if: ${{ inputs.use_cloud_run == 'true' }}
+      uses: snap-research/gigl/.github/actions/run-cloud-run-command-on-active-checkout@main
+      with:
+        cmd: ${{ inputs.command }}
+        service_account: ${{ inputs.gcp_service_account_email }}
+        project: ${{ inputs.gcp_project_id }}
+        
     - name: Commment workflow succeeded
       if: ${{ inputs.should_leave_progress_comments == 'true' }}
       uses: 'snap-research/gigl/.github/actions/comment-on-pr@main'
