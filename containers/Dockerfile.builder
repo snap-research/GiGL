@@ -48,7 +48,7 @@ RUN echo "conda activate gigl" >> ~/.bashrc
 COPY requirements tools/gigl/requirements
 RUN cat ~/.bashrc
 RUN source ~/.bashrc && pip install --upgrade pip
-RUN source ~/.bashrc && bash tools/gigl/requirements/install_py_deps.sh --no-pip-cache --dev
-RUN source ~/.bashrc && bash tools/gigl/requirements/install_scala_deps.sh
+RUN source ~/.bashrc && cd tools/gigl && bash ./requirements/install_py_deps.sh --no-pip-cache --dev
+RUN source ~/.bashrc && cd tools/gigl && bash ./requirements/install_scala_deps.sh
 
 CMD [ "/bin/bash" ]
