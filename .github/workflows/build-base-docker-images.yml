@@ -90,11 +90,6 @@ jobs:
         docker push ${GIGL_BASE_DATAFLOW_IMAGE}
         echo "Pushed Dataflow base image to ${GIGL_BASE_DATAFLOW_IMAGE}"
 
-        echo "Will use CPU image ${GIGL_BASE_CPU_IMAGE} as base image for builder image."
-        docker build -f ./containers/Dockerfile.builder --build-arg BASE_IMAGE=${GIGL_BASE_CPU_IMAGE} -t ${GIGL_BASE_CPU_IMAGE} .
-        docker push ${GIGL_BASE_CPU_IMAGE}
-        echo "Pushed CPU base image to ${GIGL_BASE_CPU_IMAGE}"
-
   build-builder-image:
     runs-on: ubuntu-latest
     permissions:
