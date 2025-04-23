@@ -21,13 +21,16 @@ steps:
         echo "source /root/.bashrc" >> ~/.bashrc
         echo "source /root/.profile" >> ~/.profile
               
-        source ~/.bashrc
+        source ~/.profile
         docker buildx create --driver=docker-container --use
         gcloud auth configure-docker us-central1-docker.pkg.dev --quiet
 
         # TODO: (svij) Enable install_scala_deps.sh to inside Docker image build
         bash ./requirements/install_scala_deps.sh
         pip install -e ./python/
+
+        # Since more deps were installed we need to re-source the bashrc
+        source ~/.profile
 
         echo "Finished setting up environment."
         echo "========================="
