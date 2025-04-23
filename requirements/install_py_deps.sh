@@ -101,6 +101,7 @@ then
     # Occasionally, there is an existing GLT folder, delete it so we can clone.
     rm -rf graphlearn-for-pytorch
     # We upstreamed some bug fixes recently to GLT which have not been released yet.
+    # * https://github.com/alibaba/graphlearn-for-pytorch/pull/154
     # * https://github.com/alibaba/graphlearn-for-pytorch/pull/153
     # * https://github.com/alibaba/graphlearn-for-pytorch/pull/151
     # Thus, checking out a specific commit instead of a tagged version.
