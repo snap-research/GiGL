@@ -14,6 +14,9 @@ inputs:
     description: "Machine type to use for Cloud Build"
     # Supported machines & pricing: https://cloud.google.com/build/pricing
     default: "e2-highcpu-32"
+  timeout:
+    description: "Specified as duration i.e. '2h15m5s' is two hours, fifteen minutes, and five seconds"
+    default: "3h"
   
 
 runs:
@@ -26,5 +29,6 @@ runs:
           --substitutions=_CMD="${{ inputs.cmd }}" \
           --service-account="projects/${{ inputs.project }}/serviceAccounts/${{ inputs.service_account }}" \
           --project="${{ inputs.project }}" \
-          --machine-type="${{ inputs.machine_type }}"
+          --machine-type="${{ inputs.machine_type }}" \
+          --timeout="${{ inputs.timeout }}"
       shell: bash
