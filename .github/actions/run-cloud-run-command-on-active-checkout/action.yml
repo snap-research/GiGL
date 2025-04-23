@@ -13,7 +13,7 @@ inputs:
   machine_type:
     description: "Machine type to use for Cloud Build"
     # Supported machines & pricing: https://cloud.google.com/build/pricing
-    default: "e2-highcpu-8"
+    default: "e2-highcpu-32"
   
 
 runs:
