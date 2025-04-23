@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-FROM continuumio/miniconda3:25.1.1-2
+FROM continuumio/miniconda3:4.12.0
 
 # Non-interactive install
 ENV DEBIAN_FRONTEND=noninteractive
@@ -18,6 +18,7 @@ RUN apt-get update && apt-get install && apt-get install -y \
     build-essential \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
+
 
 RUN curl -fsSL https://get.docker.com -o get-docker.sh && \
     sh get-docker.sh && \
