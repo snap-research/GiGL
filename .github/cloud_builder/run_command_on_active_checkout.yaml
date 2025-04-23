@@ -1,7 +1,5 @@
-serviceAccount: projects/external-snap-ci-github-gigl/serviceAccounts/untrusted-external-github-gigl@external-snap-ci-github-gigl.iam.gserviceaccount.com
 substitutions:
   _CMD: ""
-
 options:
   logging: CLOUD_LOGGING_ONLY
 steps:
