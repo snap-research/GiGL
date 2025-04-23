@@ -31,4 +31,8 @@ steps:
         pip install -e ./python/
 
         echo "Finished setting up environment."
+        echo "========================="
+        echo "Running command: ${_CMD}"
+        echo "========================="
         $_CMD
+        echo "Finished running command"
