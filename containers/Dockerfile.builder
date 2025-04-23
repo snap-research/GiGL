@@ -1,5 +1,8 @@
 # syntax=docker/dockerfile:1
 
+# This dockerfile is contains all Dev dependencies, and is used by gcloud 
+# builders for running tests, et al.
+
 FROM continuumio/miniconda3:4.12.0
 
 SHELL ["/bin/bash", "-c"]

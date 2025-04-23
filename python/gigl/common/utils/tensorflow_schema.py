@@ -2,12 +2,11 @@ from typing import Tuple
 
 import absl
 import tensorflow as tf
-from google.protobuf import text_format
+from tensorflow_data_validation import load_schema_text
 from tensorflow_metadata.proto.v0.schema_pb2 import Schema
 from tensorflow_transform.tf_metadata import schema_utils
 
 from gigl.common import GcsUri, LocalUri, Uri
-from gigl.src.common.utils.file_loader import FileLoader
 from gigl.src.data_preprocessor.lib.types import FeatureIndexDict, FeatureSpecDict
 
 # We suppress noisy tensorflow logs to minimize unintentional clutter in logging:
@@ -20,11 +19,7 @@ def load_tf_schema_uri_str_to_feature_spec(uri: Uri) -> Tuple[Schema, FeatureSpe
         raise ValueError(
             f"Invalid uri: {uri}. Uri has to either be a GCS or local uri string."
         )
-    file_loader = FileLoader()
-    schema = Schema()
-    schema_text: str = file_loader.read_file(uri)
-    text_format.Parse(schema_text, schema)
-
+    schema = load_schema_text(uri.uri)
     feature_spec = schema_utils.schema_as_feature_spec(schema).feature_spec
     return schema, feature_spec
 

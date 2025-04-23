@@ -202,28 +202,6 @@ class FileLoader:
         )
         return temp_file_handle
 
-    def read_file(
-        self,
-        uri: Uri,
-    ) -> str:
-        """
-        Read a file from the given URI.
-
-        Args:
-            uri (Uri): The URI to read from.
-        Returns:
-            str: The contents of the file.
-        """
-        if isinstance(uri, GcsUri):
-            return self.__gcs_utils.read_from_gcs(gcs_path=uri)
-        elif isinstance(uri, LocalUri):
-            with open(uri.uri, "r") as file:
-                return file.read()
-        else:
-            raise NotImplementedError(
-                f"Cannot read URI {uri.uri} of type {type(uri)}; {self.__unsupported_uri_message}"
-            )
-
     def count_assets(self, uri_prefix: Uri, suffix: Optional[str] = None) -> int:
         if isinstance(uri_prefix, GcsUri):
             return self.__gcs_utils.count_blobs_in_gcs_path(

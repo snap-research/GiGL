@@ -20,6 +20,7 @@ from tests.test_assets.distributed.run_distributed_dataset import (
     run_distributed_dataset,
 )
 
+
 @unittest.skip("Failing on Google Cloud Build - skiping for now")
 class DistributedNeighborLoaderTest(unittest.TestCase):
     def setUp(self):
