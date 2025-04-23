@@ -97,17 +97,11 @@ jobs:
         with:
           name: mac_requirements
           path: requirements/
-      # # Ensure that requirements files do not contain `torch` as a listed dependency. This may cause various issues.
-      # # Some packages like PyG require a prior installation of torch to install, thus having it listed as a dep
-      # # might result in issues - even seg faults if the version installed != one that pyg or dgl expect.
-      # - name: Remove torch dependency using Python
-      #   run: python .github/scripts/remove_torch_hashed_deps.py
       - name: Commit and Push Hashed Requirement updates
         uses: snap-research/gigl/.github/actions/commit-and-push@main
         with:
           commit_message: "[AUTOMATED] Update all hashed requirements files"
           github_token: ${{ secrets.GITHUB_TOKEN }}
-
       - uses: snap-research/gigl/.github/actions/comment-on-pr@main
         with:
           pr_number: ${{ inputs.pr_number }}

@@ -1,0 +1,34 @@
+serviceAccount: projects/external-snap-ci-github-gigl/serviceAccounts/untrusted-external-github-gigl@external-snap-ci-github-gigl.iam.gserviceaccount.com
+substitutions:
+  _CMD: ""
+
+options:
+  logging: CLOUD_LOGGING_ONLY
+steps:
+  - name: 'us-central1-docker.pkg.dev/external-snap-ci-github-gigl/gigl-base-images/builder:svij-test-5232
+    entrypoint: /bin/bash
+    args:
+      - -c
+      - |
+        set -e
+        set -x
+
+        if [[ -z "${_CMD}" ]]; then
+          echo "Error: _CMD is not set."
+          exit 1
+        fi
+
+        echo "Setting up environment..."
+        # gcloud runner will run as a non-root user, but all paths/profiles, etc are set up for root
+        echo "source /root/.bashrc" >> ~/.bashrc
+        echo "source /root/.profile" >> ~/.profile
+              
+        source ~/.bashrc
+        sudo bash .github/scripts/setup_cloud_build_vm.sh
+
+        bash ./requirements/install_py_deps.sh --dev
+        bash ./requirements/install_scala_deps.sh
+        pip install -e ./python/
+
+        echo "Finished setting up environment."
+        $_CMD
