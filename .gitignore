@@ -37,6 +37,7 @@ python/gigl/deps/
 _autosummary/
 graphlearn_torch/
 graphlearn_torch.egg-info/
+.git/
 
 do_not_open_source
 
@@ -44,4 +45,3 @@ do_not_open_source
 fossa
 fossa.bundle
 fossa*.zip
-
