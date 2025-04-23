@@ -26,7 +26,7 @@ steps:
         source ~/.bashrc
         sudo bash .github/scripts/setup_cloud_build_vm.sh
 
-        bash ./requirements/install_py_deps.sh --dev
+        # TODO: (svij) Enable install_scala_deps.sh to inside Docker image build
         bash ./requirements/install_scala_deps.sh
         pip install -e ./python/
 
