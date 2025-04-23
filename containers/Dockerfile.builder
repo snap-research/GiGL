@@ -2,6 +2,8 @@
 
 FROM continuumio/miniconda3:4.12.0
 
+SHELL ["/bin/bash", "-c"]
+
 # Non-interactive install
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -44,6 +46,7 @@ RUN conda init bash
 RUN echo "conda activate gigl" >> ~/.bashrc
 
 COPY requirements tools/gigl/requirements
+RUN cat ~/.bashrc
 RUN source ~/.bashrc && pip install --upgrade pip
 RUN source ~/.bashrc && bash tools/gigl/requirements/install_py_deps.sh --no-pip-cache --dev
 RUN source ~/.bashrc && bash tools/gigl/requirements/install_scala_deps.sh
