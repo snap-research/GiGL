@@ -67,3 +67,23 @@ jobs:
         gcp_service_account_email: ${{ secrets.GCP_SERVICE_ACCOUNT_EMAIL }}
         command: |
           make run_all_e2e_tests
+
+  lint-test:
+    if: ${{ github.event.issue.pull_request && contains(github.event.comment.body, '/lint_test') }} 
+    runs-on: ubuntu-latest
+    steps:
+    - name: Run Linting Tests
+      uses: snap-research/gigl/.github/actions/run-command-on-pr@main
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        pr_number: ${{ github.event.issue.number }}
+        should_leave_progress_comments: "true"
+        descriptive_workflow_name: "Lint Test"
+        install_dev_deps: "true"
+        setup_gcloud: "true"
+        gcp_project_id: ${{ secrets.GCP_PROJECT_ID }}
+        workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
+        gcp_service_account_email: ${{ secrets.GCP_SERVICE_ACCOUNT_EMAIL }}
+        command: |
+          make check_format
+          make assert_yaml_configs_parse
