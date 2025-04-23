@@ -69,13 +69,6 @@ runs:
         with:
           project_id: ${{ inputs.gcp_project_id }}
 
-      # Note: Without below we run out of DISK SPACE when building the images.
-      # Seems the below helped some folks on https://github.com/orgs/community/discussions/25678
-      - name: Delete huge unnecessary tools folder
-        if: inputs.try_cleaning_disk_space == 'true'
-        shell: bash
-        run: rm -rf /opt/hostedtoolcache
-
       - name: Set up dev environment
         if: ${{ inputs.install_dev_deps == 'true' }}
         shell: bash
