@@ -50,16 +50,16 @@ jobs:
         command: |
             make integration_test PYTEST_FILES="trainer_test.py"
   integration-e2e-test:
-    if: ${{ github.event.issue.pull_request && contains(github.event.comment.body, '/integration_end2end_test') }} 
+    if: ${{ github.event.issue.pull_request && contains(github.event.comment.body, '/e2e_test') }} 
     runs-on: ubuntu-latest
     steps:
-    - name: Run Integration Tests
+    - name: Run E2E Tests
       uses: snap-research/gigl/.github/actions/run-command-on-pr@main
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         pr_number: ${{ github.event.issue.number }}
         should_leave_progress_comments: "true"
-        descriptive_workflow_name: "Integration Test"
+        descriptive_workflow_name: "E2E Test"
         setup_gcloud: "true"
         use_cloud_run: "true"
         gcp_project_id: ${{ secrets.GCP_PROJECT_ID }}
