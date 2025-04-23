@@ -26,6 +26,7 @@ jobs:
         descriptive_workflow_name: "Unit Test"
         install_dev_deps: "true"
         setup_gcloud: "true"
+        use_cloud_run: "true"
         gcp_project_id: ${{ secrets.GCP_PROJECT_ID }}
         workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
         gcp_service_account_email: ${{ secrets.GCP_SERVICE_ACCOUNT_EMAIL }}
@@ -44,6 +45,7 @@ jobs:
         descriptive_workflow_name: "Integration Test"
         install_dev_deps: "true"
         setup_gcloud: "true"
+        use_cloud_run: "true"
         gcp_project_id: ${{ secrets.GCP_PROJECT_ID }}
         workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
         gcp_service_account_email: ${{ secrets.GCP_SERVICE_ACCOUNT_EMAIL }}
@@ -62,6 +64,7 @@ jobs:
         descriptive_workflow_name: "Integration Test"
         install_dev_deps: "true"
         setup_gcloud: "true"
+        use_cloud_run: "true"
         gcp_project_id: ${{ secrets.GCP_PROJECT_ID }}
         workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
         gcp_service_account_email: ${{ secrets.GCP_SERVICE_ACCOUNT_EMAIL }}
