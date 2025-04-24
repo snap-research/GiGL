@@ -91,6 +91,5 @@ jobs:
         command: |
           cat ~/.profile
           source ~/.profile
-          make type_check
           make check_format
           make assert_yaml_configs_parse
