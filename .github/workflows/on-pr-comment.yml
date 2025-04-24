@@ -89,7 +89,5 @@ jobs:
         workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
         gcp_service_account_email: ${{ secrets.GCP_SERVICE_ACCOUNT_EMAIL }}
         command: |
-          cat ~/.profile
-          source ~/.profile
           make check_format
           make assert_yaml_configs_parse
