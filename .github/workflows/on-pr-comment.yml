@@ -25,6 +25,10 @@ jobs:
         should_leave_progress_comments: "true"
         descriptive_workflow_name: "Unit Test"
         setup_gcloud: "true"
+        # We use cloud run here instead of using github hosted runners because of limitation of tests
+        # using GFile library (a.k.a anything that does IO w/ Tensorflow). GFile does not understand
+        # how to leverage Workload Identity Federation to read assets from GCS, et al. See:
+        # https://github.com/tensorflow/tensorflow/issues/57104
         use_cloud_run: "true"
         gcp_project_id: ${{ secrets.GCP_PROJECT_ID }}
         workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
@@ -85,5 +89,8 @@ jobs:
         workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
         gcp_service_account_email: ${{ secrets.GCP_SERVICE_ACCOUNT_EMAIL }}
         command: |
+          cat ~/.profile
+          source ~/.profile
+          make type_check
           make check_format
           make assert_yaml_configs_parse
