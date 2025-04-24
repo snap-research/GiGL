@@ -74,3 +74,4 @@ runs:
         shell: bash
         run: |
           make install_dev_deps
+          source ~/.profile
