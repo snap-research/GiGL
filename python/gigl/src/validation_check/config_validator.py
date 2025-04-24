@@ -15,6 +15,9 @@ from gigl.src.validation_check.libs.frozen_config_path_checks import (
     assert_subgraph_sampler_output_exists,
     assert_trained_model_exists,
 )
+from gigl.src.validation_check.libs.name_checks import (
+    check_if_kfp_pipeline_job_name_valid,
+)
 from gigl.src.validation_check.libs.resource_config_checks import (
     check_if_inferencer_resource_config_valid,
     check_if_preprocessor_resource_config_valid,
@@ -27,7 +30,6 @@ from gigl.src.validation_check.libs.template_config_checks import (
     check_if_data_preprocessor_config_cls_valid,
     check_if_graph_metadata_valid,
     check_if_inferencer_cls_valid,
-    check_if_kfp_pipeline_job_name_valid,
     check_if_post_processor_cls_valid,
     check_if_preprocessed_metadata_valid,
     check_if_split_generator_config_valid,

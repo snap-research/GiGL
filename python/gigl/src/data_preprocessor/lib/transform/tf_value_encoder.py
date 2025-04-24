@@ -5,7 +5,7 @@ import tensorflow as tf
 
 class TFValueEncoder:
     @staticmethod
-    def __get_value_to_impute(dtype: tf.dtypes.DType) -> Union[int, str, float]:
+    def get_value_to_impute(dtype: tf.dtypes.DType) -> Union[int, str, float]:
         """
         Returns the default value to use for a missing field.
         :param dtype:
@@ -70,7 +70,7 @@ class TFValueEncoder:
         """
         # prepare value
         if value is None:
-            value = TFValueEncoder.__get_value_to_impute(dtype=dtype)
+            value = TFValueEncoder.get_value_to_impute(dtype=dtype)
         if not isinstance(value, list):
             value = [value]
 

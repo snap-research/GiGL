@@ -1,4 +1,5 @@
 import tempfile
+from collections.abc import Mapping
 from tempfile import _TemporaryFileWrapper as TemporaryFileWrapper  # type: ignore
 from typing import Dict, List, Optional, Sequence, Tuple, Type, Union, cast
 
@@ -28,7 +29,7 @@ class FileLoader:
 
     @staticmethod
     def __get_uri_map_schema(
-        uri_map: Dict[Uri, Uri]
+        uri_map: Mapping[Uri, Uri]
     ) -> Tuple[Optional[Type[Uri]], Optional[Type[Uri]]]:
         uniform_src_type: Optional[Type[Uri]] = None
         uniform_dst_type: Optional[Type[Uri]] = None
@@ -102,7 +103,7 @@ class FileLoader:
 
     def load_files(
         self,
-        source_to_dest_file_uri_map: Dict[Uri, Uri],
+        source_to_dest_file_uri_map: Mapping[Uri, Uri],
         should_create_symlinks_if_possible: bool = True,
     ) -> None:
         uri_map_schema = self.__get_uri_map_schema(uri_map=source_to_dest_file_uri_map)
@@ -216,7 +217,7 @@ class FileLoader:
     def does_uri_exist(self, uri: Union[str, Uri]) -> bool:
         """""
         Check if a URI exists
-        
+
         Args:
             uri (Union[str, Uri]): uri to check
         Returns:

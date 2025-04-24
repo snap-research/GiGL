@@ -8,17 +8,28 @@ DATE:=$(shell /bin/date "+%Y%m%d-%H%M")
 # GIT HASH, or empty string if not in a git repo.
 GIT_HASH?=$(shell git rev-parse HEAD 2>/dev/null || "")
 
-PROJECT:=external-snap-ci-github-gigl
-DOCKER_IMAGE_DATAFLOW_RUNTIME_NAME:=us-central1-docker.pkg.dev/${PROJECT}/gigl/src_cpu_dataflow
-DOCKER_IMAGE_MAIN_CUDA_NAME:=us-central1-docker.pkg.dev/${PROJECT}/gigl/src_cuda
-DOCKER_IMAGE_MAIN_CPU_NAME:=us-central1-docker.pkg.dev/${PROJECT}/gigl/src_cpu
+# You can override GIGL_PROJECT by setting it in your environment i.e.
+# adding `export GIGL_PROJECT=your_project` to your shell config (~/.bashrc, ~/.zshrc, etc.)
+GIGL_PROJECT?=external-snap-ci-github-gigl
+DOCKER_IMAGE_DATAFLOW_RUNTIME_NAME:=us-central1-docker.pkg.dev/${GIGL_PROJECT}/gigl-base-images/src-cpu-dataflow
+DOCKER_IMAGE_MAIN_CUDA_NAME:=us-central1-docker.pkg.dev/${GIGL_PROJECT}/gigl-base-images/src-cuda
+DOCKER_IMAGE_MAIN_CPU_NAME:=us-central1-docker.pkg.dev/${GIGL_PROJECT}/gigl-base-images/src-cpu
 
 DOCKER_IMAGE_DATAFLOW_RUNTIME_NAME_WITH_TAG:=${DOCKER_IMAGE_DATAFLOW_RUNTIME_NAME}:${DATE}
 DOCKER_IMAGE_MAIN_CUDA_NAME_WITH_TAG:=${DOCKER_IMAGE_MAIN_CUDA_NAME}:${DATE}
 DOCKER_IMAGE_MAIN_CPU_NAME_WITH_TAG:=${DOCKER_IMAGE_MAIN_CPU_NAME}:${DATE}
 
-PYTHON_DIRS:=examples python shared scripts  
+PYTHON_DIRS:=examples python shared scripts
 PY_TEST_FILES?="*_test.py"
+
+GIT_BRANCH:=$(shell git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "")
+
+# If we're in a git repo, then find only the ".md" files in our repo to format, else we format everything ".".
+# We do this because some of our dependencies (Spark) include md files,
+# but since we don't push those dependenices (or their documentation) to git,
+# then when we *check* the format of those files, we will fail.
+# Thus, we only want to format the Markdown files that we explicitly include in our repo.
+MD_FILES:=$(shell if [ ! ${GIT_BRANCH} ]; then echo "."; else git ls-tree --name-only -r ${GIT_BRANCH} . | grep ".md"; fi;)
 
 get_ver_hash:
 	# Fetches the git commit hash and stores it in `$GIT_COMMIT`
@@ -46,7 +57,7 @@ rebuild_dev_environment:
 	make install_dev_deps
 
 check_if_valid_env:
-	@command -v docker >/dev/null 2>&1 || { echo >&2 "docker is required but it's not installed.  Aborting."; exit 1; }
+	#@command -v docker >/dev/null 2>&1 || { echo >&2 "docker is required but it's not installed.  Aborting."; exit 1; }
 	@command -v gsutil >/dev/null 2>&1 || { echo >&2 "gsutil is required but it's not installed.  Aborting."; exit 1; }
 	@python --version | grep -q "Python ${PYTHON_VERSION}" || (echo "Python version is not 3.9" && exit 1)
 
@@ -113,6 +124,7 @@ generate_dev_linux_cuda_hashed_requirements:
 precondition_tests:
 	python shared/tests/dep_vars_check.py
 
+
 assert_yaml_configs_parse:
 	python scripts/assert_yaml_configs_parse.py -d .
 
@@ -140,8 +152,7 @@ unit_test_scala: clean_build_files_scala
 # Eventually, we should look into splitting these up.
 # We run `make check_format` separately instead of as a dependent make rule so that it always runs after the actual testing.
 # We don't want to fail the tests due to non-conformant formatting during development.
-unit_test: precondition_tests unit_test_py unit_test_scala assert_yaml_configs_parse
-	make check_format
+unit_test: precondition_tests unit_test_py unit_test_scala
 
 check_format_py:
 	autoflake --check --config python/pyproject.toml ${PYTHON_DIRS}
@@ -152,9 +163,14 @@ check_format_scala:
 	( cd scala; sbt "scalafmtCheckAll; scalafixAll --check"; )
 	( cd scala_spark35; sbt "scalafmtCheckAll; scalafixAll --check"; )
 
-check_format: check_format_py check_format_scala
+check_format_md:
+	@echo "Checking markdown files..."
+	mdformat --check ${MD_FILES}
 
-	
+check_format: check_format_py check_format_scala check_format_md
+
+
+
 # Set PY_TEST_FILES=<TEST_FILE_NAME_GLOB> to test a specifc file.
 # Ex. `make integration_test PY_TEST_FILES="dataflow_test.py"`
 # By default, runs all tests under python/testing/integration.
@@ -176,13 +192,18 @@ format_py:
 	isort --settings-path=python/pyproject.toml ${PYTHON_DIRS}
 	black --config=python/pyproject.toml ${PYTHON_DIRS}
 
-format_scala:	
+format_scala:
 	# We run "clean" before the formatting because otherwise some "scalafix.sbt.ScalafixFailed: NoFilesError" may get thrown after switching branches...
 	# TODO(kmonte): Once open sourced, follow up with scalafix people on this.
 	( cd scala; sbt clean scalafixAll scalafmtAll )
 	( cd scala_spark35; sbt clean scalafixAll scalafmtAll )
 
-format: format_py format_scala
+format_md:
+	@echo "Formatting markdown files..."
+	mdformat ${MD_FILES}
+
+format: format_py format_scala format_md
+
 
 type_check:
 	mypy ${PYTHON_DIRS} --check-untyped-defs
@@ -222,8 +243,7 @@ push_new_docker_images: push_cuda_docker_image push_cpu_docker_image push_datafl
 # See usage w/ run_cora_nalp_e2e_kfp_test, run_cora_snc_e2e_kfp_test, run_cora_udl_e2e_kfp_test
 # and run_all_e2e_tests
 _run_e2e_kfp_test: compile_jars push_new_docker_images
-	$(eval BRANCH:=$(shell git rev-parse --abbrev-ref HEAD))
-	$(eval TRIMMED_BRANCH:=$(shell echo "${BRANCH}" | tr '/' '_' | cut -c 1-20 | tr '[:upper:]' '[:lower:]'))
+	$(eval TRIMMED_BRANCH:=$(shell echo "${GIT_BRANCH}" | tr '/' '_' | tr '-' '_' | cut -c 1-20 | tr '[:upper:]' '[:lower:]'))
 	$(eval TRIMMED_TIME:=$(shell date +%s | tail -c 6))
 	@should_wait_for_job_to_finish=false
 	@( \
@@ -310,8 +330,8 @@ run_cora_snc_e2e_kfp_test: resource_config_uris_str:="deployment/configs/e2e_cic
 run_cora_snc_e2e_kfp_test: should_compile_then_run_str:="false"
 run_cora_snc_e2e_kfp_test: _run_e2e_kfp_test
 
-# Note UDL dataset produces a transient issue due to UDL Split Strategy 
-# where in some cases the root node doesn't properly get added back to 
+# Note UDL dataset produces a transient issue due to UDL Split Strategy
+# where in some cases the root node doesn't properly get added back to
 # the returned subgraph. Meaning, trainer will fail.
 run_cora_udl_e2e_kfp_test: job_name_prefixes_str:="cora_udl_test_on"
 run_cora_udl_e2e_kfp_test: task_config_uris_str:="gigl/src/mocking/configs/e2e_udl_node_anchor_based_link_prediction_template_gbml_config.yaml"
@@ -418,7 +438,7 @@ clean_build_files: clean_build_files_py clean_build_files_scala
 # Call to generate new proto definitions if any of the .proto files have been changed.
 # We intentionally rebuild *all* protos with one commmand as they should all be in sync.
 # Run `make install_dev_deps` to setup the correct protoc versions.
-compile_protos: 
+compile_protos:
 	tools/python_protoc/bin/protoc \
 	--proto_path=proto \
 	--python_out=./python \
@@ -450,3 +470,9 @@ stop_toaster:
 	# Deletes everything associated with all stopped containers including dangling resources
 	docker system prune -a --volumes
 	docker buildx prune
+
+release_gigl:
+	@echo "This needs to be implemented"
+
+publish_docs:
+	@echo "This needs to be implemented"

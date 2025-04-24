@@ -9,7 +9,7 @@ outputs:
 
 implementation:
   container:
-    image: gcr.io/external-snap-ci-github-gigl/gbml:latest # Dummy value, always overwritten by arguments passed to gnn.py
+    image: us-central1-docker.pkg.dev/external-snap-ci-github-gigl/gigl-base-images/src-cpu:latest # Dummy value, always overwritten by arguments passed to gnn.py
     command: [
       python, -m, gigl.src.config_populator.config_populator,
       --job_name, {inputValue: job_name},

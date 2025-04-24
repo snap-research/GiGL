@@ -19,7 +19,7 @@ then
 else
     echo "Setting up Scala Deps for Linux Environment"
     mkdir -p tools/scala/coursier
-    curl -fL https://github.com/coursier/coursier/releases/latest/download/cs-x86_64-pc-linux.gz | gzip -d > tools/scala/coursier/cs && chmod +x tools/scala/coursier/cs && tools/scala/coursier/cs setup -y
+    curl -fL https://github.com/coursier/coursier/releases/download/v2.1.23/cs-x86_64-pc-linux.gz | gzip -d > tools/scala/coursier/cs && chmod +x tools/scala/coursier/cs && tools/scala/coursier/cs setup -y
 fi
 
 source ~/.profile

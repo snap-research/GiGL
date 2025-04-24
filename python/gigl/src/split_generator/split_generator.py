@@ -6,6 +6,7 @@ import gigl.common.utils.local_fs as local_fs_utils
 import gigl.env.dep_constants as dep_constants
 import gigl.src.common.constants.gcs as gcs_constants
 from gigl.common import GcsUri, LocalUri, Uri, UriFactory
+from gigl.common.constants import SPARK_35_TFRECORD_JAR_GCS_PATH
 from gigl.common.logger import Logger
 from gigl.common.metrics.decorators import flushes_metrics, profileit
 from gigl.common.utils.gcs import GcsUtils
@@ -18,7 +19,6 @@ from gigl.src.common.utils.metrics_service_provider import (
     get_metrics_service_instance,
     initialize_metrics,
 )
-from gigl.common.constants import SPARK_35_TFRECORD_JAR_GCS_PATH
 from gigl.src.common.utils.spark_job_manager import (
     DataprocClusterInitData,
     SparkJobManager,

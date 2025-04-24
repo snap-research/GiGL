@@ -126,9 +126,9 @@ class NodeClassificationModelingTaskSpec(
             lr=self.__optim_lr,
             weight_decay=self.__optim_weight_decay,
         )
-        self._train_loss_fn: Callable[[torch.Tensor, torch.Tensor], torch.Tensor] = (
-            lambda input, target: F.cross_entropy(input=input, target=target)
-        )
+        self._train_loss_fn: Callable[
+            [torch.Tensor, torch.Tensor], torch.Tensor
+        ] = lambda input, target: F.cross_entropy(input=input, target=target)
         self.model.train()
 
     def _train(

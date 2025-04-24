@@ -35,7 +35,9 @@ def _unenumerate_single_inferred_asset(
         inference_output_unenumerated_assets_table (str): BQ table which contains "final" unenumerated assets.
         enumerator_mapping_table (str): BQ table which contains mapping between enumerated and original ids.
     """
-    bq_utils = BqUtils()
+    # TODO: relevant resource config args should be passed through instead of using global config
+    resource_config = get_resource_config()
+    bq_utils = BqUtils(project=resource_config.project)
     bq_utils.run_query(
         query=inference_queries.UNENUMERATION_QUERY.format(
             enumerated_assets_table=inference_output_enumerated_assets_table,
@@ -44,9 +46,7 @@ def _unenumerate_single_inferred_asset(
             original_node_id_field=enumeration_queries.DEFAULT_ORIGINAL_NODE_ID_FIELD,
             enumerated_int_id_field=enumeration_queries.DEFAULT_ENUMERATED_NODE_ID_FIELD,
         ),
-        labels=get_resource_config().get_resource_labels(
-            component=GiGLComponents.Inferencer
-        ),
+        labels=resource_config.get_resource_labels(component=GiGLComponents.Inferencer),
         destination=inference_output_unenumerated_assets_table,
         write_disposition=bigquery.job.WriteDisposition.WRITE_TRUNCATE,
     )
@@ -160,5 +160,7 @@ def unenumerate_all_inferred_bq_assets(gbml_config_pb_wrapper: GbmlConfigPbWrapp
             )
             futures.append(future)
 
-        concurrent.futures.wait(futures)
+        for fut in concurrent.futures.as_completed(futures):
+            fut.result()  # Rereaise any exceptions
+
     logger.info(f"Output to tables: {', '.join(unenumerated_assets_output_tables)}")

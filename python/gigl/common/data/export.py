@@ -6,8 +6,8 @@ compared to parquet files.
 However, if we switch to an on-line upload scheme, where we upload the embeddings as they are generated,
 then we should look into if parquet or orc files are more performant in that modality.
 """
-
 import io
+import os
 import time
 from typing import Final, Optional, Sequence
 
@@ -16,19 +16,19 @@ import fastavro.types
 import torch
 from google.cloud import bigquery
 from google.cloud.exceptions import GoogleCloudError
+from typing_extensions import Self
 
-from gigl.common import GcsUri, Uri
+from gigl.common import GcsUri
 from gigl.common.logger import Logger
 from gigl.common.utils.gcs import GcsUtils
 from gigl.common.utils.retry import retry
-from gigl.src.common.utils.file_loader import FileLoader
 
 logger = Logger()
 
 # Shared key names between Avro and BigQuery schemas.
-_NODE_ID_KEY = "node_id"
-_EMBEDDING_TYPE_KEY = "node_type"
-_EMBEDDING_KEY = "emb"
+_NODE_ID_KEY: Final[str] = "node_id"
+_EMBEDDING_TYPE_KEY: Final[str] = "node_type"
+_EMBEDDING_KEY: Final[str] = "emb"
 
 # AVRO schema for embedding records.
 AVRO_SCHEMA: Final[fastavro.types.Schema] = {
@@ -193,10 +193,10 @@ class EmbeddingExporter:
             return
         self._flush()
 
-    def __enter__(self) -> "EmbeddingExporter":
+    def __enter__(self) -> Self:
         if self._in_context:
             raise RuntimeError(
-                "EmbeddingExporter is already in a context. Do not call `with EmbeddingExporter:` in a nested manner."
+                f"{type(self).__name__} is already in a context. Do not call `with {type(self).__name__}:` in a nested manner."
             )
         self._in_context = True
 
@@ -213,6 +213,15 @@ def load_embeddings_to_bigquery(
 ) -> None:
     """
     Loads multiple Avro files containing GNN embeddings from GCS into BigQuery.
+
+    Note that this function will upload *all* Avro files in the GCS folder to BigQuery, recursively.
+    So if we have some nested directories, e.g.:
+
+    gs://MY BUCKET/embeddings/shard_0000.avro
+    gs://MY BUCKET/embeddings/nested/shard_0001.avro
+
+    Both files will be uploaded to BigQuery.
+
     Args:
         gcs_folder (GcsUri): The GCS folder containing the Avro files with embeddings.
         project_id (str): The GCP project ID.
@@ -220,15 +229,13 @@ def load_embeddings_to_bigquery(
         table_id (str): The BigQuery table ID.
     """
     start = time.perf_counter()
+    logger.info(f"Loading embeddings from {gcs_folder} to BigQuery.")
     # Initialize the BigQuery client
     bigquery_client = bigquery.Client(project=project_id)
 
     # Construct dataset and table references
     dataset_ref = bigquery_client.dataset(dataset_id)
     table_ref = dataset_ref.table(table_id)
-
-    loader = FileLoader()
-    file_uris: Sequence[Uri] = loader.list_children(gcs_folder, pattern=".*avro")
 
     # Configure the load job
     job_config = bigquery.LoadJobConfig(
@@ -238,7 +245,7 @@ def load_embeddings_to_bigquery(
     )
 
     load_job = bigquery_client.load_table_from_uri(
-        source_uris=[file_uri.uri for file_uri in file_uris],
+        source_uris=os.path.join(gcs_folder.uri, "*.avro"),
         destination=table_ref,
         job_config=job_config,
     )

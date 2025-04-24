@@ -5,9 +5,7 @@ from typing import Dict, NamedTuple
 
 from gigl.common import Uri, UriFactory
 from gigl.common.logger import Logger
-from gigl.src.common.constants.test_assets import (
-    MOCKED_DATASET_ARTIFACT_METADATA_LOCAL_PATH,
-)
+from gigl.src.mocking.lib.constants import MOCKED_DATASET_ARTIFACT_METADATA_LOCAL_PATH
 
 logger = Logger()
 

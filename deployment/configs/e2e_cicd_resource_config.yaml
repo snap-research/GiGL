@@ -1,10 +1,10 @@
 # GiglResourceConfig for our e2e intergration tests.
-shared_resource_config:  
+shared_resource_config:
   # Resource labels are just compute labels that should be attached to all compute resources spun up by GiGL.
   # So a practitioner can have a more fine grained understanding of resource utilization and cost of the resources in their GCP billing.
   # Read more here: https://cloud.google.com/compute/docs/labeling-resources#what-are-labels
   resource_labels:
-  # We have a 63 character limit for cost_resource_group_tag. 
+  # We have a 63 character limit for cost_resource_group_tag.
 
   # COMPONENT is one of {pre|sgs|spl|tra|inf|pos} standing for:
   #   {Preprocessor | Subgraph Sampler | Split Generator | Trainer | Inference
@@ -50,5 +50,5 @@ trainer_config:
 inferencer_config:
   num_workers: 1
   max_num_workers: 256
-  machine_type: "c2d-highmem-32" #"c3-standard-22"
+  machine_type: "c2d-highmem-32"
   disk_size_gb: 100

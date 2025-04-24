@@ -1,4 +1,5 @@
 <!-- To align the logo with the text on the sphinx page -->
+
 <div align="center">
   <img src="docs/assets/images/gigl.png" alt="GiGL Logo" style="vertical-align: middle; width: px; height: 80px;"/>
   <h1 style="display: inline-block; vertical-align: middle; margin-left: 20px; font-size: 48px; line-height: 80px;">
@@ -6,36 +7,39 @@
   </h1>
 </div>
 
-# This REPO is a bit dusty while we prepare for the OSS launch. We will have it in working order coming soon.
-
 GiGL is an open-source library for training and inference of Graph Neural Networks at very large (billion) scale.
-
 
 See 📖 [Documentation](docs/) for more details
 
 ## Key Features 🌟
 
-- 🧠 **Versatile GNN Applications**: Supports easy customization in using GNNs in supervised and unsupervised ML applications like node classification and link prediction.
+- 🧠 **Versatile GNN Applications**: Supports easy customization in using GNNs in supervised and unsupervised ML
+  applications like node classification and link prediction.
 
-- 🚀 **Designed for Scalability**: The architecture is built with horizontal scaling in mind, ensuring cost-effective performance throughout the process of data preprocessing and transformation, model training, and inference.
+- 🚀 **Designed for Scalability**: The architecture is built with horizontal scaling in mind, ensuring cost-effective
+  performance throughout the process of data preprocessing and transformation, model training, and inference.
 
-- 🎛️ **Easy Orchestration**: Simplified end-to-end orchestration, making it easy for developers to implement, scale, and manage their GNN projects.
+- 🎛️ **Easy Orchestration**: Simplified end-to-end orchestration, making it easy for developers to implement, scale, and
+  manage their GNN projects.
 
-------------------------------------------------------------------------
-
+______________________________________________________________________
 
 ## GiGL Components ⚡️
 
-GiGL contains six components, each designed to facilitate the platforms end-to-end graph machine learning (ML) tasks. The components are as follows:
+GiGL contains six components, each designed to facilitate the platforms end-to-end graph machine learning (ML) tasks.
+The components are as follows:
 
-| Component         | Source Code                                                                                                               | Documentation                                              |
+| Component | Source Code | Documentation |
 |-------------------|---------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------|
-| Config Populator  | [here](python/gigl/src/config_populator/config_populator.py)   | [here](docs/sphinx/source/components/config_populator.md)  |
-| Data Preprocessor | [here](python/gigl/src/data_preprocessor/data_preprocessor.py) | [here](docs/sphinx/source/components/data_preprocessor.md) |
-| Subgraph Sampler  | [here](scala/subgraph_sampler/src/main/scala/Main.scala)       | [here](docs/sphinx/source/components/subgraph_sampler.md)  |
-| Split Generator   | [here](scala/split_generator/src/main/scala/Main.scala)        | [here](docs/sphinx/source/components/split_generator.md)   |
-| Trainer           | [here](python/gigl/src/training/trainer.py)                    | [here](docs/sphinx/source/components/trainer.md)           |
-| Inferencer        | [here](python/gigl/src/inference/gnn_inferencer.py)            | [here](docs/sphinx/source/components/inferencer.md)        |
+| Config Populator | [here](python/gigl/src/config_populator/config_populator.py) |
+[here](docs/sphinx/source/components/config_populator.md) | | Data Preprocessor |
+[here](python/gigl/src/data_preprocessor/data_preprocessor.py) |
+[here](docs/sphinx/source/components/data_preprocessor.md) | | Subgraph Sampler |
+[here](scala/subgraph_sampler/src/main/scala/Main.scala) | [here](docs/sphinx/source/components/subgraph_sampler.md) | |
+Split Generator | [here](scala/split_generator/src/main/scala/Main.scala) |
+[here](docs/sphinx/source/components/split_generator.md) | | Trainer | [here](python/gigl/src/training/trainer.py) |
+[here](docs/sphinx/source/components/trainer.md) | | Inferencer | [here](python/gigl/src/inference/gnn_inferencer.py) |
+[here](docs/sphinx/source/components/inferencer.md) |
 
 The figure below illustrates at a high level how all the components work together for and end-to-end GiGL pipeline.
 
@@ -43,7 +47,8 @@ The figure below illustrates at a high level how all the components work togethe
 
 ## Installation ⚙️
 
-There are various ways to use GiGL.  The recommended solution is to set up a conda environment and use some handy commands:
+There are various ways to use GiGL. The recommended solution is to set up a conda environment and use some handy
+commands:
 
 From the root directory:
 
@@ -52,7 +57,7 @@ make initialize_environment
 conda activate gnn
 ```
 
-This creates a Python 3.9 environment with some basic utilities.  Next, to install all user dependencies:
+This creates a Python 3.9 environment with some basic utilities. Next, to install all user dependencies:
 
 ```bash
 make install_deps
@@ -80,24 +85,28 @@ todo
 
 ## Configuration 📄
 
-Before getting started with running components in GiGL, it’s important to set up your config files. These are necessary files required for each component to operate. The two required files are:
+Before getting started with running components in GiGL, it’s important to set up your config files. These are necessary
+files required for each component to operate. The two required files are:
 
-- **Resource Config**: Details the resource allocation and environmental settings across all GiGL components. This encompasses shared resources for all components, as well as component-specific settings.
+- **Resource Config**: Details the resource allocation and environmental settings across all GiGL components. This
+  encompasses shared resources for all components, as well as component-specific settings.
 
-- **Task Config**: Specifies task-related configurations, guiding the behavior of components according to the needs of your machine learning task.
+- **Task Config**: Specifies task-related configurations, guiding the behavior of components according to the needs of
+  your machine learning task.
 
 To configure these files and customize your GiGL setup, follow our step-by-step guides:
 
-- [Resource Config Guide]("todo/")
-- [Task Config Guide]("todo/")
+- [Resource Config Guide](%22todo/%22)
+- [Task Config Guide](%22todo/%22)
 
 ## Usage 🚀
 
 GiGL offers 3 primiary methods of usage to run the components for your graph machine learning tasks.
 
-### 1. Importable `gigl`
+### 1. Importable GiGL
 
-To easily get started or incorporate gigl into your existing workflows, you can simply import `gigl` and call the `.run()` method on its components.
+To easily get started or incorporate GiGL into your existing workflows, you can simply `import gigl` and call the
+`.run()` method on its components.
 
 <details>
 <summary>Example</summary>
@@ -108,12 +117,13 @@ from gigl.src.training.trainer import Trainer
 trainer = Trainer()
 trainer.run(task_config_uri, resource_config_uri, job_name)
 ```
-</details>
 
+</details>
 
 ### 2. Command-Line Execution
 
-Each GiGL component can be executed as a standalone module from the command line. This method is useful for batch processing or when integrating into shell scripts.
+Each GiGL component can be executed as a standalone module from the command line. This method is useful for batch
+processing or when integrating into shell scripts.
 
 <details>
 <summary>Example</summary>
@@ -130,18 +140,22 @@ python -m \
 
 ### 3. Kubeflow Pipeline Orchestration
 
-GiGL also supports pipeline orchestration using Kubeflow. This allows you to easily kick off an end-to-end run with little to no code. See [Kubeflow Orchestration]("todo") for more information
+GiGL also supports pipeline orchestration using Kubeflow. This allows you to easily kick off an end-to-end run with
+little to no code. See [Kubeflow Orchestration](%22todo%22) for more information
 
 \
-The best way to get more familiar with GiGL is to go through the various [examples]("todo") or for specific details see our [user guide]("todo").
-
+The best way to get more familiar with GiGL is to go through the various [examples](%22todo%22) or for specific details
+see our [user guide](%22todo%22).
 
 ## Tests 🔧
 
-Testing in GiGL is designed to ensure reliability and robustness across different components of the library. We support three types of tests: unit tests, local integration tests, and cloud integration end-to-end tests.
+Testing in GiGL is designed to ensure reliability and robustness across different components of the library. We support
+three types of tests: unit tests, local integration tests, and cloud integration end-to-end tests.
 
 ### Unit Tests
-GiGL's unit tests focus on validating the functionality of individual components and high-level utilities. They also check for proper formatting, typing, and linting standards.
+
+GiGL's unit tests focus on validating the functionality of individual components and high-level utilities. They also
+check for proper formatting, typing, and linting standards.
 
 <details>
 <summary>More Details</summary>
@@ -164,14 +178,15 @@ make unit_test_scala
 
 </details>
 
-
 ### Local Integration Test
-GiGL's local integration tests simulate the pipeline behavior of GiGL components. These tests are crucial for verifying that components function correctly in sequence and that outputs from one component are correctly handled by the next.
+
+GiGL's local integration tests simulate the pipeline behavior of GiGL components. These tests are crucial for verifying
+that components function correctly in sequence and that outputs from one component are correctly handled by the next.
 
 <details>
 <summary>More Details</summary>
 
-- Utilizes mocked/synthetic data publicly hosted in GCS (see: [Public Assets]("todo"))
+- Utilizes mocked/synthetic data publicly hosted in GCS (see: [Public Assets](%22todo%22))
 - Require access and run on cloud services such as BigQuery, Dataflow etc.
 - Required to pass before merging PR (Pre-merge check)
 
@@ -185,43 +200,51 @@ make integration_test resource_config_uri="gs://your-project-bucket/resource_con
 
 ### Cloud Integration Test (End-to-End)
 
-Cloud integration tests run a full end-to-end GiGL pipeline within GCP, also leveraging cloud services such as Dataflow, Dataproc, and Vertex AI.
+Cloud integration tests run a full end-to-end GiGL pipeline within GCP, also leveraging cloud services such as Dataflow,
+Dataproc, and Vertex AI.
 
 <details>
 <summary>More Details</summary>
 
-- Utilizes mocked/synthetic data publicly hosted in GCS (see: [Public Assets]("todo"))
+- Utilizes mocked/synthetic data publicly hosted in GCS (see: [Public Assets](%22todo%22))
 - Require access and run on cloud services such as BigQuery, Dataflow etc.
-- Required to pass before merging PR (Pre-merge check). Access to the orchestration, logs, etc., is restricted to authorized internal engineers to maintain security. Failures will be reported back to contributor as needed.
+- Required to pass before merging PR (Pre-merge check). Access to the orchestration, logs, etc., is restricted to
+  authorized internal engineers to maintain security. Failures will be reported back to contributor as needed.
 
-To test cloud integration test functionality, you can replicate by running and end-to-end pipeline by following along one of our Cora examples (See: [Examples]("todo"))
+To test cloud integration test functionality, you can replicate by running and end-to-end pipeline by following along
+one of our Cora examples (See: [Examples](%22todo%22))
 
 </details>
 <br>
 
 ## Contribution 🔥
-Your contributions are always welcome and appreciated. The following are the things you can do to contribute to this project.
 
- 1. **Report a bug** <br>
- If you think you have encountered a bug please feel free to report it [here]("todo_point_to_issues") and someone from the team will take a look.
+Your contributions are always welcome and appreciated. The following are the things you can do to contribute to this
+project.
 
- 2. **Request a feature** <br>
-Feature requests are always welcome! You can request a feature by adding it [here]("todo_point_to_feature_req")
+1. **Report a bug** <br> If you think you have encountered a bug please feel free to report it
+   [here](%22todo_point_to_issues%22) and someone from the team will take a look.
 
- 3. **Create a pull request** <br>
-Pull request are always greatly appreciated. You can get started by picking up any open issues from [here]("todo_point_to_issues") and making a pull request.
+1. **Request a feature** <br> Feature requests are always welcome! You can request a feature by adding it
+   [here](%22todo_point_to_feature_req%22)
 
- > If you are new to open-source, make sure to check read more about it [here](https://www.digitalocean.com/community/tutorial_series/an-introduction-to-open-source) and learn more about creating a pull request [here](https://www.digitalocean.com/community/tutorials/how-to-create-a-pull-request-on-github).
+1. **Create a pull request** <br> Pull request are always greatly appreciated. You can get started by picking up any
+   open issues from [here](%22todo_point_to_issues%22) and making a pull request.
 
+> If you are new to open-source, make sure to check read more about it
+> [here](https://www.digitalocean.com/community/tutorial_series/an-introduction-to-open-source) and learn more about
+> creating a pull request
+> [here](https://www.digitalocean.com/community/tutorials/how-to-create-a-pull-request-on-github).
 
-For more information, see our [Contributing Guide]("todo")
-
+For more information, see our [Contributing Guide](%22todo%22)
 
 ## Additional Resources ❗
 
-You may still have unanswered questions or may be facing issues. If so please see our [FAQ]("todo") or our [User Guide]("todo") for further guidence.
+You may still have unanswered questions or may be facing issues. If so please see our [FAQ](%22todo%22) or our
+[User Guide](%22todo%22) for further guidance.
 
 ## Citation
+
 If you use GiGL in publications, we would appreciate citations to [our paper](https://arxiv.org/pdf/2502.15054):
 
 ```bibtex
@@ -234,4 +257,5 @@ If you use GiGL in publications, we would appreciate citations to [our paper](ht
 ```
 
 ## License 🔒
+
 [MIT License](LICENSE)

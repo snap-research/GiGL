@@ -133,12 +133,12 @@ class SupervisedNodeClassificationDatasetDataloaders:
             if data_loader_type in self.dataloaders:
                 dataloaders[data_loader_type] = self.dataloaders[data_loader_type]
                 continue
-            self.dataloaders[data_loader_type] = (
-                SupervisedNodeClassificationBatch.get_default_data_loader(
-                    gbml_config_pb_wrapper=gbml_config_pb_wrapper,
-                    graph_builder=graph_builder,
-                    config=config,
-                )
+            self.dataloaders[
+                data_loader_type
+            ] = SupervisedNodeClassificationBatch.get_default_data_loader(
+                gbml_config_pb_wrapper=gbml_config_pb_wrapper,
+                graph_builder=graph_builder,
+                config=config,
             )
             dataloaders[data_loader_type] = self.dataloaders[data_loader_type]
         return dataloaders
@@ -316,21 +316,21 @@ class NodeAnchorBasedLinkPredictionDatasetDataloaders:
                 continue
             # If we hae a list of uris, we are getting a main batch dataloader
             if isinstance(config.uris, list):
-                self.dataloaders[data_loader_type] = (
-                    NodeAnchorBasedLinkPredictionBatch.get_default_data_loader(
-                        gbml_config_pb_wrapper=gbml_config_pb_wrapper,
-                        graph_builder=graph_builder,
-                        config=config,
-                    )
+                self.dataloaders[
+                    data_loader_type
+                ] = NodeAnchorBasedLinkPredictionBatch.get_default_data_loader(
+                    gbml_config_pb_wrapper=gbml_config_pb_wrapper,
+                    graph_builder=graph_builder,
+                    config=config,
                 )
             # If we have a dictionary of uris, we are getting a rooted node neighborhood dataloader
             else:
-                self.dataloaders[data_loader_type] = (
-                    RootedNodeNeighborhoodBatch.get_default_data_loader(
-                        gbml_config_pb_wrapper=gbml_config_pb_wrapper,
-                        graph_builder=graph_builder,
-                        config=config,
-                    )
+                self.dataloaders[
+                    data_loader_type
+                ] = RootedNodeNeighborhoodBatch.get_default_data_loader(
+                    gbml_config_pb_wrapper=gbml_config_pb_wrapper,
+                    graph_builder=graph_builder,
+                    config=config,
                 )
             dataloaders[data_loader_type] = self.dataloaders[data_loader_type]
         return dataloaders

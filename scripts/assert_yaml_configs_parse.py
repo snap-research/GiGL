@@ -3,6 +3,7 @@ Assert that the YAML configuration files in specified directories can be parsed 
 
 Note that this does not check the *contents* of the fields set, e.g. `python_class_path: not a valid path` will not be caught.
 This script does a subset of what config_validator does, but is faster and can be used locally.
+You may also put "# yaml-check: disable" at the top of a YAML file to ignore it.
 
 Usage:
     python assert_yaml_configs_parse.py --directories <dir1> <dir2> ... [--ignore_regex <file1> <file2> ...]
@@ -15,6 +16,8 @@ Description:
     The script recursively searches through the specified directories for YAML files.
     It attempts to parse each YAML file as either a GiglResourceConfig or GbmlConfig based on the filename.
     If a file cannot be parsed, it logs the error and reports all invalid files at the end.
+    If any of the ignore_regex matches the file path, or the first line of the file starts with "# yaml-check: disable",
+    the file will be skipped.
 
 Examples:
     To check all YAML files in the 'configs' directory:
@@ -37,6 +40,8 @@ from snapchat.research.gbml.gigl_resource_config_pb2 import GiglResourceConfig
 
 logger = Logger()
 
+_IGNORE_COMMENT = "# yaml-check: disable"
+
 
 def assert_configs_parse(directories: List[str], ignore_regex: List[str] = []) -> None:
     proto_utils = ProtoUtils()
@@ -54,6 +59,12 @@ def assert_configs_parse(directories: List[str], ignore_regex: List[str] = []) -
                     and not any(r.match(file_path) for r in ignore)
                     and ("resource_config" in file or "task_config" in file)
                 ):
+                    with open(file_path, "r") as f:
+                        if f.readline().strip().startswith(_IGNORE_COMMENT):
+                            logger.info(
+                                f"Ignored {file_path} due to the '{_IGNORE_COMMENT}' header."
+                            )
+                            continue
                     total += 1
                     yaml_file = UriFactory.create_uri(file_path)
                     try:

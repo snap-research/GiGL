@@ -2,13 +2,13 @@ from typing import Any, Callable, Iterable, Optional, Tuple, Union
 
 import apache_beam as beam
 import pyarrow as pa
-import tensorflow as tf
 import tensorflow_data_validation as tfdv
-import tensorflow_transform as tft
+import tensorflow_transform
 import tfx_bsl
 from apache_beam.pvalue import PBegin, PCollection, PDone
 from tensorflow_metadata.proto.v0 import schema_pb2, statistics_pb2
 from tensorflow_transform import beam as tft_beam
+from tensorflow_transform.tf_metadata import schema_utils
 from tfx_bsl.tfxio.record_based_tfxio import RecordBasedTFXIO
 
 from gigl.common import GcsUri, LocalUri, Uri
@@ -48,24 +48,38 @@ class InstanceDictToTFExample(beam.DoFn):
     See https://www.tensorflow.org/tfx/transform/get_started#the_tfxio_format.
     """
 
-    def __init__(self, feature_spec: FeatureSpecDict):
+    def __init__(
+        self,
+        feature_spec: FeatureSpecDict,
+        schema: schema_pb2.Schema,
+    ):
         self.feature_spec = feature_spec
+        self.schema = schema
+        self._coder: Optional[tensorflow_transform.coders.ExampleProtoCoder] = None
 
     def process(self, element: InstanceDict) -> Iterable[bytes]:
-        # Each row is a single instance dict from the original tabular input (BQ, GCS, etc.)
-        example = dict()
-        for key in self.feature_spec.keys():
-            # prepare each value associated with a key that appears in the feature_spec.
-            # only the instance dict keys the user specifies wanting in the feature_spec will pass through here
-            value = element[key]
-            if value is None:
-                logger.debug(f"Found key {key} with missing value in sample {element}")
-            example[key] = TFValueEncoder.encode_value_as_feature(
-                value=value, dtype=self.feature_spec[key].dtype
+        # This coder is sensitive to environment (e.g., proto library version), and thus
+        # it is recommended to instantiate the coder at pipeline execution time (i.e.,
+        # in process function) instead of at pipeline construction time (i.e., in __init__)
+        if not self._coder:
+            self._coder = tensorflow_transform.coders.ExampleProtoCoder(self.schema)
+
+        # Each element is a single row from the original tabular input (BQ, GCS, etc.)
+        # Only features in the user specified feature_spec are extracted from element.
+        # Imputation is applied when feature value is NULL.
+        parsed_and_imputed_element = {
+            feature_name: (
+                element[feature_name]
+                # If feature_name does not exist as a column in the original table, a
+                # KeyError should raise to warn the user. Therefore, we do not use
+                # element.get() here.
+                if element[feature_name] is not None
+                else TFValueEncoder.get_value_to_impute(dtype=spec.dtype)
             )
-        example_proto = tf.train.Example(features=tf.train.Features(feature=example))
-        serialized_proto = example_proto.SerializeToString()
-        return [serialized_proto]
+            for feature_name, spec in self.feature_spec.items()
+        }
+
+        yield self._coder.encode(parsed_and_imputed_element)
 
 
 class IngestRawFeatures(beam.PTransform):
@@ -74,10 +88,12 @@ class IngestRawFeatures(beam.PTransform):
         self,
         data_reference: DataReference,
         feature_spec: FeatureSpecDict,
+        schema: schema_pb2.Schema,
         beam_record_tfxio: RecordBasedTFXIO,
     ):
         self.data_reference = data_reference
         self.feature_spec = feature_spec
+        self.schema = schema
         self.beam_record_tfxio = beam_record_tfxio
 
     def expand(self, pbegin: PBegin) -> PCollection[pa.RecordBatch]:
@@ -91,7 +107,11 @@ class IngestRawFeatures(beam.PTransform):
             | "Parse raw tabular features into instance dicts."
             >> self.data_reference.yield_instance_dict_ptransform()
             | "Serialize instance dicts to transformed TFExamples"
-            >> beam.ParDo(InstanceDictToTFExample(feature_spec=self.feature_spec))
+            >> beam.ParDo(
+                InstanceDictToTFExample(
+                    feature_spec=self.feature_spec, schema=self.schema
+                )
+            )
             | "Transformed TFExamples to RecordBatches with TFXIO"
             >> self.beam_record_tfxio.BeamSource()
         )
@@ -249,8 +269,8 @@ def get_load_data_and_transform_pipeline_component(
         use_deep_copy_optimization=False,
     ):
         raw_feature_spec = preprocessing_spec.feature_spec_fn()
-        raw_data_schema: schema_pb2.Schema = (
-            tft.tf_metadata.schema_utils.schema_from_feature_spec(raw_feature_spec)
+        raw_data_schema: schema_pb2.Schema = schema_utils.schema_from_feature_spec(
+            raw_feature_spec
         )
 
         beam_record_tfxio = tfx_bsl.tfxio.tf_example_record.TFExampleBeamRecord(
@@ -263,6 +283,7 @@ def get_load_data_and_transform_pipeline_component(
         raw_features = p | IngestRawFeatures(
             data_reference=data_reference,
             feature_spec=raw_feature_spec,
+            schema=raw_data_schema,
             beam_record_tfxio=beam_record_tfxio,
         )
 
@@ -307,20 +328,35 @@ def get_load_data_and_transform_pipeline_component(
             transformed_features_info.transform_directory_path.uri
         )
 
-        # Write out transformed features.
-        # This transformed_metadata can only be relied on for encoding purposes
-        # reusing a pretrained transform_fn.  It can sometimes produce inaccurate
-        # metadata for transformed features when building a new transform_fn,
-        # hence we opt to use the deferred_metadata instead.
+        # Apply TransformFn over raw features
         transformed_features, transformed_metadata = (
             (raw_features, raw_tensor_adapter_config),
             resolved_transform_fn,
-        ) | "Transform raw features dataset" >> tft_beam.TransformDataset()
+        ) | "Transform raw features dataset" >> tft_beam.TransformDataset(
+            output_record_batches=True
+        )
+
+        # The transformed_features returned by tft_beam.TransformDataset is a
+        # PCollection of Tuple[pa.RecordBatch, Dict[str, pa.Array]]. The first
+        # one are the transformed features. The second one are the passthrough
+        # features, which doesn't apply here since we do not specify passthrough_keys
+        # in tft_beam.Context. Hence we drop the second one in the tuple.
+        transformed_features = transformed_features | "Extract RecordBatch" >> beam.Map(
+            lambda element: element[0]
+        )
+
+        # The transformed_metadata returned by tft_beam.TransformDataset can only
+        # be relied on for encoding purposes when reusing a pretrained transform_fn,
+        # yet it could be inaccurate when using a new transform_fn built by
+        # tft_beam.AnalyzeDataset. For the later case, we do not use transformed_metadata
+        # returned by tft_beam.TransformDataset, but use deferred_metadata from
+        # transform_fn instead.
         resolved_transformed_metadata = (
             transformed_metadata
             if should_use_existing_transform_fn
             else beam.pvalue.AsSingleton(analyzed_transform_fn[1].deferred_metadata)  # type: ignore
         )
+
         transformed_features | "Write tf record files" >> BetterWriteToTFRecord(
             file_path_prefix=transformed_features_info.transformed_features_file_prefix.uri,
             max_bytes_per_shard=int(2e8),  # 200mb,

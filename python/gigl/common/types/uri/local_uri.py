@@ -26,19 +26,6 @@ class LocalUri(Uri, os.PathLike):
         joined_uri = super().join(token, *tokens)
         return cls(uri=joined_uri)
 
-    def get_file_name(self, assert_is_file: Optional[bool] = True) -> str:
-        """Returns the file name of the URI.
-
-        Args:
-            assert_is_file (Optional[bool]): Whether to assert that the URI represents a file. Defaults to True.
-
-        Returns:
-            str: The file name of the URI.
-        """
-        if assert_is_file:
-            assert os.path.isfile(self.uri), f"{self.uri} is not a file"
-        return os.path.basename(self.uri)
-
     @classmethod
     def is_valid(
         cls, uri: Union[str, Path, Uri], raise_exception: Optional[bool] = False

@@ -8,9 +8,9 @@ shared_resource_config:
     temp_assets_bucket: "gs://gigl-cicd-temp"
     temp_regional_assets_bucket: "gs://gigl-cicd-temp"
     perm_assets_bucket: "gs://gigl-cicd-temp" # For testing, we don't persist models, configs, etc. - they should expire w/ TTL
-    temp_assets_bq_dataset_name: "TEST ASSET PLACEHOLDER"
-    embedding_bq_dataset_name: "TEST ASSET PLACEHOLDER"
-    gcp_service_account_email: "untrusted-external-github-gigl@external-snap-ci-github-gigl.iam.gserviceaccount.com"
+    temp_assets_bq_dataset_name: "FAKE DATASET NAME 1"
+    embedding_bq_dataset_name: "FAKE DATASET NAME 2"
+    gcp_service_account_email: "FAKE SA"
     dataflow_runner: "DirectRunner"
 preprocessor_config:
   edge_preprocessor_config:

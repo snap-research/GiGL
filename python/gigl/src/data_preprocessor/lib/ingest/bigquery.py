@@ -32,7 +32,7 @@ class BigqueryNodeDataReference(NodeDataReference):
         return _get_bigquery_ptransform(table_name=self.reference_uri, *args, **kwargs)  # type: ignore
 
     def __repr__(self) -> str:
-        return f"BigqueryNodeDataReference(node_type={self.node_type}, reference_uri={self.reference_uri})"
+        return f"BigqueryNodeDataReference(node_type={self.node_type}, identifier={self.identifier}, reference_uri={self.reference_uri})"
 
 
 class BigqueryEdgeDataReference(EdgeDataReference):
@@ -40,4 +40,4 @@ class BigqueryEdgeDataReference(EdgeDataReference):
         return _get_bigquery_ptransform(table_name=self.reference_uri, *args, **kwargs)  # type: ignore
 
     def __repr__(self) -> str:
-        return f"BigqueryEdgeDataReference(edge_type={self.edge_type}, reference_uri={self.reference_uri})"
+        return f"BigqueryEdgeDataReference(edge_type={self.edge_type}, src_identifier={self.src_identifier}, dst_identifier={self.dst_identifier}, reference_uri={self.reference_uri})"

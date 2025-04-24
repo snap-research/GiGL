@@ -6,7 +6,7 @@ from graphlearn_torch.distributed import init_rpc, init_worker_group
 
 from gigl.distributed import DistLinkPredictionDataPartitioner
 from gigl.src.common.types.graph_data import EdgeType, NodeType
-from gigl.types.distributed import EdgeAssignStrategy, PartitionOutput
+from gigl.types.distributed import PartitionOutput
 from tests.test_assets.distributed.constants import (
     MOCKED_NUM_PARTITIONS,
     USER_NODE_TYPE,
@@ -26,7 +26,7 @@ def run_distributed_partitioner(
     output_dict: Dict[int, PartitionOutput],
     is_heterogeneous: bool,
     rank_to_input_graph: Dict[int, TestGraphData],
-    edge_assign_strategy: EdgeAssignStrategy,
+    should_assign_edges_by_src_node: bool,
     master_addr: str,
     master_port: int,
     input_data_strategy: InputDataStrategy,
@@ -38,7 +38,7 @@ def run_distributed_partitioner(
         output_dict: Dict[int, PartitionOutput]: Dict initialized by mp.Manager().dict() in which outputs of partitioner will be written to. This is a mapping of rank to Partition output.
         is_heterogeneous (bool): Whether homogeneous or heterogeneous inputs should be used
         rank_to_input_graph (Dict[int, TestGraphData]): Mapping of rank to mocked input graph for testing partitioning
-        edge_assign_strategy (EdgeAssignStrategy): Whether to partion edges according to the partition book of the source node or destination node,
+        should_assign_edges_by_src_node (bool): Whether to partion edges according to the partition book of the source node or destination node
         master_addr (str): Master address for initializing rpc for partitioning
         master_port (int): Master port for initializing rpc for partitioning
         input_data_strategy (InputDataStrategy): Strategy for registering inputs to the partitioner
@@ -73,7 +73,7 @@ def run_distributed_partitioner(
 
     if input_data_strategy == InputDataStrategy.REGISTER_ALL_ENTITIES_SEPARATELY:
         dist_partitioner = DistLinkPredictionDataPartitioner(
-            edge_assign_strategy=edge_assign_strategy,
+            should_assign_edges_by_src_node=should_assign_edges_by_src_node,
         )
         # We call del to mimic the real use case for handling these input tensors
         dist_partitioner.register_node_ids(node_ids=node_ids)
@@ -125,7 +125,7 @@ def run_distributed_partitioner(
         )
     elif input_data_strategy == InputDataStrategy.REGISTER_MINIMAL_ENTITIES_SEPARATELY:
         dist_partitioner = DistLinkPredictionDataPartitioner(
-            edge_assign_strategy=edge_assign_strategy,
+            should_assign_edges_by_src_node=should_assign_edges_by_src_node,
         )
 
         # We call del to mimic the real use case for handling these input tensors
@@ -151,7 +151,7 @@ def run_distributed_partitioner(
 
     else:
         dist_partitioner = DistLinkPredictionDataPartitioner(
-            edge_assign_strategy=edge_assign_strategy,
+            should_assign_edges_by_src_node=should_assign_edges_by_src_node,
             node_ids=node_ids,
             node_features=node_features,
             edge_index=edge_index,

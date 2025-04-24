@@ -1,10 +1,10 @@
-from kfp.dsl._container_op import ContainerOp
+from kfp.dsl import PipelineTask
 
 from gigl.common.types.resource_config import CommonPipelineComponentConfigs
 
 
 def add_task_resource_requirements(
-    task: ContainerOp,
+    task: PipelineTask,
     common_pipeline_component_configs: CommonPipelineComponentConfigs,
 ):
     """
@@ -20,6 +20,6 @@ def add_task_resource_requirements(
     DEFAULT_CPU_REQUEST = "4"
     DEFAULT_MEMORY_REQUEST = "1Gi"
     # default to cpu image, overwrite later as needed
-    task.container.image = common_pipeline_component_configs.cpu_container_image
-    task.container.set_cpu_request(DEFAULT_CPU_REQUEST)
-    task.container.set_memory_request(DEFAULT_MEMORY_REQUEST)
+    task.container_spec.image = common_pipeline_component_configs.cpu_container_image
+    task.set_cpu_request(DEFAULT_CPU_REQUEST)
+    task.set_memory_request(DEFAULT_MEMORY_REQUEST)

@@ -96,20 +96,14 @@ MOCKED_U2I_EDGE_INDEX_ON_RANK_ONE: Final[torch.Tensor] = torch.Tensor(
 ).to(torch.int64)
 
 ## Edge features
-# Edge features are set to be the corresponding source node ids value divided by 10, repeated twice for u2u nodes and once for u2i nodes.
-# Each edge feature tensor is of shape [num_edges_on_rank, edge_feat_dim].
+# Edge features for U2U edge are set to be the corresponding source node ids value divided by 10.
+# U2I edge has no edge features.
+# Each U2U edge feature tensor is of shape [num_edges_on_rank, edge_feat_dim].
 MOCKED_U2U_EDGE_FEATURES_ON_RANK_ZERO: Final[torch.Tensor] = torch.Tensor(
     [[0, 0], [0.1, 0.1], [0.2, 0.2], [0.3, 0.3]]
 )
 MOCKED_U2U_EDGE_FEATURES_ON_RANK_ONE: Final[torch.Tensor] = torch.Tensor(
     [[0.4, 0.4], [0.5, 0.5], [0.6, 0.6], [0.7, 0.7]]
-)
-
-MOCKED_U2I_EDGE_FEATURES_ON_RANK_ZERO: Final[torch.Tensor] = torch.Tensor(
-    [[0], [0.1], [0.2], [0.3]]
-)
-MOCKED_U2I_EDGE_FEATURES_ON_RANK_ONE: Final[torch.Tensor] = torch.Tensor(
-    [[0.4], [0.5], [0.6], [0.7]]
 )
 
 ## Labeled Edges
@@ -188,7 +182,6 @@ RANK_TO_MOCKED_GRAPH: Final[Dict[int, TestGraphData]] = {
         },
         edge_features={
             USER_TO_USER_EDGE_TYPE: MOCKED_U2U_EDGE_FEATURES_ON_RANK_ZERO,
-            USER_TO_ITEM_EDGE_TYPE: MOCKED_U2I_EDGE_FEATURES_ON_RANK_ZERO,
         },
         positive_labels={
             USER_TO_USER_EDGE_TYPE: MOCKED_U2U_POS_EDGE_INDEX_ON_RANK_ZERO,
@@ -214,7 +207,6 @@ RANK_TO_MOCKED_GRAPH: Final[Dict[int, TestGraphData]] = {
         },
         edge_features={
             USER_TO_USER_EDGE_TYPE: MOCKED_U2U_EDGE_FEATURES_ON_RANK_ONE,
-            USER_TO_ITEM_EDGE_TYPE: MOCKED_U2I_EDGE_FEATURES_ON_RANK_ONE,
         },
         positive_labels={
             USER_TO_USER_EDGE_TYPE: MOCKED_U2U_POS_EDGE_INDEX_ON_RANK_ONE,
@@ -277,13 +269,6 @@ MOCKED_UNIFIED_GRAPH: Final[TestGraphData] = TestGraphData(
             (
                 MOCKED_U2U_EDGE_FEATURES_ON_RANK_ZERO,
                 MOCKED_U2U_EDGE_FEATURES_ON_RANK_ONE,
-            ),
-            dim=0,
-        ),
-        USER_TO_ITEM_EDGE_TYPE: torch.cat(
-            (
-                MOCKED_U2I_EDGE_FEATURES_ON_RANK_ZERO,
-                MOCKED_U2I_EDGE_FEATURES_ON_RANK_ONE,
             ),
             dim=0,
         ),

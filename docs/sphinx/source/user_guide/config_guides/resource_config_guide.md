@@ -1,12 +1,12 @@
 # Resource Config Guide
 
-GiGL Resource Config is a yaml file that is passed in at runtime and specifies the resource and environment configurations for each component in the GiGL. The proto definition for GiGL Resource Config can be seen [here](/proto/snapchat/research/gbml/gigl_resource_config.proto)
-
+GiGL Resource Config is a yaml file that is passed in at runtime and specifies the resource and environment
+configurations for each component in the GiGL. The proto definition for GiGL Resource Config can be seen
+[here](https://github.com/Snapchat/GiGL/blob/main/proto/snapchat/research/gbml/gigl_resource_config.proto)
 
 ## Prerequisites
 
-If you don't have cloud assets already setup i.e. a GCP project. See [guide](../getting_started/cloud_setup_guide.md) 
-
+If you don't have cloud assets already setup i.e. a GCP project. See [guide](../getting_started/cloud_setup_guide.md)
 
 ## Resource Config Breakdown
 
@@ -55,7 +55,7 @@ trainer_config:
   vertex_ai_trainer_config:
     machine_type: "" # e.g. n1-highmem-16
     gpu_type: "" # e.g. nvidia-tesla-p100
-    gpu_limit: 1 
+    gpu_limit: 1
     num_replicas: 1
 inferencer_config:
   num_workers: 1
@@ -66,14 +66,16 @@ inferencer_config:
     </code>
 </details>
 
-
 **Shared Resource Config**
 
-The `shared_resource_config` field includes settings that apply across all GiGL components. You need to customize this section according to your GCP project specifics. 
+The `shared_resource_config` field includes settings that apply across all GiGL components. You need to customize this
+section according to your GCP project specifics.
 
-- **Resource Labels**: Resource labels help you manage costs and organzie resources. Modify the `resource_labels` section to fit your project's labeling scheme.
+- **Resource Labels**: Resource labels help you manage costs and organzie resources. Modify the `resource_labels`
+  section to fit your project's labeling scheme.
 
-- **Common Compute Config**: This section includes important project specifications. Fill out the fields with your project ID, region, asset buckets, and service account email. 
+- **Common Compute Config**: This section includes important project specifications. Fill out the fields with your
+  project ID, region, asset buckets, and service account email.
 
 ```yaml
 common_compute_config:
@@ -86,7 +88,9 @@ common_compute_config:
 
 **Preprocessor Config**
 
-The `preprocessor_config` specifies settings for the Dataflow preprocessor component, includes number of workers, machine type, and disk size. You must specify both the `node_preprocessor_config` and `edge_preprocessor_config`. See example:
+The `preprocessor_config` specifies settings for the Dataflow preprocessor component, includes number of workers,
+machine type, and disk size. You must specify both the `node_preprocessor_config` and `edge_preprocessor_config`. See
+example:
 
 ```yaml
 preprocessor_config:
@@ -104,7 +108,8 @@ preprocessor_config:
 
 **Subgraph Sampler Config**
 
-The `subgraph_sampler_config` specifies settings for the Spark subgraph sampler component, includes machine type, local SSDs, and number of replicas. See example:
+The `subgraph_sampler_config` specifies settings for the Spark subgraph sampler component, includes machine type, local
+SSDs, and number of replicas. See example:
 
 ```yaml
 subgraph_sampler_config:
@@ -115,7 +120,8 @@ subgraph_sampler_config:
 
 **Split Generator Config**
 
-The `split_generator_config` specifies settings for the Spark split generator component, includes machine type, local SSDs, and number of replicas
+The `split_generator_config` specifies settings for the Spark split generator component, includes machine type, local
+SSDs, and number of replicas
 
 ```yaml
 split_generator_config:
@@ -126,30 +132,33 @@ split_generator_config:
 
 **Trainer Config**
 
-The `trainer_config` specifies settings for the trainer config, currently supporting Vertex AI training or Local Training. 
+The `trainer_config` specifies settings for the trainer config, currently supporting Vertex AI training or Local
+Training.
 
-- **Vertex AI Trainer Config**: The `vertex_ai_trainer_config` field of the trainer config requires a machine type, GPU type, GPU limit, and number of replicas. See example: 
+- **Vertex AI Trainer Config**: The `vertex_ai_trainer_config` field of the trainer config requires a machine type, GPU
+  type, GPU limit, and number of replicas. See example:
 
-    ```yaml
-    trainer_config:
-      vertex_ai_trainer_config:
-        machine_type: "n1-standard-8"
-        gpu_type: "nvidia-tesla-t4"
-        gpu_limit: 1
-        num_replicas: 1
-    ```
+  ```yaml
+  trainer_config:
+    vertex_ai_trainer_config:
+      machine_type: "n1-standard-8"
+      gpu_type: "nvidia-tesla-t4"
+      gpu_limit: 1
+      num_replicas: 1
+  ```
 
-- **Local Trainer Config**: The `local_trainer_config` field of the trainer config just requires `num_workers` which can be used for data loaders. 
-
+- **Local Trainer Config**: The `local_trainer_config` field of the trainer config just requires `num_workers` which can
+  be used for data loaders.
 
 **Inferencer Config**
 
-The `inferencer_config` specifies settings for the Dataflow preprocessor component, includes number of workers, machine type, and disk size. See example:
+The `inferencer_config` specifies settings for the Dataflow preprocessor component, includes number of workers, machine
+type, and disk size. See example:
 
 ```yaml
 inferencer_config:
   num_workers: 1
   max_num_workers: 256
   machine_type: "c2-standard-16"
-  disk_size_gb: 100 
+  disk_size_gb: 100
 ```

@@ -1,6 +1,6 @@
 from typing import Optional
 
-import gigl.src.common.constants.test_assets as test_asset_constants
+import gigl.src.mocking.lib.constants as mocking_constants
 from gigl.common import GcsUri
 from gigl.common.logger import Logger
 from gigl.common.utils.gcs import GcsUtils
@@ -68,12 +68,12 @@ class DatasetAssetMocker:
             pb.shared_config.flattened_graph_metadata.supervised_node_classification_output
         )
         task_output.labeled_tfrecord_uri_prefix = (
-            test_asset_constants.update_gcs_uri_with_test_assets_and_version(
+            mocking_constants.update_gcs_uri_with_test_assets_and_version(
                 uri_str=task_output.labeled_tfrecord_uri_prefix, version=self._version
             )
         )
         task_output.unlabeled_tfrecord_uri_prefix = (
-            test_asset_constants.update_gcs_uri_with_test_assets_and_version(
+            mocking_constants.update_gcs_uri_with_test_assets_and_version(
                 uri_str=task_output.unlabeled_tfrecord_uri_prefix, version=self._version
             )
         )
@@ -82,17 +82,17 @@ class DatasetAssetMocker:
             pb.shared_config.dataset_metadata.supervised_node_classification_dataset
         )
         task_dataset.train_data_uri = (
-            test_asset_constants.update_gcs_uri_with_test_assets_and_version(
+            mocking_constants.update_gcs_uri_with_test_assets_and_version(
                 uri_str=task_dataset.train_data_uri, version=self._version
             )
         )
         task_dataset.val_data_uri = (
-            test_asset_constants.update_gcs_uri_with_test_assets_and_version(
+            mocking_constants.update_gcs_uri_with_test_assets_and_version(
                 uri_str=task_dataset.val_data_uri, version=self._version
             )
         )
         task_dataset.test_data_uri = (
-            test_asset_constants.update_gcs_uri_with_test_assets_and_version(
+            mocking_constants.update_gcs_uri_with_test_assets_and_version(
                 uri_str=task_dataset.test_data_uri, version=self._version
             )
         )
@@ -101,21 +101,21 @@ class DatasetAssetMocker:
             pb.shared_config.inference_metadata.node_type_to_inferencer_output_info_map
         )
         for node_type in node_type_to_inferencer_output_info_map:
-            node_type_to_inferencer_output_info_map[node_type].predictions_path = (
-                test_asset_constants.update_bq_table_with_test_assets_and_version(
-                    bq_table=node_type_to_inferencer_output_info_map[
-                        node_type
-                    ].predictions_path,
-                    version=self._version,
-                )
+            node_type_to_inferencer_output_info_map[
+                node_type
+            ].predictions_path = mocking_constants.update_bq_table_with_test_assets_and_version(
+                bq_table=node_type_to_inferencer_output_info_map[
+                    node_type
+                ].predictions_path,
+                version=self._version,
             )
-            node_type_to_inferencer_output_info_map[node_type].embeddings_path = (
-                test_asset_constants.update_bq_table_with_test_assets_and_version(
-                    bq_table=node_type_to_inferencer_output_info_map[
-                        node_type
-                    ].embeddings_path,
-                    version=self._version,
-                )
+            node_type_to_inferencer_output_info_map[
+                node_type
+            ].embeddings_path = mocking_constants.update_bq_table_with_test_assets_and_version(
+                bq_table=node_type_to_inferencer_output_info_map[
+                    node_type
+                ].embeddings_path,
+                version=self._version,
             )
 
     def _update_node_anchor_based_link_prediction_config_paths(
@@ -156,7 +156,7 @@ class DatasetAssetMocker:
             pb.shared_config.flattened_graph_metadata.node_anchor_based_link_prediction_output
         )
         task_output.tfrecord_uri_prefix = (
-            test_asset_constants.update_gcs_uri_with_test_assets_and_version(
+            mocking_constants.update_gcs_uri_with_test_assets_and_version(
                 uri_str=task_output.tfrecord_uri_prefix, version=self._version
             )
         )
@@ -164,26 +164,26 @@ class DatasetAssetMocker:
             node_type,
             random_negative_tfrecord_uri_prefix,
         ) in task_output.node_type_to_random_negative_tfrecord_uri_prefix.items():
-            task_output.node_type_to_random_negative_tfrecord_uri_prefix[node_type] = (
-                test_asset_constants.update_gcs_uri_with_test_assets_and_version(
-                    uri_str=random_negative_tfrecord_uri_prefix, version=self._version
-                )
+            task_output.node_type_to_random_negative_tfrecord_uri_prefix[
+                node_type
+            ] = mocking_constants.update_gcs_uri_with_test_assets_and_version(
+                uri_str=random_negative_tfrecord_uri_prefix, version=self._version
             )
         task_dataset = (
             pb.shared_config.dataset_metadata.node_anchor_based_link_prediction_dataset
         )
         task_dataset.train_main_data_uri = (
-            test_asset_constants.update_gcs_uri_with_test_assets_and_version(
+            mocking_constants.update_gcs_uri_with_test_assets_and_version(
                 uri_str=task_dataset.train_main_data_uri, version=self._version
             )
         )
         task_dataset.test_main_data_uri = (
-            test_asset_constants.update_gcs_uri_with_test_assets_and_version(
+            mocking_constants.update_gcs_uri_with_test_assets_and_version(
                 uri_str=task_dataset.test_main_data_uri, version=self._version
             )
         )
         task_dataset.val_main_data_uri = (
-            test_asset_constants.update_gcs_uri_with_test_assets_and_version(
+            mocking_constants.update_gcs_uri_with_test_assets_and_version(
                 uri_str=task_dataset.val_main_data_uri, version=self._version
             )
         )
@@ -191,37 +191,37 @@ class DatasetAssetMocker:
             node_type,
             random_negative_tfrecord_uri_prefix,
         ) in task_dataset.train_node_type_to_random_negative_data_uri.items():
-            task_dataset.train_node_type_to_random_negative_data_uri[node_type] = (
-                test_asset_constants.update_gcs_uri_with_test_assets_and_version(
-                    uri_str=random_negative_tfrecord_uri_prefix, version=self._version
-                )
+            task_dataset.train_node_type_to_random_negative_data_uri[
+                node_type
+            ] = mocking_constants.update_gcs_uri_with_test_assets_and_version(
+                uri_str=random_negative_tfrecord_uri_prefix, version=self._version
             )
 
         for (
             node_type,
             random_negative_tfrecord_uri_prefix,
         ) in task_dataset.val_node_type_to_random_negative_data_uri.items():
-            task_dataset.val_node_type_to_random_negative_data_uri[node_type] = (
-                test_asset_constants.update_gcs_uri_with_test_assets_and_version(
-                    uri_str=random_negative_tfrecord_uri_prefix, version=self._version
-                )
+            task_dataset.val_node_type_to_random_negative_data_uri[
+                node_type
+            ] = mocking_constants.update_gcs_uri_with_test_assets_and_version(
+                uri_str=random_negative_tfrecord_uri_prefix, version=self._version
             )
 
         for (
             node_type,
             random_negative_tfrecord_uri_prefix,
         ) in task_dataset.test_node_type_to_random_negative_data_uri.items():
-            task_dataset.test_node_type_to_random_negative_data_uri[node_type] = (
-                test_asset_constants.update_gcs_uri_with_test_assets_and_version(
-                    uri_str=random_negative_tfrecord_uri_prefix, version=self._version
-                )
+            task_dataset.test_node_type_to_random_negative_data_uri[
+                node_type
+            ] = mocking_constants.update_gcs_uri_with_test_assets_and_version(
+                uri_str=random_negative_tfrecord_uri_prefix, version=self._version
             )
 
         inference_metadata = pb.shared_config.inference_metadata
         for node_type in inference_metadata.node_type_to_inferencer_output_info_map:
             inference_metadata.node_type_to_inferencer_output_info_map[
                 node_type
-            ].embeddings_path = test_asset_constants.update_bq_table_with_test_assets_and_version(
+            ].embeddings_path = mocking_constants.update_bq_table_with_test_assets_and_version(
                 bq_table=inference_metadata.node_type_to_inferencer_output_info_map[
                     node_type
                 ].embeddings_path,
@@ -247,7 +247,7 @@ class DatasetAssetMocker:
         )
 
         frozen_gbml_config_pb.shared_config.preprocessed_metadata_uri = (
-            test_asset_constants.update_gcs_uri_with_test_assets_and_version(
+            mocking_constants.update_gcs_uri_with_test_assets_and_version(
                 uri_str=frozen_gbml_config_pb.shared_config.preprocessed_metadata_uri,
                 version=self._version,
             )
@@ -256,22 +256,22 @@ class DatasetAssetMocker:
             frozen_gbml_config_pb.shared_config.trained_model_metadata
         )
         trained_model_metadata.trained_model_uri = (
-            test_asset_constants.update_gcs_uri_with_test_assets_and_version(
+            mocking_constants.update_gcs_uri_with_test_assets_and_version(
                 uri_str=trained_model_metadata.trained_model_uri, version=self._version
             )
         )
         trained_model_metadata.scripted_model_uri = (
-            test_asset_constants.update_gcs_uri_with_test_assets_and_version(
+            mocking_constants.update_gcs_uri_with_test_assets_and_version(
                 uri_str=trained_model_metadata.scripted_model_uri, version=self._version
             )
         )
         trained_model_metadata.eval_metrics_uri = (
-            test_asset_constants.update_gcs_uri_with_test_assets_and_version(
+            mocking_constants.update_gcs_uri_with_test_assets_and_version(
                 uri_str=trained_model_metadata.eval_metrics_uri, version=self._version
             )
         )
         trained_model_metadata.tensorboard_logs_uri = (
-            test_asset_constants.update_gcs_uri_with_test_assets_and_version(
+            mocking_constants.update_gcs_uri_with_test_assets_and_version(
                 uri_str=trained_model_metadata.tensorboard_logs_uri,
                 version=self._version,
             )
@@ -286,7 +286,7 @@ class DatasetAssetMocker:
         logger.info(self._frozen_gbml_config_pb)
 
         frozen_gbml_config_gcs_uri = (
-            test_asset_constants.get_example_task_frozen_gbml_config_gcs_path(
+            mocking_constants.get_example_task_frozen_gbml_config_gcs_path(
                 task_name=self._mocked_dataset_info.name, version=self._version
             )
         )
@@ -435,11 +435,11 @@ class DatasetAssetMocker:
     def _prepare_env(self):
         bq_utils = BqUtils()
         bq_utils.create_bq_dataset(
-            dataset_id=test_asset_constants.EXAMPLE_TASK_ASSETS_BQ_PATH, exists_ok=True
+            dataset_id=mocking_constants.MOCK_DATA_BQ_DATASET_NAME, exists_ok=True
         )
         gcs_utils = GcsUtils()
         gcs_utils.delete_files_in_bucket_dir(
-            gcs_path=test_asset_constants.get_example_task_static_assets_gcs_dir(
+            gcs_path=mocking_constants.get_example_task_static_assets_gcs_dir(
                 task_name=self._mocked_dataset_info.name, version=self._version
             )
         )
@@ -468,7 +468,7 @@ class DatasetAssetMocker:
             raise NotImplementedError
 
         frozen_gbml_config_uri = (
-            test_asset_constants.get_example_task_frozen_gbml_config_gcs_path(
+            mocking_constants.get_example_task_frozen_gbml_config_gcs_path(
                 task_name=self._mocked_dataset_info.name, version=self._version
             )
         )

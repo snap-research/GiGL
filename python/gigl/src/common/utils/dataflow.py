@@ -107,6 +107,21 @@ def init_beam_pipeline_options(
     google_cloud_options.region = (
         google_cloud_options.region or get_resource_config().region
     )
+
+    # For context see: https://cloud.google.com/dataflow/docs/reference/service-options#python
+    # This is different than how `num_workers` is leveraged by dataflow in the default `PipelineOptions` exposed by beam.
+    # i.e. simply setting `num_workers` in `PipelineOptions`, the dataflow service still may downscale to 1 worker.
+    # vs. setting `min_num_workers` in `dataflow_service_options` explicitly will ensure that the service will not downscale below
+    # that number.
+    if kwargs.get("num_workers"):
+        num_workers = kwargs.get("num_workers")
+        logger.info(
+            f"Setting `min_num_workers` for Dataflow explicitly to {num_workers}"
+        )
+        dataflow_service_options = google_cloud_options.dataflow_service_options or []
+        dataflow_service_options.append(f"min_num_workers={num_workers}")
+        google_cloud_options.dataflow_service_options = dataflow_service_options
+
     google_cloud_options.service_account_email = (
         google_cloud_options.service_account_email
         or (get_resource_config().service_account_email)

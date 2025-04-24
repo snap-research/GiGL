@@ -106,7 +106,7 @@ class InferenceAssets:
         logger.info("Staging paths for Inferencer prepared.")
 
     @staticmethod
-    def _get_gcs_asset_write_path_prefix(
+    def get_gcs_asset_write_path_prefix(
         applied_task_identifier: AppliedTaskIdentifier, bq_table_path: str
     ) -> GcsUri:
         """
@@ -174,7 +174,7 @@ class InferenceAssets:
 
         for bq_table_path in active_bq_table_paths:
             table_gcs_write_path_uri: GcsUri = (
-                InferenceAssets._get_gcs_asset_write_path_prefix(
+                InferenceAssets.get_gcs_asset_write_path_prefix(
                     applied_task_identifier=applied_task_identifier,
                     bq_table_path=bq_table_path,
                 )

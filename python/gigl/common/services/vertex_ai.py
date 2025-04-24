@@ -1,9 +1,68 @@
+"""Class for interacting with Vertex AI.
+
+Below are some brief definitions of the terminology used by Vertex AI Pipelines:
+
+Resource name: A globally unique identifier for the pipeline, follows https://google.aip.dev/122 and is of the form projects/<project-id>/locations/<location>/pipelineJobs/<job-name>
+Job name: aka job_id aka PipelineJob.name the name of a pipeline run, must be unique for a given project and location
+Display name: AFAICT purely cosmetic name for a pipeline, can be filtered on but does not show up in the UI
+Pipeline name: The name for the pipeline supplied by the pipeline definition (pipeline.yaml).
+
+And a walkthrough to explain how the terminology is used:
+```py
+@kfp.dsl.component
+def source() -> int:
+    return 42
+
+@kfp.dsl.component
+def doubler(a: int) -> int:
+    return a * 2
+
+@kfp.dsl.component
+def adder(a: int, b: int) -> int:
+    return a + b
+
+@kfp.dsl.pipeline
+def get_pipeline() -> int: # NOTE: `get_pipeline` here is  the Pipeline name
+    source_task = source()
+    double_task = doubler(a=source_task.output)
+    adder_task = adder(a=source_task.output, b=double_task.output)
+    return adder_task.output
+
+tempdir = tempfile.TemporaryDirectory()
+tf = os.path.join(tempdir.name, "pipeline.yaml")
+print(f"Writing pipeline definition to {tf}")
+kfp.compiler.Compiler().compile(get_pipeline, tf)
+job = aip.PipelineJob(
+        display_name="this_is_our_pipeline_display_name",
+        template_path=tf,
+        pipeline_root="gs://my-bucket/pipeline-root",
+)
+    job.submit(service_account="my-sa@my-project.gserviceaccount.com")
+```
+
+Which outputs the following:
+Creating PipelineJob
+PipelineJob created. Resource name: projects/my-project-id/locations/us-central1/pipelineJobs/<job-name>
+To use this PipelineJob in another session:
+pipeline_job = aiplatform.PipelineJob.get('projects/my-project-id/locations/us-central1/pipelineJobs/<job-name>')
+View Pipeline Job:
+https://console.cloud.google.com/vertex-ai/locations/us-central1/pipelines/runs/<job-name>?project=my-project-id
+Associating projects/my-project-id/locations/us-central1/pipelineJobs/<job-name> to Experiment: example-experiment
+
+
+And `job` has some properties set as well:
+
+```py
+print(f"{job.display_name=}") # job.display_name='this_is_our_pipeline_display_name'
+print(f"{job.resource_name=}") # job.resource_name='projects/my-project-id/locations/us-central1/pipelineJobs/<job-name>'
+print(f"{job.name=}") # job.name='<job-name>' # NOTE: by default, the "job name" is the pipeline name + datetime
+```
+"""
+
 import datetime
-import os
-import subprocess
 import time
 from dataclasses import dataclass
-from typing import Dict, List, Optional
+from typing import Dict, Final, List, Optional
 
 from google.cloud import aiplatform
 from google.cloud.aiplatform_v1.types import (
@@ -13,19 +72,18 @@ from google.cloud.aiplatform_v1.types import (
     env_var,
 )
 
-from gigl.common import GcsUri
+from gigl.common import GcsUri, Uri
 from gigl.common.logger import Logger
-from gigl.common.utils.gcs import GcsUtils
 
 logger = Logger()
 
+LEADER_WORKER_INTERNAL_IP_FILE_PATH_ENV_KEY: Final[
+    str
+] = "LEADER_WORKER_INTERNAL_IP_FILE_PATH"
 
-def _ping_host_ip(host_ip):
-    try:
-        subprocess.check_output(["ping", "-c", "1", host_ip])
-        return True
-    except subprocess.CalledProcessError:
-        return False
+
+DEFAULT_PIPELINE_TIMEOUT_S: Final[int] = 60 * 60 * 36  # 36 hours
+DEFAULT_CUSTOM_JOB_TIMEOUT_S: Final[int] = 60 * 60 * 24  # 24 hours
 
 
 @dataclass
@@ -40,7 +98,9 @@ class VertexAiJobConfig:
     accelerator_count: int = 0
     replica_count: int = 1
     labels: Optional[Dict[str, str]] = None
-    timeout_s: Optional[int] = None
+    timeout_s: Optional[
+        int
+    ] = None  # Will default to DEFAULT_CUSTOM_JOB_TIMEOUT_S if not provided
     enable_web_access: bool = True
 
 
@@ -55,24 +115,33 @@ class VertexAIService:
         staging_bucket (str): The staging bucket for the service.
     """
 
-    _LEADER_WORKER_INTERNAL_IP_FILE_PATH_ENV_KEY = "LEADER_WORKER_INTERNAL_IP_FILE_PATH"
-
     def __init__(
-        self, project: str, location: str, service_account: str, staging_bucket: str
+        self,
+        project: str,
+        location: str,
+        service_account: str,
+        staging_bucket: str,
     ):
-        self.project = project
-        self.location = location
-        self.service_account = service_account
-        self.staging_bucket = staging_bucket
+        self._project = project
+        self._location = location
+        self._service_account = service_account
+        self._staging_bucket = staging_bucket
         aiplatform.init(
-            project=self.project,
-            location=self.location,
-            staging_bucket=self.staging_bucket,
+            project=self._project,
+            location=self._location,
+            staging_bucket=self._staging_bucket,
         )
 
-    def run(self, job_config: VertexAiJobConfig) -> None:
+    @property
+    def project(self) -> str:
+        """The GCP project that is being used for this service."""
+        return self._project
+
+    def launch_job(self, job_config: VertexAiJobConfig) -> None:
         """
-        Run a Vertex AI job.
+        Launch a Vertex AI CustomJob.
+        See the docs for more info.
+        https://cloud.google.com/python/docs/reference/aiplatform/latest/google.cloud.aiplatform.CustomJob
 
         Args:
             job_config (VertexAiJobConfig): The configuration for the job.
@@ -91,14 +160,14 @@ class VertexAIService:
         # read this file to get the leader worker's internal IP address.
         # See connect_worker_pool() implementation for more details.
         leader_worker_internal_ip_file_path = GcsUri.join(
-            self.staging_bucket,
+            self._staging_bucket,
             job_config.job_name,
             datetime.datetime.now().strftime("%Y%m%d-%H%M%S"),
             "leader_worker_internal_ip.txt",
         )
         env_vars = [
             env_var.EnvVar(
-                name=VertexAIService._LEADER_WORKER_INTERNAL_IP_FILE_PATH_ENV_KEY,
+                name=LEADER_WORKER_INTERNAL_IP_FILE_PATH_ENV_KEY,
                 value=leader_worker_internal_ip_file_path.uri,
             )
         ]
@@ -129,13 +198,14 @@ class VertexAIService:
             worker_pool_specs.append(worker_spec)
 
         logger.info(
-            f"Running Custom job {job_config.job_name} with worker_pool_specs {worker_pool_specs}, in project: {self.project}/{self.location} using staging bucket: {self.staging_bucket}, and attached labels: {job_config.labels}"
+            f"Running Custom job {job_config.job_name} with worker_pool_specs {worker_pool_specs}, in project: {self._project}/{self._location} using staging bucket: {self._staging_bucket}, and attached labels: {job_config.labels}"
         )
 
         if not job_config.timeout_s:
             logger.info(
-                "No timeout set for Vertex AI job, using Vertex AI default timeout of 7 days."
+                f"No timeout set for Vertex AI job, setting default timeout to {DEFAULT_CUSTOM_JOB_TIMEOUT_S/60/60} hours"
             )
+            job_config.timeout_s = DEFAULT_CUSTOM_JOB_TIMEOUT_S
         else:
             logger.info(
                 f"Running Vertex AI job with timeout {job_config.timeout_s} seconds"
@@ -144,136 +214,122 @@ class VertexAIService:
         job = aiplatform.CustomJob(
             display_name=job_config.job_name,
             worker_pool_specs=worker_pool_specs,
-            project=self.project,
-            location=self.location,
+            project=self._project,
+            location=self._location,
             labels=job_config.labels,
-            staging_bucket=self.staging_bucket,
+            staging_bucket=self._staging_bucket,
         )
-
-        job.run(
-            service_account=self.service_account,
+        job.submit(
+            service_account=self._service_account,
             timeout=job_config.timeout_s,
             enable_web_access=job_config.enable_web_access,
         )
+        job.wait_for_resource_creation()
+        logger.info(f"Created job: {job.resource_name}")
+        # Copying https://github.com/googleapis/python-aiplatform/blob/v1.48.0/google/cloud/aiplatform/jobs.py#L207-L215
+        # Since for some reason upgrading from VertexAI v1.27.1 to v1.48.0
+        # caused the logs to occasionally not be printed.
+        logger.info(
+            f"See job logs at: https://console.cloud.google.com/ai/platform/locations/{self._location}/training/{job.name}?project={self._project}"
+        )
+        job.wait_for_completion()
 
-    @staticmethod
-    def is_currently_running_in_vertex_ai_job() -> bool:
+    def run_pipeline(
+        self,
+        display_name: str,
+        template_path: Uri,
+        run_keyword_args: Dict[str, str],
+        job_id: Optional[str] = None,
+        experiment: Optional[str] = None,
+    ) -> aiplatform.PipelineJob:
         """
-        Check if the code is running in a Vertex AI job.
+        Runs a pipeline using the Vertex AI Pipelines service.
+        For more info, see the Vertex AI docs
+        https://cloud.google.com/python/docs/reference/aiplatform/latest/google.cloud.aiplatform.PipelineJob#google_cloud_aiplatform_PipelineJob_submit
 
+        Args:
+            display_name (str): The display of the pipeline.
+            template_path (Uri): The path to the compiled pipeline YAML.
+            run_keyword_args (Dict[str, str]): Runtime arguements passed to your pipeline.
+            job_id (Optional[str]): The ID of the job. If not provided will be the *pipeline_name* + datetime.
+                                    Note: The pipeline_name and display_name are *not* the same.
+                                    Note: pipeline_name comes is defined in the `template_path` and ultimately comes from Python pipeline definition.
+                                    If provided, must be unique.
+            experiment (Optional[str]): The name of the experiment to associate the run with.
         Returns:
-            bool: True if running in a Vertex AI job, False otherwise.
+            The PipelineJob created.
         """
-        return VertexAIService.get_vertex_ai_job_id() is not None
+        job = aiplatform.PipelineJob(
+            display_name=display_name,
+            template_path=template_path.uri,
+            parameter_values=run_keyword_args,
+            job_id=job_id,
+            project=self._project,
+            location=self._location,
+        )
+        job.submit(service_account=self._service_account, experiment=experiment)
+        logger.info(f"Created run: {job.resource_name}")
+
+        return job
+
+    def get_pipeline_job_from_job_name(self, job_name: str) -> aiplatform.PipelineJob:
+        """Fetches the pipeline job with the given job name."""
+        return aiplatform.PipelineJob.get(
+            f"projects/{self._project}/locations/{self._location}/pipelineJobs/{job_name}"
+        )
 
     @staticmethod
-    def get_vertex_ai_job_id() -> Optional[str]:
-        """
-        Get the Vertex AI job ID.
+    def get_pipeline_run_url(project: str, location: str, job_name: str) -> str:
+        """Returns the URL for the pipeline run."""
+        return f"https://console.cloud.google.com/vertex-ai/locations/{location}/pipelines/runs/{job_name}?project={project}"
 
+    @staticmethod
+    def wait_for_run_completion(
+        resource_name: str,
+        timeout: float = DEFAULT_PIPELINE_TIMEOUT_S,
+        polling_period_s: int = 60,
+    ) -> None:
+        """
+        Waits for a run to complete.
+
+        Args:
+            resource_name (str): The resource name of the run.
+            timeout (float): The maximum time to wait for the run to complete, in seconds. Defaults to 7200.
+            polling_period_s (int): The time to wait between polling the run status, in seconds. Defaults to 60.
         Returns:
-            Optional[str]: The Vertex AI job ID, or None if not running in a Vertex AI job.
+            None
         """
-        return os.getenv("CLOUD_ML_JOB_ID")
+        start_time = time.time()
+        run = aiplatform.PipelineJob.get(resource_name=resource_name)
+        while start_time + timeout > time.time():
+            # Note that accesses to `run.state` cause a network call under the hood.
+            # We should be careful with accessing this too frequently, and "cache"
+            # the state if we need to access it multiple times in short succession.
+            state = run.state
+            logger.info(
+                f"Run {resource_name} in state: {state.name if state else state}"
+            )
+            if state == aiplatform.gapic.PipelineState.PIPELINE_STATE_SUCCEEDED:
+                logger.info("Vertex AI finished with status Succeeded!")
+                return
+            elif state in (
+                aiplatform.gapic.PipelineState.PIPELINE_STATE_FAILED,
+                aiplatform.gapic.PipelineState.PIPELINE_STATE_CANCELLED,
+            ):
+                logger.warning(f"Vertex AI run stopped with status: {state.name}.")
+                logger.warning(
+                    f"See run at: {VertexAIService.get_pipeline_run_url(run.project, run.location, run.name)}"
+                )
+                raise RuntimeError(f"Vertex AI run stopped with status: {state.name}.")
+            time.sleep(polling_period_s)
 
-    @staticmethod
-    def get_host_name() -> Optional[str]:
-        """
-        Get the current machines hostname.
-        """
-        return os.getenv("HOSTNAME")
-
-    @staticmethod
-    def get_leader_hostname() -> Optional[str]:
-        """
-        Hostname of the machine that will host the process with rank 0. It is used
-        to synchronize the workers.
-        """
-        return os.getenv("MASTER_ADDR")
-
-    @staticmethod
-    def get_leader_port() -> Optional[str]:
-        """
-        A free port on the machine that will host the process with rank 0.
-        """
-        return os.getenv("MASTER_PORT")
-
-    @staticmethod
-    def get_world_size() -> Optional[str]:
-        """
-        The total number of processes that VAI creates. Note that VAI only creates one process per machine.
-        It is the user's responsibility to create multiple processes per machine.
-        """
-        return os.getenv("WORLD_SIZE")
-
-    @staticmethod
-    def get_rank() -> Optional[str]:
-        """
-        Rank of the current VAI process, so they will know whether it is the master or a worker.
-        Note: that VAI only creates one process per machine. It is the user's responsibility to
-        create multiple processes per machine. Meaning, this function will only return one integer
-        for the main process that VAI creates.
-        """
-        return os.getenv("RANK")
-
-    @staticmethod
-    def connect_worker_pool() -> str:
-        """
-        Used to connect the worker pool. This function should be called by all workers
-        to get the leader worker's internal IP address and to ensure that the workers
-        can all communicate with the leader worker.
-        """
-        is_leader_worker = VertexAIService.get_rank() == "0"
-        ip_file_uri = GcsUri(VertexAIService._get_leader_worker_internal_ip_file_path())
-        gcs_utils = GcsUtils()
-        host_ip: str
-        if is_leader_worker:
-            logger.info("Wait 180 seconds for the leader machine to settle down.")
-            time.sleep(180)
-            host_ip = subprocess.check_output(["hostname", "-i"]).decode().strip()
-            logger.info(f"Writing host IP address ({host_ip}) to {ip_file_uri}")
-            gcs_utils.upload_from_string(gcs_path=ip_file_uri, content=host_ip)
         else:
-            max_retries = 60
-            interval_s = 30
-            for attempt_num in range(1, max_retries + 1):
-                logger.info(
-                    f"Checking if {ip_file_uri} exists and reading HOST_IP (attempt {attempt_num})..."
-                )
-                try:
-                    host_ip = gcs_utils.read_from_gcs(ip_file_uri)
-                    logger.info(f"Pinging host ip ({host_ip}) ...")
-                    if _ping_host_ip(host_ip):
-                        logger.info(f"Ping to host ip ({host_ip}) was successful.")
-                        break
-                except Exception as e:
-                    logger.info(e)
-                logger.info(
-                    f"Retrieving host information and/or ping failed, retrying in {interval_s} seconds..."
-                )
-                time.sleep(interval_s)
-            if attempt_num >= max_retries:
-                logger.info(
-                    f"Failed to ping HOST_IP after {max_retries} attempts. Exiting."
-                )
-                raise Exception(f"Failed to ping HOST_IP after {max_retries} attempts.")
-
-        return host_ip
-
-    @staticmethod
-    def _get_leader_worker_internal_ip_file_path() -> str:
-        """
-        Get the file path to the leader worker's internal IP address.
-        """
-        assert (
-            VertexAIService.is_currently_running_in_vertex_ai_job()
-        ), "Not running in Vertex AI job."
-        internal_ip_file_path = os.getenv(
-            VertexAIService._LEADER_WORKER_INTERNAL_IP_FILE_PATH_ENV_KEY
-        )
-        assert internal_ip_file_path is not None, (
-            f"Internal IP file path ({VertexAIService._LEADER_WORKER_INTERNAL_IP_FILE_PATH_ENV_KEY}) "
-            + f"not found in environment variables. {os.environ}"
-        )
-
-        return internal_ip_file_path
+            logger.warning("Timeout reached. Stopping the run.")
+            logger.warning(
+                f"See run at: {VertexAIService.get_pipeline_run_url(run.project, run.location, run.name)}"
+            )
+            run.cancel()
+            raise RuntimeError(
+                f"Vertex AI run stopped with status: {run.state}. "
+                f"Please check the Vertex AI page to trace down the error."
+            )

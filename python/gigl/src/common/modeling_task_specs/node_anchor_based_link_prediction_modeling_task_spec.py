@@ -70,8 +70,8 @@ class NodeAnchorBasedLinkPredictionModelingTaskSpec(
         super().__init__()
 
         # Model Arguments
-        # Supported internal homogeneous models can be found in gigl.src.common.models.pyg.homogeneous.py
-        # Supported internal heterogeneous models can be found in gigl.src.common.models.pyg.heterogeneous.py
+        # Supported homogeneous models can be found in gigl.src.common.models.pyg.homogeneous
+        # Supported heterogeneous models can be found in gigl.src.common.models.pyg.heterogeneous
         gnn_model_class_path = str(
             kwargs.get(
                 "gnn_model_class_path",
@@ -235,12 +235,12 @@ class NodeAnchorBasedLinkPredictionModelingTaskSpec(
         preprocessed_metadata_pb_wrapper: PreprocessedMetadataPbWrapper = (
             gbml_config_pb_wrapper.preprocessed_metadata_pb_wrapper
         )
-        condensed_node_type_to_feat_dim_map: Dict[CondensedNodeType, int] = (
-            preprocessed_metadata_pb_wrapper.condensed_node_type_to_feature_dim_map
-        )
-        condensed_edge_type_to_feat_dim_map: Dict[CondensedEdgeType, int] = (
-            preprocessed_metadata_pb_wrapper.condensed_edge_type_to_feature_dim_map
-        )
+        condensed_node_type_to_feat_dim_map: Dict[
+            CondensedNodeType, int
+        ] = preprocessed_metadata_pb_wrapper.condensed_node_type_to_feature_dim_map
+        condensed_edge_type_to_feat_dim_map: Dict[
+            CondensedEdgeType, int
+        ] = preprocessed_metadata_pb_wrapper.condensed_edge_type_to_feature_dim_map
         encoder_model: nn.Module
         if gbml_config_pb_wrapper.graph_metadata_pb_wrapper.is_heterogeneous:
             node_type_to_feat_dim_map: Dict[NodeType, int] = {

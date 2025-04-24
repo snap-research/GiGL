@@ -8,6 +8,10 @@ import gigl.env.dep_constants as dep_constants
 import gigl.src.common.constants.gcs as gcs_constants
 import gigl.src.common.constants.metrics as metrics_constants
 from gigl.common import GcsUri, LocalUri, Uri, UriFactory
+from gigl.common.constants import (
+    SPARK_31_TFRECORD_JAR_GCS_PATH,
+    SPARK_35_TFRECORD_JAR_GCS_PATH,
+)
 from gigl.common.logger import Logger
 from gigl.common.metrics.decorators import flushes_metrics, profileit
 from gigl.common.utils import os_utils
@@ -27,13 +31,13 @@ from gigl.src.common.utils.spark_job_manager import (
     SparkJobManager,
 )
 from gigl.src.subgraph_sampler.lib.ingestion_protocol import BaseIngestion
-from gigl.common.constants import SPARK_31_TFRECORD_JAR_GCS_PATH, SPARK_35_TFRECORD_JAR_GCS_PATH
 
 logger = Logger()
 
 MAX_JOB_DURATION = datetime.timedelta(
     hours=5
 )  # Allowed max job duration for SGS job -- for MAU workload
+
 
 class SubgraphSampler:
     """
@@ -75,7 +79,7 @@ class SubgraphSampler:
         debug_cluster_owner_alias: Optional[str] = None,
         custom_worker_image_uri: Optional[str] = None,
         skip_cluster_delete: bool = False,
-        additional_spark35_local_jar_file_paths: Sequence[LocalUri] = (),
+        additional_spark35_jar_file_uris: Sequence[Uri] = (),
     ):
         resource_config = get_resource_config(resource_config_uri=resource_config_uri)
         gbml_config_pb_wrapper: GbmlConfigPbWrapper = (
@@ -180,26 +184,27 @@ class SubgraphSampler:
         jar_file_gcs_bucket: GcsUri = gcs_constants.get_subgraph_sampler_root_dir(
             applied_task_identifier=applied_task_identifier
         )
-        jars_to_upload: dict[LocalUri, GcsUri] = {
+        jars_to_upload: dict[Uri, GcsUri] = {
             main_jar_file_uri: GcsUri.join(jar_file_gcs_bucket, main_jar_file_name)
         }
 
         # Since Spark 3.5 and Spark 3.1 are using different versions of Scala
         # We need to pass the correct extra jar file to the Spark cluster,
-        # Otherwise, we may see some errors like:8
+        # Otherwise, we may see some errors like:
         # java.io.InvalidClassException; local class incompatible: stream classdesc serialVersionUID = -1, local class serialVersionUID = 2
         if use_spark35:
-            for jar in additional_spark35_local_jar_file_paths:
-                file_name = os.path.basename(jar.uri)
-                jars_to_upload[jar] = GcsUri.join(jar_file_gcs_bucket, file_name)
+            for jar_uri in additional_spark35_jar_file_uris:
+                jars_to_upload[jar_uri] = GcsUri.join(
+                    jar_file_gcs_bucket, jar_uri.get_basename()
+                )
 
         sgs_jar_file_gcs_path = GcsUri.join(
             jar_file_gcs_bucket,
             main_jar_file_name,
         )
 
-        logger.info(f"Uploading local jar files {jars_to_upload}")
-        gcs_utils.upload_files_to_gcs(jars_to_upload, parallel=True)
+        logger.info(f"Uploading jar files {jars_to_upload}")
+        FileLoader().load_files(source_to_dest_file_uri_map=jars_to_upload)
 
         extra_jar_file_uris = [
             jars_to_upload[jar].uri
@@ -350,12 +355,12 @@ if __name__ == "__main__":
         required=False,
     )
     parser.add_argument(
-        "--additional_spark35_local_jar_file_paths",
+        "--additional_spark35_jar_file_uris",
         action="append",
         type=str,
         required=False,
         default=[],
-        help="Additional local files to be added to the Spark cluster.",
+        help="Additional URIs to be added to the Spark cluster.",
     )
 
     args = parser.parse_args()
@@ -383,7 +388,9 @@ if __name__ == "__main__":
         resource_config_uri=resource_config_uri,
         custom_worker_image_uri=custom_worker_image_uri,
         # Filter out empty strings which kfp *may* add...
-        additional_spark35_local_jar_file_paths=[
-            LocalUri(jar) for jar in args.additional_spark35_local_jar_file_paths if jar
+        additional_spark35_jar_file_uris=[
+            UriFactory.create_uri(jar)
+            for jar in args.additional_spark35_jar_file_uris
+            if jar
         ],
     )

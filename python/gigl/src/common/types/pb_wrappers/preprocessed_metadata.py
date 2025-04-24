@@ -43,9 +43,9 @@ class PreprocessedMetadataPbWrapper:
         CondensedEdgeType, FeatureSchema
     ] = field(init=False)
 
-    _condensed_edge_type_to_pos_edge_feature_dim_map: Dict[CondensedEdgeType, int] = (
-        field(init=False)
-    )
+    _condensed_edge_type_to_pos_edge_feature_dim_map: Dict[
+        CondensedEdgeType, int
+    ] = field(init=False)
     _condensed_edge_type_to_pos_edge_feature_schema_map: Dict[
         CondensedEdgeType, FeatureSchema
     ] = field(init=False)

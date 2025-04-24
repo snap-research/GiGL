@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
+from typing import Optional
 
 from gigl.src.common.types.graph_data import EdgeType, EdgeUsageType, NodeType
 from gigl.src.data_preprocessor.lib.types import InstanceDictPTransform
@@ -43,9 +44,10 @@ class NodeDataReference(DataReference, ABC):
     """
 
     node_type: NodeType
+    identifier: Optional[str] = None
 
     def __repr__(self) -> str:
-        return f"NodeDataReference(node_type={self.node_type}, reference_uri={self.reference_uri})"
+        return f"NodeDataReference(node_type={self.node_type}, identifier={self.identifier}, reference_uri={self.reference_uri})"
 
 
 @dataclass(frozen=True)  # type: ignore
@@ -56,6 +58,8 @@ class EdgeDataReference(DataReference, ABC):
 
     edge_type: EdgeType
     edge_usage_type: EdgeUsageType = EdgeUsageType.MAIN
+    src_identifier: Optional[str] = None
+    dst_identifier: Optional[str] = None
 
     def __repr__(self) -> str:
-        return f"EdgeDataReference(edge_type={self.edge_type}, reference_uri={self.reference_uri})"
+        return f"EdgeDataReference(edge_type={self.edge_type}, src_identifier={self.src_identifier}, dst_identifier={self.dst_identifier}, reference_uri={self.reference_uri})"

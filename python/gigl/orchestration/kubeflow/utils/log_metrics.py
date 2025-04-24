@@ -1,25 +1,38 @@
-from typing import NamedTuple
+import kfp
 
 
-def log_eval_metrics_to_ui(
+def log_metrics_to_ui(
+    task_config_uri: str,
+    component_name: str,
+    base_image: str,
+) -> kfp.components.BaseComponent:
+    """Publishes metrics for components to the Vertex AI Pipeline UI.
+    Args:
+        task_config_uri (str): URI to the task config.
+        component (str): Name of the component to log metrics for.
+        base_image: The Docker image to be used as the base image for the component.
+
+    Returns:
+        kfp.components.BaseComponent: The component to log metrics.
+    """
+    kfp_component = kfp.dsl.component(_log_eval_metrics_to_ui, base_image=base_image)
+    return kfp_component(task_config_uri=task_config_uri, component=component_name)
+
+
+def _log_eval_metrics_to_ui(
     task_config_uri: str,
     component: str,
-) -> NamedTuple(  # type: ignore
-    "Outputs",
-    [
-        ("mlpipeline_metrics", "Metrics"),
-    ],
-):
-    """Returns model evaluation metrics produced by trainer, such
-    that they are parsable by the Kubeflow Pipelines UI.
+    metrics: kfp.dsl.Output[kfp.dsl.Metrics],
+) -> None:
+    """Publishes metrics for components to the Vertex AI Pipeline UI.
     Args:
-        task_config_uri (str,): _description_
-        component (str,): _description_
-    Returns:
-        _type_: _description_
+        task_config_uri (str): URI to the task config.
+        component (str): Name of the component to log metrics for.
+        metrics (Output[Metrics]): Metrics object to log metrics. Populated by the KFP SDK.
     """
 
     # This is required to resolve below packages when containerized by KFP.
+    import json
     import os
     import sys
 
@@ -64,8 +77,10 @@ def log_eval_metrics_to_ui(
         logger.warning(
             f"Error loading metrics file: {e}, evaluation could have been skipped"
         )
-        return [{"metrics": []}]
+        return
 
     logger.info(f"Got metrics_str: {metrics_str}")
-
-    return [metrics_str]
+    j = json.loads(metrics_str)
+    if "metrics" in j:
+        for metric in j["metrics"]:
+            metrics.log_metric(metric["name"], metric["numberValue"])

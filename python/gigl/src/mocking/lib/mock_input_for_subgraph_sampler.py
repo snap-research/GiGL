@@ -9,12 +9,6 @@ from tensorflow_transform.tf_metadata import schema_utils
 from gigl.common import GcsUri, LocalUri, UriFactory
 from gigl.common.logger import Logger
 from gigl.common.utils.proto_utils import ProtoUtils
-from gigl.src.common.constants.test_assets import (
-    get_example_task_edge_features_gcs_dir,
-    get_example_task_edge_features_schema_gcs_path,
-    get_example_task_node_features_gcs_dir,
-    get_example_task_node_features_schema_gcs_path,
-)
 from gigl.src.common.types.graph_data import (
     CondensedEdgeType,
     CondensedNodeType,
@@ -25,6 +19,12 @@ from gigl.src.common.types.graph_data import (
 from gigl.src.common.utils.file_loader import FileLoader
 from gigl.src.data_preprocessor.lib.transform.tf_value_encoder import TFValueEncoder
 from gigl.src.data_preprocessor.lib.types import FeatureSpecDict, InstanceDict
+from gigl.src.mocking.lib.constants import (
+    get_example_task_edge_features_gcs_dir,
+    get_example_task_edge_features_schema_gcs_path,
+    get_example_task_node_features_gcs_dir,
+    get_example_task_node_features_schema_gcs_path,
+)
 from gigl.src.mocking.lib.feature_handling import get_feature_field_name
 from gigl.src.mocking.lib.mocked_dataset_resources import MockedDatasetInfo
 from snapchat.research.gbml import gbml_config_pb2, preprocessed_metadata_pb2
@@ -289,15 +289,15 @@ def generate_preprocessed_tfrecord_data(
             node_labels=node_labels,
         )
 
-        condensed_node_type_to_preprocessed_metadata[condensed_node_type] = (
-            preprocessed_metadata_pb2.PreprocessedMetadata.NodeMetadataOutput(
-                node_id_key=node_preprocess_metadata.id_col,
-                feature_keys=node_preprocess_metadata.feature_cols,
-                label_keys=[node_preprocess_metadata.label_col] if node_preprocess_metadata.label_col is not None else None,  # type: ignore
-                tfrecord_uri_prefix=node_preprocess_metadata.features_uri.uri,
-                schema_uri=node_preprocess_metadata.schema_uri.uri,
-                feature_dim=num_features,
-            )
+        condensed_node_type_to_preprocessed_metadata[
+            condensed_node_type
+        ] = preprocessed_metadata_pb2.PreprocessedMetadata.NodeMetadataOutput(
+            node_id_key=node_preprocess_metadata.id_col,
+            feature_keys=node_preprocess_metadata.feature_cols,
+            label_keys=[node_preprocess_metadata.label_col] if node_preprocess_metadata.label_col is not None else None,  # type: ignore
+            tfrecord_uri_prefix=node_preprocess_metadata.features_uri.uri,
+            schema_uri=node_preprocess_metadata.schema_uri.uri,
+            feature_dim=num_features,
         )
 
     num_features_by_edge_type = mocked_dataset_info.num_edge_features
@@ -376,30 +376,30 @@ def generate_preprocessed_tfrecord_data(
                     feature_dim=num_edge_feats,
                 )
 
-                edge_preprocess_metadata_pb_dict[user_def_label] = (
-                    user_def_edge_metadata_info_pb
-                )
+                edge_preprocess_metadata_pb_dict[
+                    user_def_label
+                ] = user_def_edge_metadata_info_pb
 
-            condensed_edge_type_to_preprocessed_metadata[condensed_edge_type] = (
-                preprocessed_metadata_pb2.PreprocessedMetadata.EdgeMetadataOutput(
-                    src_node_id_key=edge_preprocess_metadata.src_id_col,
-                    dst_node_id_key=edge_preprocess_metadata.dst_id_col,
-                    main_edge_info=main_edge_metadata_info_pb,
-                    positive_edge_info=edge_preprocess_metadata_pb_dict.get(
-                        EdgeUsageType.POSITIVE, None
-                    ),
-                    negative_edge_info=edge_preprocess_metadata_pb_dict.get(
-                        EdgeUsageType.NEGATIVE, None
-                    ),
-                )
+            condensed_edge_type_to_preprocessed_metadata[
+                condensed_edge_type
+            ] = preprocessed_metadata_pb2.PreprocessedMetadata.EdgeMetadataOutput(
+                src_node_id_key=edge_preprocess_metadata.src_id_col,
+                dst_node_id_key=edge_preprocess_metadata.dst_id_col,
+                main_edge_info=main_edge_metadata_info_pb,
+                positive_edge_info=edge_preprocess_metadata_pb_dict.get(
+                    EdgeUsageType.POSITIVE, None
+                ),
+                negative_edge_info=edge_preprocess_metadata_pb_dict.get(
+                    EdgeUsageType.NEGATIVE, None
+                ),
             )
         else:
-            condensed_edge_type_to_preprocessed_metadata[condensed_edge_type] = (
-                preprocessed_metadata_pb2.PreprocessedMetadata.EdgeMetadataOutput(
-                    src_node_id_key=edge_preprocess_metadata.src_id_col,
-                    dst_node_id_key=edge_preprocess_metadata.dst_id_col,
-                    main_edge_info=main_edge_metadata_info_pb,
-                )
+            condensed_edge_type_to_preprocessed_metadata[
+                condensed_edge_type
+            ] = preprocessed_metadata_pb2.PreprocessedMetadata.EdgeMetadataOutput(
+                src_node_id_key=edge_preprocess_metadata.src_id_col,
+                dst_node_id_key=edge_preprocess_metadata.dst_id_col,
+                main_edge_info=main_edge_metadata_info_pb,
             )
 
     # Assemble Preprocessed Metadata pb and write out.

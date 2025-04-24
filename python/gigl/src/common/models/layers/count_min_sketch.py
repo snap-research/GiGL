@@ -1,4 +1,3 @@
-import random
 from typing import Any, List
 
 import numpy as np
@@ -41,12 +40,9 @@ class CountMinSketch(object):
             """
             Return the hash value of the item for the i-th hash function
             """
-            random.seed(i)
-            # mask is deterministic for the same i
-            mask = random.getrandbits(32)
-            input_bytes = (str(x) + str(i)).encode("utf-8")
-            # Note that python built-in hash function is not deterministic across different runs
-            return hash(input_bytes) ^ mask
+            # Note that python built-in hash function is not deterministic across different processes for many types
+            # So we should be careful to only use the CMS in the same process
+            return hash((x, i))
 
         return [hash_i(item, i) for i in range(self.__depth)]
 

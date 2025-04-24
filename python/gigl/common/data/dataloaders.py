@@ -1,7 +1,8 @@
 import time
+from copy import deepcopy
 from dataclasses import dataclass
 from functools import partial
-from typing import Callable, Dict, List, Literal, Optional, Sequence, Tuple, Union
+from typing import Callable, Dict, List, Optional, Sequence, Tuple, Union
 
 import psutil
 import tensorflow as tf
@@ -10,6 +11,7 @@ import tqdm
 
 from gigl.common import Uri
 from gigl.common.logger import Logger
+from gigl.common.utils.decorator import tf_on_cpu
 from gigl.src.common.types.features import FeatureTypes
 from gigl.src.common.utils.file_loader import FileLoader
 from gigl.src.data_preprocessor.lib.types import FeatureSpecDict
@@ -28,14 +30,21 @@ class SerializedTFRecordInfo:
     tfrecord_uri_prefix: Uri
     # Feature names to load for the current entity
     feature_keys: Sequence[str]
-    # a dict of feature name -> FeatureSpec (eg. FixedLenFeature, VarlenFeature, SparseFeature, RaggedFeature)
+    # a dict of feature name -> FeatureSpec (eg. FixedLenFeature, VarlenFeature, SparseFeature, RaggedFeature). If entity keys are not present, we insert them during tensor loading
     feature_spec: FeatureSpecDict
     # Feature dimension of current entity
     feature_dim: int
     # Entity ID Key for current entity. If this is a Node Entity, this must be a string. If this is an edge entity, this must be a Tuple[str, str] for the source and destination ids.
     entity_key: Union[str, Tuple[str, str]]
     # The regex pattern to match the TFRecord files at the specified prefix
-    tfrecord_uri_pattern: str = ".*-of-.*.tfrecord(.gz)?$"
+    tfrecord_uri_pattern: str = ".*tfrecord(.gz)?$"
+
+    @property
+    def is_node_entity(self) -> bool:
+        """
+        Returns whether this serialized entity contains node or edge information by checking the type of entity_key
+        """
+        return isinstance(self.entity_key, str)
 
 
 @dataclass(frozen=True)
@@ -55,7 +64,6 @@ class TFDatasetOptions:
         deterministic (bool): Whether to use deterministic processing, if False then the order of elements can be non-deterministic.
         use_interleave (bool): Whether to use tf.data.Dataset.interleave to read files in parallel, if not set then `num_parallel_file_reads` will be used.
         num_parallel_file_reads (int): The number of files to read in parallel if `use_interleave` is False.
-        compression_type (Optional[Literal["", "ZLIB", "GZIP"]]): The compression type of the TFRecord files. If not provided then it's assumed the files are uncompressed.
         ram_budget_multiplier (float): The multiplier of the total system memory to set as the tf.data RAM budget..
     """
 
@@ -64,7 +72,6 @@ class TFDatasetOptions:
     deterministic: bool = False
     use_interleave: bool = True
     num_parallel_file_reads: int = 64
-    compression_type: Optional[Literal["", "ZLIB", "GZIP"]] = None
     ram_budget_multiplier: float = 0.5
 
 
@@ -143,7 +150,9 @@ class TFRecordDataLoader:
         self._world_size = world_size
 
     def _partition_children_uris(
-        self, uri: Uri, tfrecord_pattern: str
+        self,
+        uri: Uri,
+        tfrecord_pattern: str,
     ) -> Sequence[Uri]:
         """
         Partition the children of `uri` evenly by world_size. The partitions differ in size by at most 1 file.
@@ -156,6 +165,7 @@ class TFRecordDataLoader:
 
         Args:
             uri (Uri): The parent uri for whoms children should be partitioned.
+            tfrecord_pattern (str): Regex pattern to match for loading serialized tfrecords from uri prefix
 
         Returns:
             List[Uri]: The list of file Uris for the current partition.
@@ -204,13 +214,14 @@ class TFRecordDataLoader:
         return uris[start_index:end_index]
 
     @staticmethod
-    def build_dataset_for_uris(
+    def _build_dataset_for_uris(
         uris: Sequence[Uri],
         feature_spec: FeatureSpecDict,
         opts: TFDatasetOptions = TFDatasetOptions(),
     ) -> tf.data.Dataset:
         """
-        Builds a tf.data.Dataset to load tf.Examples serialized as TFRecord files into tf.Tensors.
+        Builds a tf.data.Dataset to load tf.Examples serialized as TFRecord files into tf.Tensors. This function will
+        automatically infer the compression type (if any) from the suffix of the files located at the TFRecord URI.
 
         Args:
             uris (Sequence[Uri]): The URIs of the TFRecord files to load.
@@ -225,6 +236,10 @@ class TFRecordDataLoader:
             psutil.virtual_memory().total * opts.ram_budget_multiplier
         )
         logger.info(f"Setting RAM budget to {data_opts.autotune.ram_budget}")
+        # TODO (mkolodner-sc): Throw error if we observe folder with mixed gz / tfrecord files
+        compression_type = (
+            "GZIP" if all([uri.uri.endswith(".gz") for uri in uris]) else None
+        )
         if opts.use_interleave:
             # Using .batch on the interleaved dataset provides a huge speed up (60%).
             # Using map on the interleaved dataset provides another smaller speedup (5%)
@@ -233,7 +248,7 @@ class TFRecordDataLoader:
                 .interleave(
                     lambda uri: tf.data.TFRecordDataset(
                         uri,
-                        compression_type=opts.compression_type,
+                        compression_type=compression_type,
                         buffer_size=opts.file_buffer_size,
                     )
                     .batch(
@@ -251,7 +266,7 @@ class TFRecordDataLoader:
         else:
             dataset = tf.data.TFRecordDataset(
                 [uri.uri for uri in uris],
-                compression_type=opts.compression_type,
+                compression_type=compression_type,
                 buffer_size=opts.file_buffer_size,
                 num_parallel_reads=opts.num_parallel_file_reads,
             ).batch(
@@ -266,6 +281,7 @@ class TFRecordDataLoader:
             deterministic=opts.deterministic,
         ).prefetch(tf.data.AUTOTUNE)
 
+    @tf_on_cpu
     def load_as_torch_tensors(
         self,
         serialized_tf_record_info: SerializedTFRecordInfo,
@@ -283,17 +299,50 @@ class TFRecordDataLoader:
         """
         entity_key = serialized_tf_record_info.entity_key
         feature_keys = serialized_tf_record_info.feature_keys
+
+        # We make a deep copy of the feature spec dict so that future modifications don't redirect to the input
+
+        feature_spec_dict = deepcopy(serialized_tf_record_info.feature_spec)
+
         if isinstance(entity_key, str):
             assert isinstance(entity_key, str)
             id_concat_axis = 0
             proccess_id_tensor = lambda t: t[entity_key]
             entity_type = FeatureTypes.NODE
+
+            # We manually inject the node id into the FeatureSpecDict so that the schema will include
+            # node ids in the produced batch when reading serialized tfrecords.
+            if entity_key not in feature_spec_dict:
+                logger.info(
+                    f"Injecting entity key {entity_key} into feature spec dictionary with value `tf.io.FixedLenFeature(shape=[], dtype=tf.int64)`"
+                )
+                feature_spec_dict[entity_key] = tf.io.FixedLenFeature(
+                    shape=[], dtype=tf.int64
+                )
         else:
             id_concat_axis = 1
             proccess_id_tensor = lambda t: tf.stack(
                 [t[entity_key[0]], t[entity_key[1]]], axis=0
             )
             entity_type = FeatureTypes.EDGE
+
+            # We manually inject the edge ids into the FeatureSpecDict so that the schema will include
+            # edge ids in the produced batch when reading serialized tfrecords.
+            if entity_key[0] not in feature_spec_dict:
+                logger.info(
+                    f"Injecting entity key {entity_key[0]} into feature spec dictionary with value `tf.io.FixedLenFeature(shape=[], dtype=tf.int64)`"
+                )
+                feature_spec_dict[entity_key[0]] = tf.io.FixedLenFeature(
+                    shape=[], dtype=tf.int64
+                )
+
+            if entity_key[1] not in feature_spec_dict:
+                logger.info(
+                    f"Injecting entity key {entity_key[1]} into feature spec dictionary with value `tf.io.FixedLenFeature(shape=[], dtype=tf.int64)`"
+                )
+                feature_spec_dict[entity_key[1]] = tf.io.FixedLenFeature(
+                    shape=[], dtype=tf.int64
+                )
 
         uris = self._partition_children_uris(
             serialized_tf_record_info.tfrecord_uri_prefix,
@@ -315,11 +364,12 @@ class TFRecordDataLoader:
             )
             return empty_entity, empty_feature
 
-        dataset = TFRecordDataLoader.build_dataset_for_uris(
+        dataset = TFRecordDataLoader._build_dataset_for_uris(
             uris=uris,
-            feature_spec=serialized_tf_record_info.feature_spec,
+            feature_spec=feature_spec_dict,
             opts=tf_dataset_options,
         )
+
         start_time = time.perf_counter()
         num_entities_processed = 0
         id_tensors = []

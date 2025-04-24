@@ -66,6 +66,3 @@ contributing/local_setup
 
 trouble_shooting/faq
 ```
-
-
-   
