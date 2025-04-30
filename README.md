@@ -1,4 +1,22 @@
 <!-- To align the logo with the text on the sphinx page -->
+<h2 align="center">
+  ⚠️ NOTICE ⚠️
+</h2>
+
+<p align="center">
+  <strong style="font-size: 1.2em;">   
+      This repository was initially released as part of our <a href="https://arxiv.org/pdf/2502.15054">paper release</a>
+      </br>
+      We have since migrated active development of this project here: <a href="https://github.com/Snapchat/GiGL"> Snapchat/GiGL </a>
+  </strong>
+</p>
+
+<h2 align="center">
+</h2>
+
+</br>
+</br>
+</br>
 
 <div align="center">
   <img src="docs/assets/images/gigl.png" alt="GiGL Logo" style="vertical-align: middle; width: px; height: 80px;"/>
