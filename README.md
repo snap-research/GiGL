@@ -7,7 +7,7 @@
   <strong style="font-size: 1.2em;">   
       This repository was initially released as part of our <a href="https://arxiv.org/pdf/2502.15054">paper release</a>
       </br>
-      We have since migrated active development of this project here: <a href="https://github.com/your-org/your-repo/issues](https://github.com/Snapchat/GiGL"> Snapchat/GiGL </a>
+      We have since migrated active development of this project here: <a href="https://github.com/Snapchat/GiGL"> Snapchat/GiGL </a>
   </strong>
 </p>
 
