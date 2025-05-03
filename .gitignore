@@ -7,13 +7,12 @@ __pycache__
 .tmp
 .test_assets/
 build
+gh_pages_build
 *.DS_Store
 logs/
 .devcontainer/
 gigl.egg-info/
 gigl_dataflow_setup.egg-info/
-large_scale_gnn.egg-info/
-gigantic_graph_learning.egg-info/
 .python-version
 dist/
 *.egg-info/
@@ -38,8 +37,6 @@ _autosummary/
 graphlearn_torch/
 graphlearn_torch.egg-info/
 .git/
-
-do_not_open_source
 
 # Ignore downloaded fossa files.
 fossa
