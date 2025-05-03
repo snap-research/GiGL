@@ -3,6 +3,7 @@ include dep_vars.env
 SHELL := /bin/bash
 CONDA_ENV_NAME=gnn
 PYTHON_VERSION=3.9
+PIP_VERSION=25.0.1
 DATE:=$(shell /bin/date "+%Y%m%d-%H%M")
 
 # GIT HASH, or empty string if not in a git repo.
@@ -37,7 +38,7 @@ get_ver_hash:
 	$(eval GIT_COMMIT=$(shell git log -1 --pretty=format:"%H"))
 
 initialize_environment:
-	conda create -y -c conda-forge --name ${CONDA_ENV_NAME} python=${PYTHON_VERSION} pip-tools
+	conda create -y -c conda-forge --name ${CONDA_ENV_NAME} python=${PYTHON_VERSION} pip=${PIP_VERSION} pip-tools
 	@echo "If conda environment was successfully installed, ensure to activate it and run \`make install_dev_deps\` or \`make install_deps\` to complete setup"
 
 clean_environment:
@@ -194,7 +195,7 @@ format_py:
 
 format_scala:
 	# We run "clean" before the formatting because otherwise some "scalafix.sbt.ScalafixFailed: NoFilesError" may get thrown after switching branches...
-	# TODO(kmonte): Once open sourced, follow up with scalafix people on this.
+	# TODO(kmonte): Once open sourced, follow up with scalafix team on this.
 	( cd scala; sbt clean scalafixAll scalafmtAll )
 	( cd scala_spark35; sbt clean scalafixAll scalafmtAll )
 
@@ -476,3 +477,7 @@ release_gigl:
 
 publish_docs:
 	@echo "This needs to be implemented"
+
+build_docs:
+	sphinx-build -M clean . gh_pages_build
+	sphinx-build -M html . gh_pages_build
