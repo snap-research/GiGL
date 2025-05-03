@@ -3,7 +3,7 @@ name: Release Documentation
 on:
   # Runs on pushes targeting the default branch
   push:
-    branches: ["main", "svij/migrate-docs"] # svij/migrate-docs for testing
+    branches: ["svij/migrate-docs"] # svij/migrate-docs for testing
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -50,7 +50,7 @@ jobs:
         uses: actions/upload-pages-artifact@v3
         with:
           # Upload the output folder which contains all static assets for gh-pages
-          path: 'gh_pages_build/'
+          path: 'gh_pages_build/html/'
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
